@@ -1,0 +1,11 @@
+{% autoescape false %}
+Dear {{ name }},
+
+This is an automatically generated courtesy e-mail. 
+You registered for the following event but were placed on a waiting list.
+  {{ summary }}
+
+Someone who previously registered won't be coming, so you are now confirmed. 
+Should you need to change your status, you can visit the following link.
+  {{ rsvplink }}
+{% endautoescape %}

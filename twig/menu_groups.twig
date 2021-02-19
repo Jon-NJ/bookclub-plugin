@@ -1,0 +1,191 @@
+
+<div class='bc_help'>
+ <div id='htmlhelp'></div>
+ <button id="close_help">X</button>
+</div>
+<div class="bc_groups bc_{{ mode }}">
+ <div class="bc_main">
+  <h1>{{ title }}</h1>
+  <input type="hidden" id="nonce" name="nonce" value="{{ nonce }}" />
+  <input type="hidden" id="referer" name="referer" value="{{ referer }}" />
+  <input type="hidden" id="mode" name="mode" value="{{ mode }}" />
+  <input type="hidden" id="type" name="type" value="{{ type }}" />
+  <input type="hidden" id="no_data" value="{{ no_data }}" />
+  <input type="hidden" id="yes_data" value="{{ yes_data }}" />
+  <input type="hidden" id="delete_text" name="delete_text" value="Deleting a group cannot be reversed. Do you really want to delete?" />
+  <section class='bc_toolbar'>
+   <section class='bc_form_lines'>
+    <div class='bc_form_label'>Tools:</div>
+    <div class='bc_form_data'>
+     <button id='button_help'>
+      <img src='{{ images }}help.png'/> Help
+     </button>
+     {% if "edit" == mode %}
+      <button id='button_add' disabled>
+       <img src='{{ images }}plus.png'/> Add
+      </button>
+      <button id='button_reset'>
+       <img src='{{ images }}reset.png'/> Restart
+      </button>
+     {% else %}
+      <button id='button_add' {{ type ? '' : 'disabled' }}>
+       <img src='{{ images }}plus.png'/> Add
+      </button>
+      <button id='button_search'>
+       <img src='{{ images }}search.png'/> Search
+      </button>
+     {% endif %}
+     {% if "edit" == mode %}
+      <button id='button_save'>
+       <img src='{{ images }}save.png'/> Save
+      </button>
+      <button id='button_delete'>
+       <img src='{{ images }}drop.png'/> Delete
+      </button>
+     {% else %}
+      <button id='button_save' disabled>
+       <img src='{{ images }}save.png'/> Save
+      </button>
+      <button id='button_delete' disabled>
+       <img src='{{ images }}drop.png'/> Delete
+      </button>
+     {% endif %}
+    </div>
+   </section>
+  </section>
+  <div class='bc_notice_area'>
+   <div id='bc_notice' class='bc_notice'>
+    <p id='bc_message' class='bc_message'>***</p>
+   </div>
+  </div>
+  <section class='bc_form_lines'>
+   <div class='bc_form_label'>Group ID:</div>
+   <div class='bc_form_data'>
+    {% if "edit" == mode %}
+     <input type='text' size='3' id='group_id' name='group_id' value='{{ group_id }}' readonly/>
+    {% else %}
+     <input type='text' size='3' id='group_id' name='group_id' value='{{ group_id }}'/>
+    {% endif %}
+    {% set class = (1 == type) ? 'bc_group_button bc_select_group_selected' :'bc_group_button' %}
+    <button class='{{ class }}' id='type_club' name='type_club' type='button'>Book club</button>
+    {% set class = (2 == type) ? 'bc_group_button bc_select_group_selected' :'bc_group_button' %}
+    <button class='{{ class }}' id='type_email' name='type_email' type='button'>Select list</button>
+    {% set class = (3 == type) ? 'bc_group_button bc_select_group_selected' :'bc_group_button' %}
+    <button class='{{ class }}' id='type_wordpress' name='type_wordpress' type='button'>WordPress list</button>
+    {% set class = (4 == type) ? 'bc_group_button bc_select_group_selected' :'bc_group_button' %}
+    <button class='{{ class }}' id='type_announcements' name='type_announcements' type='button'>Announcements</button>
+    {% if "edit" != mode %}
+     <br/><i>leave empty when adding to use the next number</i>
+    {% endif %}
+   </div>
+   <div class='bc_form_label'>Tag:</div>
+   <div class='bc_form_data'>
+    <input type='text' size='10' id='tag' name='tag' value='{{ tag }}'/>
+     {% if ("edit" == mode) and (2 == type) %}
+     <span>
+      <button class='bc_select_group'                          id='left' type='button'>Left</button>
+      <select name="group" id="group">
+       <option value="0">All Groups</option>
+       {% for item in groups %}
+        <option value="{{ item.groupid }}">{{ item.tag }}</option>
+       {% endfor %}
+      </select>
+      <button class='bc_select_group'                          id='exclude' type='button' disabled>Exclude</button>
+      <button class='bc_select_group bc_select_group_selected' id='active'  type='button'>Active</button>
+      <button class='bc_select_group'                          id='right'   type='button'>Right</button>
+     </span>
+    {% endif %}
+   </div>
+   <div class='bc_form_label'>Title:</div>
+   <div class='bc_form_data'>
+    <input type='text' size='{{ "edit" != mode ? '50' : '73' }}' id='desc' name='desc' value='{{ description }}'/><br/>
+    {% if ("edit" == mode) and ((2 == type) or (3 == type) or (4 == type)) %}
+     <div style='padding-top:1em; height:32em; width:51em;' id='members'>
+      <select style='width:22em;' id='non_members' multiple>
+       {% for member in no %}
+        {% set inactive = member.active ? '' : ' bc_option_inactive' %}
+        <option class='bc_option{{ inactive }}' value='{{ member.id }}'>
+         {{ member.name }}
+        </option>
+       {% endfor %}
+      </select>
+      <div style='width:6em;' id='members_divider'>
+       <button id='add_members' type='button' disabled>&gt;&gt;</button>
+       <button id='remove_members' type='button' disabled>&lt;&lt;</button>
+      </div>
+      <select style='width:22em;' id='oui_members' multiple>
+       {% for member in yes %}
+        {% set inactive = member.active ? '' : ' bc_option_inactive' %}
+        <option class='bc_option{{ inactive }}' value='{{ member.id }}'>
+         {{ member.name }}
+        </option>
+       {% endfor %}
+      </select>
+     </div>
+    {% endif %}
+   </div>
+   {% if "edit" == mode %}
+    {% if 1 == type %} {# Book Club #}
+     <div class='bc_form_label'>URL:</div>
+     <div class='bc_form_data'>
+      <input type='text' size='50' id='url' value='{{ url }}'/>
+     </div>
+     <div class='bc_form_label'></div>
+     <div class='bc_form_data'>
+      <b>Template</b>
+     </div>
+     <div class='bc_form_label'>Max:</div>
+     <div class='bc_form_data'>
+      <input type='text' size='1' id='max' value='{{ t_max_attend }}'/>
+      <span style='padding-left:1.2em; padding-right:.3em'>Start Time:</span>
+      <input type='text' size='1' id='starttime' value='{{ t_starttime }}'/>
+      <span style='padding-left:1.2em; padding-right:.3em'>End Time:</span>
+      <input type='text' size='1' id='endtime' value='{{ t_endtime }}'/>
+     </div>
+     <div class='bc_form_label'>Event ID:</div>
+     <div class='bc_form_data'>
+      <input type='text' size='50' id='event_id' name='event_id' value='{{ t_event_id }}'/>
+     </div>
+     <div class='bc_form_label'>Include:</div>
+     <div class='bc_form_data'>
+      <select name="include" id="include">
+       <option value="0" {{ (0 == t_include) ? "selected='selected'" : '' }}>None</option>
+       {% for item in groups %}
+        <option value="{{ item.groupid }}" {{ (item.groupid == t_include) ? "selected='selected'" : '' }}>{{ item.tag }}</option>
+       {% endfor %}
+      </select>
+     </div>
+     <div class='bc_form_label'>What:</div>
+     <div class='bc_form_data'>
+      <input type='text' size='50' id='what' value='{{ t_summary }}'/>
+     </div>
+     <div class='bc_form_label'>Description:</div>
+     <div class='bc_form_data'>
+      <textarea rows='14' cols='49' id='body' name='body'>{{ t_description }}</textarea>
+     </div>
+    {% endif %}
+   {% endif %}
+  </section>
+ </div>
+ {% if "search" == mode %}
+  <div class='bc_xextra'>
+   {% if not found|length %}
+    <hr/>
+    <div class='bc_noresults'>Nothing matches.</div>
+   {% else %}
+    <section class='bc_groups_results'>
+     <div class='bc_head bc_groups_id'>ID</div>
+     <div class='bc_head bc_groups_type'>Type</div>
+     <div class='bc_head bc_groups_tag'>Tag</div>
+     <div class='bc_head bc_groups_desc'>Description</div>
+     {% for find in found %}
+      <div class='bc_line bc_groups_id' id='id_{{ find.group_id }}'>{{ find.group_id }}</div>
+      <div class='bc_line bc_groups_type' id='type_{{ find.group_id }}'>{{ (1 == find.type) ? 'Book club' : 'EMail list' }}</div>
+      <div class='bc_line bc_groups_tag' id='tag_{{ find.group_id }}'>{{ find.tag }}</div>
+      <div class='bc_line bc_groups_desc' id='desc_{{ find.group_id }}'>{{ find.description }}</div>
+     {% endfor %}
+    </section>
+   {% endif %}
+  </div>
+ {% endif %}
+</div>

@@ -1,0 +1,31 @@
+<html>
+ <head>
+  <script>
+    // Get height of document
+    function getDocHeight(doc) {
+        doc = doc || document;
+        var body = doc.body;
+        var html = doc.documentElement;
+        var height = Math.max(body.scrollHeight, body.offsetHeight, 
+            html.clientHeight, html.scrollHeight, html.offsetHeight);
+        return height;
+    }
+
+    // send docHeight onload
+    function sendDocHeightMsg(e) {
+        var ht = getDocHeight();
+        parent.postMessage(JSON.stringify({'docHeight': ht}), '*');
+    }
+
+    // assign onload handler 
+    if (window.addEventListener) {
+        window.addEventListener('load', sendDocHeightMsg, false);
+    } else if (window.attachEvent) { // ie8
+        window.attachEvent('onload', sendDocHeightMsg);
+    }
+  </script>
+ </head>
+ <body>
+  {% include body %}
+ </body>
+</html>

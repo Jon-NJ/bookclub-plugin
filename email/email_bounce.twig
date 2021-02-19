@@ -1,0 +1,55 @@
+--MIME-mixed-{{ hash }}
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+
+{% autoescape false %}
+Dear {{ name }},
+
+You have sent the attached message to our EMail forwarder, but the following
+error was generated:
+ "{{ error }}"
+
+Please read the information below to help you diagnose the problem. If you are
+having any problems with the forwarding system, send an email to {{ support }}
+for assistance. The forwarding software is still experimental.
+
+Best regards,
+{{ signature }}
+
+This forwarder works differently from other distribution lists you may be
+familiar with which forward an email to a predetermined list of recipients. Our
+forwarder looks at the name part of the "To" name field to determine whether it
+should forward to a group or to a single user.
+
+Three target variations are possible:
+- Group "tag". Forward to everyone in the group defined by the group tag.
+  There different types of groups with differing forwarding rules.
+  Announcements may only be sent by an administrator. Also, make sure you enable
+  the "receive" flag in your bookclub profile.
+- Login name.  Forward to a single user with the given login name. If the login
+  name contains prohibited characters, the "nicename" will be used.
+- "First Last" name. Forward to the single user with the given name.
+
+Here are some example "To" values:
+ "Group 1 <{{ forwarder }}>" - Group 1 is specified, the email is distributed to
+  all in that group who have opted to receive emails.
+ "jdoe <{{ forwarder }}>" - The user with login "jdoe" is specified.
+ "Jane Doe <{{ forwarder }}>" - Send to the user with the given first/last name
+  in their WordPress profile.
+
+The rules about who can send to a group and who will receive the group message
+vary depending on the type of the group and the user settings. In general,
+you should check your bookclub profile and enable the "Receive email from others"
+flag if you wish to use the system.
+
+You are welcome to resend the email if you correct the problem.
+
+{% endautoescape %}
+--MIME-mixed-{{ hash }}
+Content-Type: message/rfc822
+Content-Disposition: attachment; filename="{{ filename }}"
+Content-Transfer-Encoding: 7bit
+
+{% autoescape false %}{{ header }}{{ body }}{% endautoescape %}
+
+--MIME-mixed-{{ hash }}--

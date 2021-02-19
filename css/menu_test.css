@@ -1,0 +1,110 @@
+/*
+ * Style sheet for editing books page.
+ * @author     Jon Wolfe <jonnj@connectberlin.de>
+ * @package    bookclub
+ * @license    https://opensource.org/licenses/MIT MIT
+ */
+
+:root {
+    --nice-blue: #00bfff;
+    --nice-gray: #444;
+    --line-blue: #006fbf;
+    --menu-blue: #6495ed;
+    --hover-blue: #3080ff;
+    --error-red: #dc3232;
+    --success-green: #46b450;
+    --warning-yellow: #ffb900;
+}
+
+.hide {
+  display: none !important;
+}
+
+.bc_toolbar {
+    display: flex;
+}
+
+.bc_form_lines {
+    display: grid;
+    grid-template-columns: [label] 8em [data] 1fr;
+    grid-template-rows: auto;
+    grid-row-gap:0.63em;
+}
+
+.bc_form_label {
+    padding: 0;
+    grid-column-start: label;
+}
+
+.bc_form_data {
+    padding: 0;
+    grid-column-start: data;
+}
+
+.bc_test {
+    display: flex;
+    height: 92vh;
+    flex-direction: column;
+    position: fixed;
+    width: 95%;
+}
+
+.bc_main {
+    height: auto;
+}
+
+.bc_extra {
+    overflow-y: auto;
+    position: sticky;
+    top: 0;
+}
+
+.head {
+    font-weight: bold;
+    font-size: larger;
+    padding-bottom: 0.3em;
+    position: sticky;
+    top: 0;
+    color: white;
+    background-color: blue;
+}
+.bc_results {
+    display: grid;
+    grid-template-columns: [id] auto [key] auto [age] auto [name] auto [email] auto [comment] 1fr;
+}
+.line {
+    color: var(--line-blue);
+}
+.line.line_key {
+    font-family: monospace;
+}
+.line_id {
+    text-align: center;
+    padding: 0 0.3em 0 0;
+    grid-column-start: id;
+}
+.line_key {
+    text-align: center;
+    padding: 0 0.3em 0 0.3em;
+    grid-column-start: key;
+}
+.line_age {
+    text-align: center;
+    padding: 0 0.3em 0 0.3em;
+    grid-column-start: age;
+}
+.line_name {
+    text-align: left;
+    padding: 0 0.3em 0 0.3em;
+    grid-column-start: name;
+}
+.line_email {
+    text-align: left;
+    padding: 0 0.3em 0 0.3em;
+    grid-column-start: email;
+}
+.line_comment {
+    text-align: left;
+    padding: 0 0 0 0.3em;
+    grid-column-start: comment;
+}

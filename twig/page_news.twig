@@ -1,0 +1,10 @@
+<div class='bc_news'>
+ <div class='bc_news_lines'>
+  {% for record in records %}
+   <div class='bc_news_date'>{{ record.datetime|date('F j') }}</div>
+   <div class='bc_news_poster'>{{ record.poster }}</div>
+   <div class='bc_news_news'>{{ record.news }}</div>
+  {% endfor %}
+ </div>
+</div>
+

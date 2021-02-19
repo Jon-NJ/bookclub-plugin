@@ -1,0 +1,23 @@
+{% autoescape false %}
+BEGIN:VCALENDAR
+PRODID:-//{{ who }}//NONSGML v1.0//EN
+VERSION:2.0
+METHOD:PUBLISH
+{{ timeinfo }}
+BEGIN:VEVENT
+DTSTART;TZID={{ timezone }}:{{ starttime|date("Ymd\\THis") }}
+DTEND;TZID={{ timezone }}:{{ endtime|date("Ymd\\THis") }}
+DTSTAMP:{{ modtime|date("Ymd\\THis") }}
+ORGANIZER;CN={{ sender }}:mailto:{{ sender }}
+UID:{{ event_id }}@{{ host }}
+CREATED:{{ modtime|date("Ymd\\THis") }}
+{% apply ical_format %}DESCRIPTION:{% apply html_to_ical_text %}{% include description %}{% endapply %}{% endapply %}
+LAST-MODIFIED:{{ modtime|date("Ymd\\THis") }}
+LOCATION:{{ location }}
+SEQUENCE:0
+STATUS:CONFIRMED
+SUMMARY:{{ summary }}
+TRANSP:OPAQUE
+END:VEVENT
+END:VCALENDAR
+{% endautoescape %}

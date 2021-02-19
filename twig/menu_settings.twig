@@ -1,0 +1,259 @@
+{% macro select_page(name, id, list, current, type, permalink) %}
+ {% set select = '' %}
+ {% if permalink %}
+  {% for item in list %}
+   {% if item.post_name == current %}
+    {% set select = item.ID %}
+   {% endif %}
+  {% endfor %}
+ {% else %}
+  {% for item in list %}
+   {% if ('?page_id=' ~ item.ID) == current %}
+    {% set select = item.ID %}
+   {% endif %}
+  {% endfor %}
+  {% endif %}
+ <select name='{{ id }}' id='{{ id }}' style='width: 22em'>
+  <option value='' {{ not select ? "selected='selected'" : '' }}>- select a page -</option>
+  {% for item in list %}
+   {% set selected = item.ID == select ? 'selected' : '' %}
+   {% if (('[bookclub type="' ~ type ~ '"') in item.post_content or
+        ("[bookclub type='" ~ type ~ "'") in item.post_content) %}
+    {% if selected %}
+     {% set matches = ' (matches)' %}
+    {% else %}
+     {% set matches = ' (suggested)' %}
+    {% endif %}
+   {% else %}
+    {% set matches = '' %}
+   {% endif %}
+   {% if permalink %}
+    <option value='{{ item.post_name }}' {{ selected }}>{{ item.post_title }}{{ matches }}</option>
+   {% else %}
+    <option value='{{ ('?page_id=' ~ item.ID) }}' {{ selected }}>{{ item.post_title }}{{ matches }}</option>
+   {% endif %}
+  {% endfor %}
+ </select>
+ <input type='text' size='20' id='{{ name }}' value='{{ current }}'/>
+{% endmacro %}
+
+<div class='bc_help'>
+ <div id='htmlhelp'></div>
+ <button id="close_help">X</button>
+</div>
+<div class="bc_settings">
+ <span style='font-size:140%;font-weight:bold;margin-right:1em;'>{{ title }}</span>
+ Click
+ <button id='save_settings'>
+  <img src='{{ images }}save.png'/> Save
+ </button>
+ when finished. Click
+ <button id='help_settings'>
+  <img src='{{ images }}help.png'/> Help
+ </button>
+ for help.
+ <div class='bc_notice_area'>
+  <div id='bc_notice' class='bc_notice'>
+   <p id='bc_message' class='bc_message'>***</p>
+  </div>
+ </div>
+ <input type="hidden" id="nonce" value="{{ nonce }}" />
+ <input type="hidden" id='referer' value="{{ referer }}" />
+ <div class='bc_tabs'>
+  <div class='bc_tab bc_selected'   id='tab1'>EMail</div>
+  <div class='bc_tab bc_unselected' id='tab2'>Forwarding</div>
+  <div class='bc_tab bc_unselected' id='tab3'>Pages</div>
+  <div class='bc_nontab'></div>
+ </div>
+ <div id='content1'>
+  <section class='bc_settings_container'>
+   <div class='bc_settings_section'>
+    EMail configuration - Click to
+    <button id='settings_test'>
+     <img src='{{ images }}email.png'/> Send
+    </button>
+    test message
+   </div>
+   <div class='bc_settings_label'>Defines:</div>
+   <div class='bc_settings_data'>
+    <span style='float: left; margin-right: .3em;'>
+     <textarea rows='5' cols='44' id='defines'>
+{% for define in defines %}
+{{ define }}
+{% endfor %}</textarea>
+    </span>
+    <span style='vertical-align: top;'>
+     <b><i>Example:</b><br>
+forwarder=listserve@myhost.org<br/>
+sender=bookclub@myhost.org<br/>
+signature=Your Book Club http://myhost.org<br/>
+support=support@myhost.org<br/>
+who=Your Book Club</i>
+    </span>
+   </div>
+   <div class='bc_settings_label'>Backend:</div>
+   <div class='bc_settings_data'>
+     <input type='radio' name='email_backend' value='mail' {% if 'mail' == email_backend %} checked="checked" {% endif %}/>
+     Mail
+     <input type='radio' name='email_backend' value='smtp' {% if 'smtp' == email_backend %} checked="checked" {% endif %}/>
+     SMTP
+     <input type='radio' name='email_backend' value='sendmail' {% if 'sendmail' == email_backend %} checked="checked" {% endif %}/>
+     SendMail
+   </div>
+  <div class='bc_settings_label'>Password:</div>
+  <div class='bc_settings_data'>
+   <input type='password' id='email_password' id='email_password' size='45' value='{{ email_password }}'/>
+   <i>email_password, leave as is unless changing</i>
+  </div>
+   <div class='bc_settings_label'>Parameters:</div>
+   <div class='bc_settings_data'>
+    <span style='float: left; margin-right: .3em;'>
+     <textarea rows='7' cols='44' id='email_params'>
+{% for param in email_params %}
+{{ param }}
+{% endfor %}</textarea>
+    </span>
+    <span style='vertical-align: top;'>
+     <b><i>Example:</b><br/>
+host=ssl(or tls)://smtp.myhost.org<br/>
+port=465 (or 587)<br/>
+auth=true<br/>
+username={{ '{{sender}}'}}<br/>
+password={{ '{{email_password}}' }}</i>
+    </span>
+   </div>
+   <div class='bc_settings_label'>Headers:</div>
+   <div class='bc_settings_data'>
+    <span style='float: left; margin-right: .3em;'>
+     <textarea rows='6' cols='44' id='email_headers'>
+{% for header in email_headers %}
+{{ header }}
+{% endfor %}</textarea>
+    </span>
+    <span style='vertical-align: top;'>
+     <b><i>Example:</b><br>
+From={{ '{{who}}'}} &lt;{{ '{{sender}}'}}&gt;<br>
+To={{ '{{utf8name}}' }} &lt;{{ '{{email}}'}}&gt;<br>
+Subject={{ '{{subject}}' }}<br>
+Content-Type={{ '{{content-type}}' }}<br>
+MIME-Version=1.0</i>
+    </span>
+   </div>
+   <div class='bc_settings_label'>EMail sleep:</div>
+   <div class='bc_settings_data'>
+    <input type='text' id='email_sleep' size='45' value='{{ email_sleep }}'/>
+    <i>sleep between email sends, 1000000=1 second, empty for none</i>
+   </div>
+   <div class='bc_settings_label'>Error sender:</div>
+   <div class='bc_settings_data'>
+    <input type='text' id='error_sender' size='45' value='{{ error_sender }}'/>
+    <i>Typically wordpress@myhost.org</i>
+   </div>
+   <div class='bc_settings_label'>Error recipient:</div>
+   <div class='bc_settings_data'>
+    <input type='text' id='error_recipient' size='45' value='{{ error_recipient }}'/>
+    <i>EMail address - whom to notify if the plugin encounters an error (empty for no one).</i>
+   </div>
+  </section>
+ </div>
+ <div id='content2' class='hide'>
+  <section class='bc_settings_container'>
+   <div class='bc_settings_section'>
+    Configure EMail forwarder - Click to
+    <button id='forwarder_test'>
+     <img src='{{ images }}email.png'/> Send
+    </button>
+    test message
+   </div>
+   <div class='bc_settings_label'>Forward IMAP string:</div>
+   <div class='bc_settings_data'>
+    <input type='text' id='forward_imap' size='45' value='{{ forward_imap }}'/>
+    <i>IMAP configuration for forwarding account, empty for none (e.g. {imap.myhost.org:993/imap/ssl}INBOX)</i>
+   </div>
+   <div class='bc_settings_label'>Forward IMAP account:</div>
+   <div class='bc_settings_data'>
+    <input type='text' id='forward_user' size='45' value='{{ forward_user }}'/>
+    <i>User for forwarding account (e.g. listserve@myhost.org or {{ '{{forwarder}}' }})</i>
+   </div>
+   <div class='bc_settings_label'>Forward IMAP password:</div>
+   <div class='bc_settings_data'>
+    <input type='password' id='forward_password' size='45' value='{{ forward_password }}'/>
+    <i>forward_password, leave as is unless changing</i>
+   </div>
+   <div class='bc_settings_label'>Backend:</div>
+   <div class='bc_settings_data'>
+     <input type='radio' name='forward_backend' value='mail' {% if 'mail' == forward_backend %} checked="checked" {% endif %}/>
+     Mail
+     <input type='radio' name='forward_backend' value='smtp' {% if 'smtp' == forward_backend %} checked="checked" {% endif %}/>
+     SMTP
+     <input type='radio' name='forward_backend' value='sendmail' {% if 'sendmail' == forward_backend %} checked="checked" {% endif %}/>
+     SendMail
+   </div>
+   <div class='bc_settings_label'>Parameters:</div>
+   <div class='bc_settings_data'>
+    <span style='float: left; margin-right: .3em;'>
+     <textarea rows='7' cols='44' id='forward_params'>
+{% for param in forward_params %}
+{{ param }}
+{% endfor %}</textarea>
+    </span>
+    <span style='vertical-align: top;'>
+     <b><i>Example:</b><br/>
+host=ssl(or tls)://smtp.myhost.org<br/>
+port=465 (or 587)<br/>
+auth=true<br/>
+username={{ '{{forwarder}}' }}<br/>
+password={{ '{{forward_password}}' }}</i>
+    </span>
+   </div>
+   <div class='bc_settings_label'>Headers:</div>
+   <div class='bc_settings_data'>
+    <span style='float: left; margin-right: .3em;'>
+     <textarea rows='8' cols='44' id='forward_headers'>
+{% for header in forward_headers %}
+{{ header }}
+{% endfor %}</textarea>
+    </span>
+    <span style='vertical-align: top;'>
+     <b><i>Example:</b><br>
+From={{ '{{utf8from}}' }} &lt;{{ '{{forwarder}}'}}&gt;<br>
+To={{ '{{utf8name}}' }} &lt;{{ '{{email}}'}}&gt;<br>
+Subject={{ '{{subject}}' }}<br>
+@List-Id={{ '{{who}}' }} &lt;{{ '{{forwarder}}'}}&gt;<br>
+Content-Type={{ '{{content-type}}' }}<br>
+MIME-Version=1.0</i>
+    </span>
+   </div>
+  </section>
+ </div>
+ <div id='content3' class='hide'>
+  <section class='bc_settings_container'>
+   <div class='bc_settings_section'>Page configuration</div>
+   <div class='bc_settings_label'>Book page:</div>
+   <div class='bc_settings_data'>
+    {{ _self.select_page('page_book', 'book_list', pages, page_book, 'book', permalink) }}
+    <i>Page with [bookclub type="book"]</i>
+   </div>
+   <div class='bc_settings_label'>Forthcoming page:</div>
+   <div class='bc_settings_data'>
+    {{ _self.select_page('page_forthcoming', 'forthcoming_list', pages, page_forthcoming, 'forthcoming', permalink) }}
+    <i>Page with [bookclub type="forthcoming"]</i>
+   </div>
+   <div class='bc_settings_label'>Previous page:</div>
+   <div class='bc_settings_data'>
+    {{ _self.select_page('page_previous', 'previous_list', pages, page_previous, 'previous', permalink) }}
+    <i>Page with [bookclub type="previous"]</i>
+   </div>
+   <div class='bc_settings_label'>RSVP page:</div>
+   <div class='bc_settings_data'>
+    {{ _self.select_page('page_rsvp', 'rsvp_list', pages, page_rsvp, 'rsvp', permalink) }}
+    <i>Page with [bookclub type="rsvp"]</i>
+   </div>
+   <div class='bc_settings_label'>Signup page:</div>
+   <div class='bc_settings_data'>
+    {{ _self.select_page('page_signup', 'signup_list', pages, page_signup, 'signup', permalink) }}
+    <i>Page with [bookclub type="signup"]</i>
+   </div>
+  </section>
+ </div>
+</div>

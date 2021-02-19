@@ -1,0 +1,87 @@
+<div class='bc_help'>
+ <div id='htmlhelp'></div>
+ <button id="close_help">X</button>
+</div>
+<div class='bc_signup'>
+ {% if key %}
+ <b>
+  If you already have a WordPress account, please sign in first.<br/>
+  After this you can link your account from the dashboard.<br/>
+ </b>
+ <br/>
+ <form class="wordpress-ajax-form signup_form" name='signup_form' id='signup_form' action='{{ ajax_url }}'>
+  <input type="hidden" id="nonce" name="nonce" value="{{ nonce }}" />
+  <input type="hidden" name="referer" value="{{ referer }}" />
+  <input type='hidden' name='pkey' id='pkey' value='{{ key }}'/>
+  <input type="hidden" id="delete_text" name="delete_text" value="Do you wish to delete all your data? (Please note that for existing members without a WordPress account, this will also delete your bookclub membership.)" />
+  Wordpress account name (cannot be changed after created):
+  <input type='text' name='user_login' id='user_login' size='40' value=''/>
+  First name:
+  <input type='text' name='name' id='first' size='40' value='{{ first }}'/>
+  Last name:
+  <input type='text' name='name' id='last' size='40' value='{{ last }}'/>
+  Your E-Mail:
+  <input type='text' name='user_email' id='user_email' size='40' value='{{ email }}'/>
+  Please provide a complex password:
+  <input type='password' name='user_pass' id='user_pass' size='40' value=''/>
+  Confirm password:
+  <input type='password' name='user_pass2' id='user_pass2' size='40' value=''/>
+  <br/>
+  <b>All fields mandatory.</b> Suspicious accounts are subject to immediate deletion.<br/>
+  <div>
+   <div class='bc_signup_left'>
+     <button id='button_help'>
+      <img src='{{ images }}help.png'/> Help
+     </button>
+    <button type='submit' id="create" name='create' value='Submit'>
+     Create Account
+    </button>
+    <button id="button_delete">
+     <img src='{{ images }}drop.png'/>
+     Remove all data
+    </button>
+   </div>
+   <div class='bc_signup_right'>
+    <div id='bc_notice' class='bc_notice notice'>
+     <p id='bc_message' class='bc_message'>***</p>
+    </div>
+   </div>
+  </div>
+ </form>
+ {% elseif wpid %}
+ Click here to link your existing WordPress account with your
+ existing Book Club account. (Name: <b>{{ name }})</b><br>
+ <form class="wordpress-ajax-form signup_link" name='signup_link' id='signup_link' action='{{ ajax_url }}'>
+  <input type="hidden" id="nonce" name="nonce" value="{{ nonce }}" />
+  <input type='hidden' name='uid' id='uid' value='{{ id }}'/>
+  <input type='hidden' name='wpid' id='wpid' value='{{ wpid }}'/>
+  <input type='hidden' name='redirect' id='redirect' value='{{ redirect }}'/>
+  <div class='bc_signup_left'>
+   <button type="submit" id="link_account" name="link_account" value="Submit">
+    Link Account
+   </button>
+  </div>
+  <div class='bc_signup_right'>
+   <div id='bc_notice' class='bc_notice notice'>
+    <p id='bc_message' class='bc_message'>***</p>
+   </div>
+  </div>
+ </form>
+ {% elseif empty %}
+  This is the signup page for the bookclub. If you are trying to sign up, the
+  link you are using is incomplete. You should find the correct link on your old
+  profile page. If you need help, please look for the bookclub contact
+  information. If you are a bot, Have a nice day.
+ {% else %}
+  <div class='bc_signup_error'>
+   <b>{{ error.message }}</b>
+   <br/><br/>
+   <b>Error {{ error.id }}</b><br>
+   If you need help, please send an e-mail to
+   <a href='mailto:{{ error.support }}'>
+    <i>{{ error.support }}</i>
+   </a>
+   and explain the problem.
+  </div>
+ {% endif %}
+</div>

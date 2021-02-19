@@ -1,0 +1,56 @@
+<div class="bc_test">
+ <div class="bc_main">
+  <h1>{{ title }}</h1>
+  <section class='bc_toolbar'>
+   <section class='bc_form_lines'>
+    <div class='bc_form_label'>Tools:</div>
+    <div class='bc_form_data'>
+     <button id='help_test' name='help_test'>
+      <img src='{{ images }}help.png'/> Help
+     </button>
+     <button id='add_test' name='add_test' disabled>
+      <img src='{{ images }}plus.png'/> Add
+     </button>
+     <button type='submit' id='search_test' name='search_test'>
+      <img src='{{ images }}search.png'/> Search
+     </button>
+     <button id='save_test' name='save_test' disabled>
+      <img src='{{ images }}save.png'/> Save
+     </button>
+     <button id='delete_test' name='delete_test' disabled>
+      <img src='{{ images }}drop.png'/> Delete
+     </button>
+    </div>
+   </section>
+  </section>
+  <section class='bc_form_lines'>
+   <div class='bc_form_label'>Book ID:</div>
+   <div class='bc_form_data'>
+    <input type='text' size='3' id='test_id' name='test_id' value='1234'/>
+   </div>
+   <div class='bc_form_label'>Title:</div>
+   <div class='bc_form_data'>
+    <input type='text' size='30' id='title' name='title' value='title'/><br>
+   </div>
+   <div class='bc_form_label'>Cover:</div>
+   <div class='bc_form_data'>
+    <input type='text' size='30' id='cover_url' name='cover_url' value='cover'/>
+   </div>
+   <div class='bc_form_label'>Author:</div>
+   <div class='bc_form_data'>
+    <input type='text' size='30' id='author_name' name='author_name' value='author'/>
+    <input type='text' size='3' id='author_id' name='author_id' value='1234' readonly/>
+   </div>
+   <div class='bc_form_label'>Description:</div>
+   <div class='bc_form_data'>
+    <textarea rows='2' cols='29' id='summary' name='summary'>blurb</textarea>
+   </div>
+  </section>
+  <hr/>
+ </div>
+ <div class='bc_extra'>
+  {#<div class='bc_results' id='bc_results'>#}
+   <section class='bc_results' id='list'>**Will be replaced**</section>
+  {#</div>#}
+ </div>
+</div>

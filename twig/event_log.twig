@@ -1,0 +1,21 @@
+<h2 style='margin:0px;'>Send history reconstructed from database</h2>
+<hr>
+{% if 0 == sent %}
+ <h4 style='margin:0px;'>
+  Nothing sent yet
+ </h4>
+{% else %}
+ {% for participant in participants %}
+  {{ participant.sent|date('Y-m-d H:i:s') }} {{ participant.name }} &lt;{{ participant.email }}&gt;<br/>
+ {% endfor %}
+ {% if done %}
+ <hr>
+ <h4 style='margin:0px;'>
+  Job completed
+  {% if unsent %}
+  but {{ unsent }} email(s) not yet sent
+  {% endif %}
+ </h4>
+ {% endif %}
+{% endif %}
+<div id='end_marker'/>

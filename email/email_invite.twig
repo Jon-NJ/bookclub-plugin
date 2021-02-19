@@ -1,0 +1,50 @@
+{% if 0 == format and 0 == ical %}{# text only #}
+{% include 'email_invite_text.twig' %}
+{% elseif 0 == format and 1 == ical %}{# text with attachment #}
+--MIME-mixed-{{ hash }}
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+
+{% include 'email_invite_text.twig' %}
+--MIME-mixed-{{ hash }}
+Content-Type: application/ics
+Content-Disposition: attachment; filename="bookclub.ics"
+Content-Transfer-Encoding: base64
+
+{% apply chunk_split %}{% apply base64_encode %}{% include('email_invite_ical.twig') %}{% endapply %}{% endapply %}
+--MIME-mixed-{{ hash }}--
+{% elseif 1 == format and 0 == ical %}{# text and html #}
+--MIME-alt-{{ hash }}
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+
+{% include 'email_invite_text.twig' %}
+--MIME-alt-{{ hash }}
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+
+{% include 'email_invite_html.twig' %}
+--MIME-alt-{{ hash }}--
+{% elseif 1 == format and 1 == ical %}{# text, html and attachment #}
+--MIME-mixed-{{ hash }}
+Content-Type: multipart/alternative; boundary=MIME-alt-{{ hash }}
+
+--MIME-alt-{{ hash }}
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+
+{% include 'email_invite_text.twig' %}
+--MIME-alt-{{ hash }}
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+
+{% include 'email_invite_html.twig' %}
+--MIME-alt-{{ hash }}--
+--MIME-mixed-{{ hash }}
+Content-Type: application/ics
+Content-Disposition: attachment; filename="bookclub.ics"
+Content-Transfer-Encoding: base64
+
+{% apply chunk_split %}{% apply base64_encode %}{% include('email_invite_ical.twig') %}{% endapply %}{% endapply %}
+--MIME-mixed-{{ hash }}--
+{% endif %}

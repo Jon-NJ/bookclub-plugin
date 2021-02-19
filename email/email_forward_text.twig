@@ -1,0 +1,18 @@
+{% autoescape false %}
+{{ text }}
+________________________________________________________________________________
+{% if 2 == type %}
+List message sent by "{{ sender.name }}".
+You can reply directly to "{{ sender.nice }} <{{ forwarder }}>"
+or reply to the list at "{{ group.tag }} <{{ forwarder }}>".
+{% else %}
+Direct message sent by "{{ sender.name }}".
+Reply to "{{ sender.nice }} <{{ forwarder }}>".
+{% endif %}
+
+Your subscription options can be changed in your bookclub profile.
+Contact {{ support }} for assistance and to report abuse.
+This software is still experimental.
+
+{{ signature }}
+{% endautoescape %}

@@ -1,0 +1,19 @@
+{% include body %}
+<br/>
+<hr/>
+{% if signup %}
+We are asking our members to create an account to be able to edit their
+preferences. The old software you used in the past is no longer active. The
+newer software is more secure. There is a link to the signup page below. On
+this page, there is also a help button for more information and additionally a
+button to remove you from our database if you are no longer interested in the
+Book Club and wish to have your data deleted.<br/>
+<a href='{{ signup }}'>Signup here</a> {{ signup }}<br/>
+{% else %}
+Click <a href='{{ profile }}'>here</a> to edit your bookclub profile or navigate
+to the link below in your browser.<br/>
+{{ profile }}<br/>
+{% endif %}
+<br/>
+Let us know if you need any help or have any questions
+<a href='mailto:{{ support }}'>{{ support }}</a>.

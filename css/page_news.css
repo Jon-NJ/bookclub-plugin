@@ -1,0 +1,43 @@
+/*
+ * Style sheet for news page.
+ * @author     Jon Wolfe <jonnj@connectberlin.de>
+ * @package    bookclub
+ * @license    https://opensource.org/licenses/MIT MIT
+*/
+
+:root {
+    --nice-blue: #00bfff;
+    --nice-gray: #444;
+    --line-blue: #006fbf;
+    --menu-blue: #6495ed;
+    --hover-blue: #3080ff;
+    --error-red: #dc3232;
+    --success-green: #46b450;
+    --warning-yellow: #ffb900;
+}
+
+.bc_news {
+    
+}
+
+.bc_news_lines {
+    display: grid;
+    grid-template-columns: [date] 3fr [poster] 2fr [news] 25fr;
+    grid-template-rows: auto;
+    grid-row-gap:0.2em;
+}
+
+.bc_news_date {
+    width: max-content;
+    padding-right: 1em;
+    grid-column-start: date;
+}
+
+.bc_news_poster {
+    padding-right: 1em;
+    grid-column-start: poster;
+}
+
+.bc_news_news {
+    grid-column-start: news;
+}

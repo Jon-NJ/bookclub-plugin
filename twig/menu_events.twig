@@ -1,0 +1,225 @@
+<div class='bc_help'>
+ <div id='htmlhelp'></div>
+ <button id="close_help">X</button>
+</div>
+<div class="bc_events bc_{{ mode }}">
+ <div class="bc_main">
+  <h1>{{ title }}</h1>
+  <input type="hidden" id="mode" value="{{ mode }}" />
+  <input type="hidden" id="delete_text" value="Do you really want to delete?" />
+  <input type="hidden" id="clear_text" value="Are you sure you want to clear all send flags?" />
+  <input type="hidden" id="idwarning_text" value="Caution: changing will invalidate existing RSVP links. Change anyway?" />
+  <input type="hidden" id="no_data" value="{{ no|join(',') }}" />
+  <input type="hidden" id="yes_data" value="{{ yes|join(',') }}" />
+  <input type="hidden" id="original_eventid" value="{{ eventid }}" />
+  <input type="hidden" id="sent" value="{{ sent }}" />
+  <input type="hidden" id="jobid" value="" />
+  <section class='bc_toolbar'>
+   <section class='bc_form_lines'>
+    <div class='bc_form_label'>Tools:</div>
+    <div class='bc_form_data'>
+     <button id='button_help'>
+      <img src='{{ images }}help.png'/> Help
+     </button>
+     {% if "edit" == mode %}
+      <button id='button_add' disabled>
+       <img src='{{ images }}plus.png'/> Add
+      </button>
+      <button id='button_reset'>
+       <img src='{{ images }}reset.png'/> Restart
+      </button>
+      <button id='button_save' disabled>
+       <img src='{{ images }}save.png'/> Save
+      </button>
+      <button id='button_delete'>
+       <img src='{{ images }}drop.png'/> Delete
+      </button>
+      <button id='button_send' disabled>
+       <img src='{{ images }}email.png'/> Send
+      </button>
+      <button id='button_clear'>
+       <img src='{{ images }}noemail.png'/> Clear
+      </button>
+     {% else %}
+      <button id='button_add'>
+       <img src='{{ images }}plus.png'/> Add
+      </button>
+      <button id='button_search'>
+       <img src='{{ images }}search.png'/> Search
+      </button>
+      <button id='button_save' disabled>
+       <img src='{{ images }}save.png'/> Save
+      </button>
+      <button id='button_delete' disabled>
+       <img src='{{ images }}drop.png'/> Delete
+      </button>
+     {% endif %}
+    </div>
+   </section>
+  </section>
+  <div class='bc_notice_area'>
+   <div id='bc_notice' class='bc_notice'>
+    <p id='bc_message' class='bc_message'>***</p>
+   </div>
+  </div>
+  <section class='bc_events_form'>
+   <section class='bc_form_lines'>
+    <div class='bc_form_label'>Event ID:</div>
+    <div class='bc_form_data'>
+     <input type='text' size='12' id='eventid' value='{{ eventid }}'/>
+     {% if "edit" == mode %}
+      Max:
+      <input type='text' size='2' id='max' value='{{ max }}'/>
+      <span style='margin-left: 3em;'>View:</span>
+      <button class='bc_events_view bc_events_view_selected' id='raw_view' type='button'>Raw</button>
+      <button class='bc_events_view' id='html_view'         type='button'>HTML</button>
+      <button class='bc_events_view' id='text_view'         type='button'>Text</button>
+      <button class='bc_events_view' id='participants_view' type='button'>Participants</button>
+      <button class='bc_events_view' id='rsvp_view'         type='button'>RSVP</button>
+      <button class='bc_events_view' id='log_view'          type='button'>Logs</button>
+     {% else %}
+      <i>YYYYMMDD_bc_x (suggested format, x=1..n)</i>
+     {% endif %}
+    </div>
+    <div class='bc_form_label'>Start DateTime:</div>
+    <div class='bc_form_data'>
+     <input type='text' size='12' id='datetime' value='{{ datetime }}'/>
+     {% if "edit" != mode %}
+      <i>YYYY-MM-DD hh:mm (hh:mm is optional)</i>
+     {% else %}
+      End:
+      <input type='text' size='2' id='endtime' value='{{ endtime }}'/>
+      <span class='' id='show_private'>
+       <input type="checkbox" name="private" id="private" value="1" style='margin-left:1em;'
+        {% if "1" == private %} checked="checked" {% endif %}/> Private
+       <span style='padding-left:1.2em; padding-right:.3em'>Priority</span>
+       <input type='text' size='1' id='priority' name='priority' value='{{ priority }}'/>
+       <i id='prior_line' class='{{ not priortime ? 'hide' : '' }}'>Public at <span id='prior'>{{ priortime|date('Y-m-d H:i') }}</span></i>
+      </span>
+     {% endif %}
+     <div id='events_selection' class='hide'>
+      <button class='bc_select_group'                          id='left'    type='button'>Left</button>
+      <select name="group" id="group">
+       <option value="0">All Groups</option>
+       {% for item in groups %}
+        <option value="{{ item.groupid }}">{{ item.tag }}</option>
+       {% endfor %}
+      </select>
+      <button class='bc_select_group'                          id='exclude' type='button' disabled>Exclude</button>
+      <button class='bc_select_group bc_select_group_selected' id='active'  type='button'>Active</button>
+      <button class='bc_select_group'                          id='right'   type='button'>Right</button>
+     </div>
+     <div id='log_selection' class='hide'>
+      <button class='bc_select_group bc_select_group_selected' id='log_email' type='button'>EMail</button>
+      <button class='bc_select_group'                          id='log_rsvp'  type='button'>RSVP</button>
+     </div>
+    </div>
+    {% if "edit" != mode %}
+     <div class='bc_dates_label'>Maximum Age:</div>
+     <div class='bc_dates_data'>
+      <input type='text' size='12' id='age' value='{{ age }}'/>
+      Months (used to restrict the search but may be blank)
+     </div>
+    {% endif %}
+    <div class='bc_form_label'>What:</div>
+    <div class='bc_form_data'>
+     <input type='text' size='{{ "edit" != mode ? '50' : '75' }}' id='what' value='{{ what }}'/>
+    </div>
+    <div class='bc_form_label bc_hideable'>Where:</div>
+    <div class='bc_form_data bc_hideable'>
+     <input type='text' size='{{ "edit" != mode ? '50' : '75' }}' id='where' value='{{ where }}'/>
+    </div>
+    <div class='bc_form_label bc_hideable'>Map:</div>
+    <div class='bc_form_data bc_hideable'>
+     <input type='text' size='{{ "edit" != mode ? '46' : '70' }}' id='map' value='{{ map }}'/>
+     <a id='map_link' href='{{ map }}' target='_blank'>
+      <img src='{{ images }}link.png'/>
+     </a>
+    </div>
+    <div class='bc_form_label'>Description:</div>
+    <div class='bc_form_data'>
+     <form id='get_iframe' method='post' target='body_iframe'  action='{{ admin_url }}'>
+      <input type="hidden" name="action" value="bc_events_body">
+      <input type='hidden' id='nonce' name='nonce' value='{{ nonce }}'/>
+      <input type="hidden" id='referer' name='referer' value="{{ referer }}" />
+      {% if "edit" != mode %}
+        <textarea rows='2' cols='49' id='body' name='body'>{{ body }}</textarea>
+       {% else %}
+        <textarea rows='20' cols='74' id='body' name='body'>{{ body }}</textarea>
+       {% endif %}
+     </form>
+     {% if "edit" == mode %}
+      <div class='hide' style='height:32em; width:51em;' id='showhtml'>
+       <iframe name='body_iframe' style='width: 100%; height: 100%;  overflow: hidden;'>
+       </iframe>
+      </div>
+      <div class='hide' style='height:32em; width:51em;' id='showtext'></div>
+      <div class='hide' style='height:32em; width:51em;' id='participants'>
+       <select style='width:22em;' id='non_participants' multiple>
+        <option>no</option>
+       </select>
+       <div style='width:6em;' id='participant_divider'>
+        <button id='add_participant' type='button' disabled>&gt;&gt;</button>
+        <button id='remove_participant' type='button' disabled>&lt;&lt;</button>
+        <button id='send_participant' type='button' disabled>Send</button>
+        <button id='clear_participant' type='button' disabled>Clear</button>
+       </div>
+       <select style='width:22em;' id='oui_participants' multiple>
+        <option>yes</option>
+       </select>
+      </div>
+      <div class='hide' style='height:32em; width:51em;' id='sendlog'></div>
+      <div class='hide' style='height:32em; width:51em;' id='rsvplog'></div>
+      <div class='hide' style='height:32em; width:51em;' id='showrsvp'>
+       <select style='width:24em;' id='invited_list' multiple>
+        <option>no</option>
+       </select>
+       <div style='width:2em;' id='invited_divider'></div>
+       <div style='width:24em;' class='bc_rsvp_tools'>
+        <h2>Change RSVP</h2>
+        <div class='bc_rsvp_box'>
+         <button class='bc_rsvp_tool' id='rsvp_yes' type='button' disabled><img src='{{ images }}yes.png'/> Yes</button>
+         <button class='bc_rsvp_tool' id='rsvp_no' type='button' disabled><img src='{{ images }}no.png'/> No</button>
+         <button class='bc_rsvp_tool' id='rsvp_maybe' type='button' disabled><img src='{{ images }}maybe.png'/> Maybe</button>
+         <button class='bc_rsvp_tool' id='rsvp_wait' type='button' disabled><img src='{{ images }}wait.png'/> Wait</button>
+         <button class='bc_rsvp_tool' id='rsvp_unwait' type='button' disabled><img src='{{ images }}unwait.png'/> Unwait</button>
+         <button class='bc_rsvp_tool' id='rsvp_next' type='button' disabled><img src='{{ images }}next.png'/> Next</button>
+        </div>
+        <h3>Waiting list</h3>
+        <div id='rsvp_waiting'></div>
+       </div>
+      </div>
+     {% endif %}
+    </div>
+   </section>
+  </section>
+ </div>
+ {% if "search" == mode %}
+  <div class='bc_extra'>
+   {% if not found|length %}
+    <hr/>
+    <div class='bc_noresults'>Nothing matches.</div>
+   {% else %}
+    <section class='bc_events_results'>
+     <div class='bc_head bc_events_id'>ID</div>
+     <div class='bc_head bc_events_private'>P</div>
+     <div class='bc_head bc_events_priority'>P</div>
+     <div class='bc_head bc_events_start'>Start Time</div>
+     <div class='bc_head bc_events_subject'>Subject</div>
+     {% for find in found %}
+      {% set older = find.past ? ' bc_events_older' : '' %}
+      <div class='bc_line bc_events_id{{ older }}' id='id_{{ find.id }}'>{{ find.id }}</div>
+      <div class='bc_line bc_events_private{{ older }}' id='private_{{ find.id }}'>
+       {% if find.private and not find.priority %}&#10004;{% endif %}
+      </div>
+      <div class='bc_line bc_events_priority{{ older }}' id='priority_{{ find.id }}'>
+       {{ find.priority ? find.priority : '' }}
+      </div>
+      <div class='bc_line bc_events_start{{ older }}' id='start_{{ find.id }}'>{{ find.start|date('Y-m-d H:i') }}</div>
+      <div class='bc_line bc_events_subject{{ older }}' id='subject_{{ find.id }}'>{{ find.subject }}</div>
+     {% endfor %}
+    </section>
+   {% endif %}
+  </div>
+ {% endif %}
+</div>

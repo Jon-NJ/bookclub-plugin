@@ -1,0 +1,70 @@
+<div class='bc_book'>
+ {% if title %}
+  <div class='bc_book_title'>
+   {{ title }}
+  </div>
+  <div class='bc_book_byline'>
+  {% if link %}
+   by 
+   <a href="{{ link }}" target="_blank">
+    {{ author }}
+   </a>
+  {% else %}
+   <span>by {{ author }}</span>
+  {% endif %}
+  </div>
+
+  <div class='bc_book_left'>
+   <img src="{{ cover }}" alt="{{ title }}"/>
+   <br/>
+   {% if groups|length == 1 %}
+    {% for group in groups %}
+     Book for <span>{{ group.date|date('F Y') }}</span><br/>
+     {% if group.url %}
+      <a href="{{ group.url }}">
+       {{ group.tag }}
+      </a><br/>
+     {% else %}
+      {{ group.tag }}<br/>
+     {% endif %}
+    {% endfor %}
+   {% endif %}
+   {% if groups|length > 1 %}
+    Book for:<br/>
+    {% for group in groups %}
+     <span>{{ group.date|date('F Y') }}</span>
+     {% if group.url %}
+      <a href="{{ group.url }}">
+       {{ group.tag }}
+      </a><br/>
+     {% else %}
+      {{ group.tag }}<br/>
+     {% endif %}
+    {% endfor %}
+   {% endif %}
+  </div>
+  <div class='bc_book_right'>
+   {{ summary|raw }}
+   {% if bio %}
+    <div class='bc_book_about'>About the Author</div>
+    <div class='bc_book_author'>
+     {{ author }}
+    </div>
+    {{ bio|raw }}
+   {% endif %}
+   {% if others|length > 0 %}
+    <div class='bc_book_other'>
+     <p>Other books we've read by the same author:</p>
+     {% for other in others %}
+      <a href="{{other.url}}">
+       {{other.title}}
+      </a>
+      <br/>
+     {% endfor %}
+    </div>
+   {% endif %}
+  </div>
+ {% else %}
+  Empty book link. Have a nice day.
+ {% endif %}
+</div>

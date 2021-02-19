@@ -1,0 +1,134 @@
+{% macro radio_time_buttons(name, selection) %}
+ {% if selection == "months" %}
+  <input type="radio" id="days" name="{{ name }}" value="days"/>
+  <label for="days">Days</label>
+  <input type="radio" id="weeks" name="{{ name }}" value="weeks"/>
+  <label for="weeks">Weeks</label>
+  <input type="radio" id="months" name="{{ name }}" value="months" checked='checked'/>
+  <label for="months">Months</label>
+ {% elseif selection == "weeks" %}
+  <input type="radio" id="days" name="{{ name }}" value="days"/>
+  <label for="days">Days</label>
+  <input type="radio" id="weeks" name="{{ name }}" value="weeks" checked='checked'/>
+  <label for="weeks">Weeks</label>
+  <input type="radio" id="months" name="{{ name }}" value="months"/>
+  <label for="months">Months</label>
+ {% else %}
+  <input type="radio" id="days" name="{{ name }}" value="days" checked='checked'/>
+  <label for="days">Days</label>
+  <input type="radio" id="weeks" name="{{ name }}" value="weeks"/>
+  <label for="weeks">Weeks</label>
+  <input type="radio" id="months" name="{{ name }}" value="months"/>
+  <label for="months">Months</label>
+ {% endif %}
+{% endmacro %}
+
+<div class='bc_help'>
+ <div id='htmlhelp'></div>
+ <button id="close_help">X</button>
+</div>
+<div class="bc_covers bc_{{ mode }}">
+ <div class="bc_main">
+  <h1>{{ title }}</h1>
+  <input type="hidden" id="nonce" name="nonce" value="{{ nonce }}" />
+  <input type="hidden" id="referer" name="referer" value="{{ referer }}" />
+  <input type="hidden" id="mode" name="mode" value="{{ mode }}" />
+  <input type="hidden" id="filename" name="filename" value="{{ cover }}" />
+  <input type="file"   id="file-upload" name="file-upload" />
+  <input type="hidden" id="delete_text" name="delete_text" value="Do you really want to delete?" />
+  <section class='bc_toolbar'>
+   <section class='bc_form_lines'>
+    <div class='bc_form_label'>Tools:</div>
+    <div class='bc_form_data'>
+     <button id='button_help'>
+      <img src='{{ images }}help.png'/> Help
+     </button>
+     {% if "edit" == mode %}
+      <button id='button_add' disabled>
+       <img src='{{ images }}plus.png'/> Upload
+      </button>
+      <button id='button_reset'>
+       <img src='{{ images }}reset.png'/> Restart
+      </button>
+     {% else %}
+      <button id='button_add'>
+       <img src='{{ images }}plus.png'/> Upload
+      </button>
+      <button id='button_search'>
+       <img src='{{ images }}search.png'/> Search
+      </button>
+     {% endif %}
+     <button id='button_rename' disabled>
+      <img src='{{ images }}save.png'/> Rename
+     </button>
+     {% if "edit" == mode %}
+      <button id='button_delete'>
+       <img src='{{ images }}drop.png'/> Delete
+      </button>
+     {% else %}
+      <button id='button_delete' disabled>
+       <img src='{{ images }}drop.png'/> Delete
+      </button>
+     {% endif %}
+    </div>
+   </section>
+  </section>
+  <div class='bc_notice_area'>
+   <div id='bc_notice' class='bc_notice'>
+    <p id='bc_message' class='bc_message'>***</p>
+   </div>
+  </div>
+  <section class='bc_covers_form'>
+   <section class='bc_form_lines'>
+    <div class='bc_form_label'>Filename:</div>
+    <div class='bc_form_data'>
+     <input type='text' size='30' id='cover' name='cover' list='file_list' value='{{ cover }}'/>
+     <datalist id='file_list'>
+      {% for cover in covers %}
+       <option value='{{ cover }}'/>
+      {% endfor %}
+     </datalist>
+     {% if "edit" == mode %}
+      <button id="undo_name" disabled></button>
+     {% endif %}
+    </div>
+    {% if "edit" != mode %}
+     <div class='bc_form_label'>Younger than:</div>
+     <div class='bc_form_data'>
+      <input type='text' size='3' id='younger' name='younger' value='{{ younger }}'/>
+      {{ _self.radio_time_buttons('young_unit', yunit) }}
+     </div>
+     <div class='bc_form_label'>Older than:</div>
+     <div class='bc_form_data'>
+      <input type='text' size='3' id='older' name='older' value='{{ older }}'/>
+      {{ _self.radio_time_buttons('old_unit', ounit) }}
+     </div>
+    {% endif %}
+   </section>
+   <div class='bc_covers_image'>
+    {% if "edit" == mode %}
+     <img src='{{ baseurl }}{{ cover }}'/>
+    {% else %}
+     <p>Drag file here to upload.</p>
+    {% endif %}
+   </div>
+  </section>
+  {% if "search" == mode %}<hr/>{% endif %}
+ </div>
+ {% if "search" == mode %}
+  <div class='bc_extra'>
+   {% if not found|length %}
+    <div class='bc_noresults'>Nothing matches.</div>
+   {% else %}
+    <section class='bc_covers_results'>
+     {% for find in found %}
+      <div class='bc_covers_item' id='cid_{{ find.id }}'>
+       <img src='{{ baseurl }}{{ find.cover }}'/>
+       <p>{{ find.cover }}</p>
+      </div>
+     {% endfor %}
+    </section>
+   {% endif %}
+  </div>
+ {% endif %}
+</div>

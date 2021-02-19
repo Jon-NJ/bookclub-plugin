@@ -1,0 +1,7 @@
+{% for member in members %}
+ {% set inactive = member.active ? '' : ' bc_option_inactive' %}
+ {% set status = member.sent ? ' bc_option_sent' : (member.included ? ' bc_option_included' : '') %}
+ <option class='bc_option{{ status }}{{ inactive }}' value='{{ member.id }}'>
+  {{ member.name }}
+ </option>
+{% endfor %}

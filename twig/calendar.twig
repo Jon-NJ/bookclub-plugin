@@ -1,0 +1,17 @@
+<div class='calendar'>
+ <div id='calendar_top' class='calendar_top'>
+  <span class='calendar_button' id='calendar_ym1'>&lt;&lt;</span>
+  <span class='calendar_button' id='calendar_mm1'>&lt;</span>
+  <span id='calendar_month'></span>
+  <span id='calendar_year'></span>
+  <span class='calendar_button' id='calendar_mp1'>&gt;</span>
+  <span class='calendar_button' id='calendar_yp1'>&gt;&gt;</span>
+ </div>
+ <div class='calendar_days'>
+  {% for i in 0..6 %}
+   <div id='dow_{{ i }}' class='calendar_day calendar_dow'></div>
+  {% endfor %}
+  {% for i in 0..36 %}
+   <div id='day_{{ i }}' class='calendar_day calendar_date'></div>
+  {% endfor %}
+</div>

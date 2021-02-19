@@ -1,0 +1,372 @@
+2021-02-18  3.2.18
+- Changes for forwarding.
+  - Switch using "first last" to "nicename" as the default for email forwarder.
+  - Admins can always send to any group assuming they set "Receive from others".
+  - IMAP table now also has subject line. It will be used in the future.
+- Additional WordPress and announcement groups for forwarding.
+- Fixes.
+  - Disable cron activation - it doesn't work on our server and could
+    potentially cause problems on some systems. The WP cron may eventually be
+    used, but it is unreliable.
+  - Small syntax fix in forwards table create SQL.
+  - Fix test send for forwarder utf8from.
+  - Small fix in RSVP to avoid possible null object reference.
+  - Correct buton_ical => button_ical on RSVP page.
+  - Member group search should not include WP groups.
+- Revert preventing users with same first/last name because it is possible.
+- Changed almost all vars to lets in JS.
+- Don't automatically set RSVP to yes when a user clicks on an open event.
+- Special logs folder (only effects development system).
+- Update some of the documentation.
+
+2020-12-30  2.12.30
+- New feature: EMail list serve forwarder runs as cron job, new tables, settings tab.
+- Profile groups have a clickable link if one is defined.
+- Profile groups have a clickable email icon if the forwarder is configured.
+- Some group subscriptions are now available for non-members in the bookclub profile.
+- Receive from others is now a WordPress option.
+- New group types BC_GROUP_WORDPRESS, BC_GROUP_ANNOUNCEMENTS (not completely implemented yet).
+- utf8name now also triggered if '-' in name.
+- Signup block "admin" or group tags for login.
+- Socket options for parameters with '.' in the name.
+- Optional headers when name starts with '@' (triggered by list flag).
+- Check profile update first/last name fields given and do not match another user.
+- Fix macro bug for groups.
+- EMail 'support' must now be part of defines.
+- There were some index changes, applied directly instead of using update.
+
+2020-12-03  2.12.3
+- Many changes for EMail.
+  - Major revision to EMail class, methods are not static, new helper functions.
+  - Improved macro handling for EMail.
+  - Fix bounce problem caused by "To" header (define utf8name).
+  - EMail defines and parameters replaces smtp_* options, signature, sender and who.
+  - Remaining smtp_* options renamed email_*.
+  - New EMail email_backend option.
+- Additional settings, now uses tabs. Some reworking of options.
+  It will be necessary to correct them in the settings menu.
+- Reset button renamed to Restart.
+- Check webkey instead of nonce on RSVP page, bad nonce error->info.
+- Date hide now also applies to the main page.
+- Revise email/invite emails for information about signing up or profile.
+- No more request/nonce checks for help page, remove signup/rsvp help overrides.
+
+2020-11-22  2.11.22
+- New timezone fetch did not work on server, new get_url_file function.
+- Small fix for email author suggestion was not including bookclub admins.
+- Major refactoring.
+- Spurious email headers removed.
+
+2020-11-14  2.11.14
+- Timezone info used for ical attachment now automatically configured, updated
+  when you visit the settings page and on activation.
+- Drop old options table.
+- Don't automatically fetch column names when table initialized.
+- Handle nonce logging differently.
+
+2020-11-09  2.11.9
+- Changes in the bookclub profile are saved automatically.
+- New flags to make email public and receive email from others.
+- GDPR Remove account button on profile page.
+- RSVP will be refreshed every minute while user is on the page.
+- Profile will occasionally refresh nonce while user is on the page.
+- Move contents of options table to WordPress.
+- Fix content-type error introduced when splitting format field.
+
+2020-11-06  2.11.6
+- Use WordPress prefix for BC tables.
+
+RENAME TABLE bc_authors      TO wp_bc_authors;
+RENAME TABLE bc_books        TO wp_bc_books;
+RENAME TABLE bc_dates        TO wp_bc_dates;
+RENAME TABLE bc_emails       TO wp_bc_emails;
+RENAME TABLE bc_events       TO wp_bc_events;
+RENAME TABLE bc_groupmembers TO wp_bc_groupmembers;
+RENAME TABLE bc_groups       TO wp_bc_groups;
+RENAME TABLE bc_logs         TO wp_bc_logs;
+RENAME TABLE bc_members      TO wp_bc_members;
+RENAME TABLE bc_news         TO wp_bc_news;
+RENAME TABLE bc_options      TO wp_bc_options;
+RENAME TABLE bc_participants TO wp_bc_participants;
+RENAME TABLE bc_places       TO wp_bc_places;
+RENAME TABLE bc_recipients   TO wp_bc_recipients;
+RENAME TABLE bc_rsvp         TO wp_bc_rsvp;
+
+2020-11-05  2.11.5
+- Menu Profile/RSVP - remove RSVP section, use page instead.
+- Combine name & email in profile.
+- RSVP page reworked.
+- Sign-up - button to remove account.
+- New Role (Bookclub Administrator), new capabilities.
+- Flag members.format split, new field ical.
+- Remove admin flag.
+- CSS colors all have names, defined universally.
+- Site URL function was incorrectly empty (but caused no error).
+- Fix EMail accidentally left on simulate.
+- Redirect for login (rsvp & signup).
+- Check version on init action.
+- Change options "header$*" to "headers".
+
+2020-10-22  2.10.22
+- For WordPress members, use name from profile.
+- New {{first}} and {{last}} macros for emails.
+- New web key reset/generation in profile and edit member.
+- Date edit now has link to edit an event if it exists.
+- Help page for signup.
+- Fix missing close quote in menu_news twig file.
+- Temporary change - log nonce creation.
+
+2020-10-15  2.10.15
+- Help available for profile/rsvp.
+- Search WP ID * for all WordPress users.
+- Search for WordPress login.
+- Show WordPress login in results list and also on edit page.
+- Uniform toolbar button ids.
+- Auto trim event map field to avoid bad link.
+- Log bad nonces.
+- Handle undefined timezone string (possible if not configured).
+- Minor email fix - from/who.
+- Fix cover folder location.
+- Improve cover drag/drop so it doesn't go to another page.
+- Fix help when search results are shown.
+
+2020-10-10  2.10.10
+- More CSS revisions.
+- Small REST fix.
+- Fix download ical URL.
+- Remove FileLogger for production.
+- Production covers folder now uploads/covers, also create on initialize.
+- Connect information now set in options, some work still needed for timezones.
+- Several EMail revisions.
+- New EMail macros - signature, who, host, timezone.
+- Macros may also be used in Subject.
+- New settings customize fields - Sender and Signature.
+- E-Mail group add/remove members.
+
+2020-10-03  2.10.3
+- Fix HTML invite email with no map link.
+- Rework some CSS for admin menu items, mostly for results area.
+- Removing member was not removing groups, send log.
+- Refinements of REST log fetching.
+- Sort covers.
+
+2020-09-26  2.9.26
+- REST API to fetch logs.
+
+2020-09-24  2.9.24
+- Fix table rename problems, bc_member was not yet renamed.
+- Also files TableMembers, TableEMails, TableGroupMembers.
+- Database Logger.
+- Fix bug adding a place.
+- Fix for create database.
+- Stop storing IP address with hit.
+- Database update initial implementation + SQL macro changes.
+
+ALTER TABLE bc_members DROP COLUMN IP;
+
+2020-09-23  2.9.23
+- Tables renamed email, event, group, groupmember, member as plural, logger->logs.
+
+RENAME TABLE bc_email TO bc_emails;
+RENAME TABLE bc_event TO bc_events;
+RENAME TABLE bc_group TO bc_groups;
+RENAME TABLE bc_groupmember TO bc_groupmembers;
+RENAME TABLE bc_logger TO bc_logs;
+RENAME TABLE bc_member TO bc_members;
+
+2020-09-20  2.9.20
+- Priority field for dates and events.
+- Profile button to self-test sending email.
+- Fix small bug creating event with empty max_attend.
+- Remove unused fields books.summary_url, member.forum_id.
+- Configure logging email sender and recipient in settings.
+- Possible bounced email fix "UTF-8?B" => "utf-8?b" when user name has Unicode.
+
+ALTER TABLE bc_books DROP COLUMN summary_url;
+ALTER TABLE bc_member DROP COLUMN forum_id;
+ALTER TABLE bc_dates ADD COLUMN priority int(10) UNSIGNED NOT NULL DEFAULT '0' AFTER private;
+ALTER TABLE bc_event ADD COLUMN priority int(10) UNSIGNED NOT NULL DEFAULT '0' AFTER private;
+
+2020-09-17  2.9.17
+- Add "Settings" link on plugins page.
+- Book Club groups URL.
+- Book Club groups now have templates.
+- Date Create/Update event based on templates.
+- New "{{sender}}" macro for email headers.
+- Improve email locking.
+- Fix potential problem sending email to missing WP user.
+
+ALTER TABLE bc_group ADD COLUMN url varchar(50) NOT NULL DEFAULT '' AFTER description;
+ALTER TABLE bc_group ADD COLUMN t_event_id varchar(80) NOT NULL DEFAULT '' AFTER url;
+ALTER TABLE bc_group ADD COLUMN t_max_attend varchar(5) NOT NULL DEFAULT '' AFTER t_event_id;
+ALTER TABLE bc_group ADD COLUMN t_starttime varchar(10) NOT NULL DEFAULT '' AFTER t_max_attend;
+ALTER TABLE bc_group ADD COLUMN t_endtime varchar(10) NOT NULL DEFAULT '' AFTER t_starttime;
+ALTER TABLE bc_group ADD COLUMN t_summary varchar(80) NOT NULL DEFAULT '' AFTER t_endtime;
+ALTER TABLE bc_group ADD COLUMN t_description text NOT NULL DEFAULT '' AFTER t_summary;
+ALTER TABLE bc_group ADD COLUMN t_include int(10) UNSIGNED NOT NULL DEFAULT '0' AFTER t_description;
+
+2020-09-10  2.9.10
+- Private flag for dates.
+
+ALTER TABLE bc_dates ADD COLUMN private int(10) UNSIGNED NOT NULL DEFAULT '0' AFTER hide;
+
+2020-09-07  2.9.7
+- More checking of first/last name for sign-up.
+- Database module now also supports RIGHT and plain joins.
+- Found bug in group or other select for event/email.
+- Fix missing attachment for invitations.
+- New private flag for events.
+- Users can now add themselves to public events from their profile.
+- Revise CSS for book covers.
+- Minor bug found for check-mark on dates.
+- Some status messages were 3, some 4 seconds. Now all are 3.
+
+ALTER TABLE bc_event ADD COLUMN private int(10) UNSIGNED NOT NULL DEFAULT '0' AFTER description;
+
+2020-09-05  2.9.5
+- Documentation/help changes/additions, set license to MIT.
+
+2020-09-04  2.9.4
+- EMail now has a single generic routine that is parameterized for all the
+  different types of email. A common routine makes it easier to add new email
+  types or change the general behavior.
+- The members page has a new button for members who do not yet have a WordPress
+  account. Clicking the button will send them an email with the signup link.
+  This is mainly for use with new members, but long-time members can also
+  use the email.
+- Minor change for signup page, the shortcode seems to be getting called
+  sometimes internally without parameters which was generating an error email.
+
+2020-09-03  2.9.3
+- Database changes:
+  - Participant, member_id to forum_id, participant_key to web_key.
+  - All tables, participant_id to member_id.
+  - Table Participant to Member and rename Join tables.
+- Remove encryption for email password.
+- Settings test email.
+- Handle parameters for pages containing "?" and also fix in settings.
+- New profile flag to shut off email but the user can remain active.
+- Profile upcoming events now also show going or not going status.
+- Remove old convertDBDate and convertDBDateTime functions.
+- Add WordPress id to member search.
+- Better handling of empty RSVP link.
+- If the user has a WordPress account, this email address is used instead of
+  the bookclub one. This also applies to member search. For the profile page
+  (which is only for WP users) the field is now readonly. This is also the case
+  for editing on the Members menu item.
+- First install problems.
+  - Fix first new index now 1 for Authors, Books, Groups, Member and Places.
+  - Allow place id to be specified.
+  - Fix some pages that generate errors from missing parameters or no data.
+
+Database update script
+RENAME TABLE bc_participant TO bc_member;
+ALTER TABLE bc_member RENAME COLUMN member_id TO forum_id;
+ALTER TABLE bc_member RENAME COLUMN participant_key TO web_key;
+ALTER TABLE bc_member RENAME COLUMN participant_id TO member_id;
+ALTER TABLE bc_member ADD COLUMN noemail int(10) UNSIGNED NOT NULL DEFAULT '0' AFTER format;
+
+ALTER TABLE bc_email RENAME COLUMN participant_id TO member_id;
+ALTER TABLE bc_groupmember RENAME COLUMN participant_id TO member_id;
+ALTER TABLE bc_participants RENAME COLUMN participant_id TO member_id;
+ALTER TABLE bc_recipients RENAME COLUMN participant_id TO member_id;
+ALTER TABLE bc_rsvps RENAME COLUMN participant_id TO member_id;
+
+2020-08-23  2.8.23
+- New "Settings" page.
+- Function createDatabase() implemented/tested + SQL create table scripts.
+- Activate plugin calls createDatabase() - not fully tested yet.
+- Remove bookclub1..4 in database.
+- Changed capability settings for some menu items.
+
+2020-08-22  2.8.22
+- New shortcode type "news" shows last 5 months of news items.
+- Update bookclub.md => Readme.md. Include composer.json.
+
+2020-08-20  2.8.20
+- Mainly this release changes how group membership is handled. Previously there
+  was a fixed number of groups (four) and each one had a flag in the users
+  profile record. Increasing the number of groups would require a change in the
+  table as well as code changes. (Similar fields existed in some other tables,
+  but they were never important and they were ignored for the plugin.) There is
+  now a table (group) that defines each group and another table (groupmember) to
+  handle user inclusion in the group. Two types of groups are now defined,
+  normal book club groups and email lists. It is now possible to easily add and
+  remove groups because they are defined in the database instead of being hard
+  coded. It is no longer as easy to make a selection on multiple groups, so
+  several of the pages (dates, members, events, email) had to change to use a
+  single selection. There is a new menu page for managing the groups.
+- Now use function require_once_folder() to automatically include sources.
+- Ranking for menu sub-items so they can be automatically included in any order.
+- Remove error numbers except for the sign-up page.
+- Log IP address for errors.
+- Sign up page no longer generates an error when no pkey is used to avoid an
+  error email being sent whenever a bot scans the page.
+- The "hide" button was not working in the Dates menu.
+- When editing a member page, if the user has not signed up there is now a
+  field for the link which can be copied to the clipboard. if the user already
+  signed up, a clickable link to their WordPress profile is shown.
+- Several changes to the database module:
+  - Remove BookclubDatabase, use tableField, tablePrefix.
+  - Changes in getColumns - automatically fetches for all tables.
+  - Include ORM comments. They are not actually used.
+- New email address for me - jonnj@connectberlin.de.
+
+INSERT INTO bc_groupmember SELECT 1, participant_id FROM bc_participant WHERE bookclub1 = 1
+INSERT INTO bc_groupmember SELECT 2, participant_id FROM bc_participant WHERE bookclub2 = 1
+INSERT INTO bc_groupmember SELECT 3, participant_id FROM bc_participant WHERE bookclub3 = 1
+INSERT INTO bc_groupmember SELECT 4, participant_id FROM bc_participant WHERE bookclub4 = 1
+
+2020-07-31  2.7.31
+- additional logging for page, rsvp, remove duplicate iframe
+
+2020-07-29  2.7.29
+- logging add email appender
+- delete member, additional tables cleared
+- minor change on not logged in rsvp web page
+
+2020-07-02  2.7.2
+- Massive revision adding comments and type enforcement (PHP 7.3)
+- Dashboard icon, show different name for profile/rsvp menu page
+- Fix a problem with non-WP user RSVP page
+- Events search was ignoring map field
+- Several fixes for locks used when sending email
+- Fix bad MIME boundary for email (missed change from previous commit)
+- Fix ical download, although it worked it was implemented incorrectly
+- Logging RSVP update without comment fix
+- Minor changes for profile link in email
+- Fix for time formatting in log files to use local time
+- Encrypt/Decrypt cipher keys now in keys.txt file
+
+2020-05-21  (2.5.15)
+- Optional parameter (smtp_localhost) for email localhost
+- Better handling of sending email failure
+- new logging table
+- minor changes to profile page
+- change MIME boundary names
+- iCal method is now PUBLISH
+- iCal is now only an attachment and not part of the email (iPhone fix)
+
+2020-05-15  2.5.15
+- Events feature implemented, completes basic functionality
+- Allow clear/send selected users instead of entire list
+- Better handling hide/show
+- Scroll to bottom of log while sending
+- Fix for checking lock of send job
+- Some help page changes
+- RSVP comment no longer limited by UI
+- Remove FAQ page
+- Page handling allows specifying number of arguments
+
+2020-04-18  2.4.18
+- EMail feature implemented
+- New help system implemented with MarkDown
+- Add icons to several buttons
+- Some CSS unifying
+- Fix an RSVP problem
+- Use IFRAME to sandbox email, rsvp HTML
+- Remove unneeded forms
+- Fixes converting HTML to text
+- Logging fixes
+
+Older versions not yet documented.

@@ -1,0 +1,64 @@
+<div class='bc_help'>
+ <div id='htmlhelp'></div>
+ <button id="close_help">X</button>
+</div>
+<div class='bc_rsvp'>
+ <span class='bc_rsvp_title'>Register for an event</span>
+ - <b>{{ name }}</b> will attend?<br/>
+ Comment:
+ <input type='text' id='comment' name='comment' size='50' value='{{ comment }}'/><br/><br/>
+ <button id='button_yes'><img src='{{ images }}yes.png'/> Yes</button> {# BC_RSVP_ATTENDING #}
+ <button id='button_no'><img src='{{ images }}no.png'/> No</button> {# BC_RSVP_NOTATTENDING #}
+ <button id='button_maybe'><img src='{{ images }}maybe.png'/> Maybe</button> {# BC_RSVP_MAYBE #}
+ <button id='button_help'><img src='{{ images }}help.png'/> Help</button>
+ <button id='button_ical' href='{{ ical_url }}'><img src='{{ images }}download.png'/> Download iCalendar</button>
+ <button id='button_send'><img src='{{ images }}email.png'/> Resend invitation</button><br/>
+ <div class='bc_notice_area'>
+  <div id='bc_notice' class='bc_notice'>
+   <p id='bc_message' class='bc_message'>***</p>
+  </div>
+ </div>
+ <section class='bc_rsvp_container'>
+  <div class='bc_rsvp_label_what'>What:</div>
+  <div class='bc_rsvp_label_where'>Where:</div>
+  <div class='bc_rsvp_label_when'>When:</div>
+  <div class='bc_rsvp_label_who'>Who:{% if max_attend %} max. {{ max_attend }}{% endif %}</div>
+  <div class='bc_rsvp_what'>{{ summary|raw }}</div>
+  <div class='bc_rsvp_where'>
+   {% if map %}
+    <a href='{{ map }}' target='_blank'>{{ location }}</a>
+   {% else %}
+    {{ location }}
+   {% endif %}
+  </div>
+  <div class='bc_rsvp_when'>
+   {{ start|date("F d, Y, H:i") }}-{{ end|date("H:i") }}
+  </div>
+  <form id='get_iframe' method='post' target='body_iframe'  action='{{ admin_url }}'>
+   <input type="hidden" name="action" value="bc_rsvp_body">
+   <input type='hidden' id='nonce' name='nonce' value='{{ nonce }}'/>
+   <input type='hidden' id='eid' name='eid' value='{{ event_id }}'/>
+   <input type='hidden' id='personid' name='personid' value='{{ person_id }}'/>
+   <input type='hidden' id='webkey' name='webkey' value='{{ webkey }}'/>
+   <input type="hidden" id='referer' name='referer' value="{{ referer }}" />
+  </form>
+  <div class='bc_rsvp_body' id='iframe_container'>
+   <iframe name='body_iframe' style='width: 100%; height: 100%;  overflow: hidden;'>
+   </iframe>
+  </div>
+  <div id='who' class='bc_rsvp_who'>
+   {% include 'rsvp_who.twig' %}
+  </div>
+ </section>
+ {% if not wpid %}
+  <a class='bc_rsvp_signup' href='{{ signup }}'>Click here to signup for a WordPress account.</a>
+  <br>
+ {% endif %}
+ {% if not loggedin %}
+  Other participants are only shown when you are logged in.
+  {% if wpid %}
+   <a href='{{ login_page }}'>Click here to login.</a>
+  {% endif %}
+  <br>
+ {% endif %}
+</div>

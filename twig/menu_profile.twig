@@ -1,0 +1,238 @@
+{% if no_profile %}
+ <div class='bc_no_profile'>
+  <form name='profile_form' id='profile_form' action='{{ admin_url }}' method='post'>
+   <input type="hidden" name="action" value="{{ action }}">
+   <input type="hidden" id="nonce" name="nonce" value="{{ nonce }}" />
+   <input type="hidden" id='referer' name='referer' value="{{ referer }}" />
+   <input type='hidden' name='wpid' value='{{ wordpress_id }}'/>
+   <br/>
+   <b>This space is reserved for your bookclub profile page.</b>
+   <br/><br/>
+   If you are already a bookclub member, your bookclub account is not yet linked
+   to your WordPress account. Please check a recent RSVP email and look for the
+   signup page to link your account.<br/><br/>
+   If you do not have a bookclub account, you can join by clicking the link
+   below.<br/><br/>
+   <button type='submit' id="join" name='join' value='Submit'>
+    Join the bookclub
+   </button>
+  </form>
+  {% if extra|length %}
+   <br/>
+   <h2>WordPress mailing lists</h2>
+   <section class='bc_profile_groups'>
+    {% for group in extra %}
+     <div class='bc_profile_groups_id'>
+      {% if forwarder %}
+       <a href="mailto:?to={{ group.tag }} <{{ forwarder }}>"><img src='{{ images }}email.png'/></a>
+      {% else %}
+       {{ group.id }}
+      {% endif %}
+     </div>
+     <div class='bc_profile_groups_boxes'>
+      <input class="pref groupbox" type="checkbox" name="group{{ group.id }}" id="group{{ group.id }}" value="1"
+      {% if "1" == group.flag %} checked="checked" {% endif %}/>
+      {{ group.description }}
+     </div>
+    {% endfor %}
+   </section>
+   <br>
+   <span style='font-weight:bold;padding-right:.2em;'>Receive EMail from others</span>
+   <input type='radio' id='receive0' name='receive' value='0' {% if not receive_others %} checked="true" {% endif %}/>
+   No
+   <input type='radio' id='receive1' name='receive' value='1' {% if receive_others %} checked="true" {% endif %}/>
+   Yes
+  {% endif %}
+ </div>
+{% else %}
+ <div class='bc_help'>
+  <div id='htmlhelp'></div>
+  <button id="close_help">X</button>
+ </div>
+ <div class='bc_profile'>
+  <input type="hidden" name="action" value="{{ action }}">
+  <input type="hidden" id="nonce" name="nonce" value="{{ nonce }}" />
+  <input type="hidden" id='referer' name='referer' value="{{ referer }}" />
+  <input type='hidden' id='pkey' name='pkey' value='{{ key }}'/>
+  <input type='hidden' id='reset_text' value='This will change your RSVP key. It cannot be undone. Are you sure you want to continue?'/>
+  <input type="hidden" id="delete_text" name="delete_text" value="Do you wish to delete all your data and remove your account?" />
+  <br/>
+  <span style='font-size:140%;font-weight:bold;margin-right:1em;'>Bookclub Profile:</span>
+  <button id='button_help'>
+   <img src='{{ images }}help.png'/> Help
+  </button>
+  <button id='button_send'>
+   <img src='{{ images }}email.png'/> Send
+  </button>
+  a test email to yourself.<br/>
+  <div id='bc_notice' class='bc_notice'>
+   <p id='bc_message' class='bc_message'>***</p>
+  </div>
+  <br/>
+  <section class='bc_profile_container'>
+   <div class='bc_profile_label'>Name and email:</div>
+   <div class='bc_profile_data'>
+    <input type='text' id='name' name='name' size='40' value='{{ name }} <{{ email }}>' readonly/>
+    <font size='-1'>
+     <i>Change in your WordPress profile if necessary.</i>
+    </font>
+   </div>
+   <div class='bc_profile_label'>Your Web key:</div>
+   <div class='bc_profile_data'>
+    <input readonly type='text' id='webkey' name='webkey' size='24' value='{{ key }}'/>
+    <button id='button_newkey'>
+     <img src='{{ images }}padlock.png'/> Reset Key
+    </button>
+    <i style='font-size:smaller'>This field identifies you for RSVP links and to download the iCal file.</i>
+   </div>
+   <div class='bc_profile_label'>Settings:</div>
+   <div class='bc_profile_data'>
+    <span style='font-weight:bold;padding-right:.2em;'>Format</span>
+    <input type='radio' id='format0' name='format' value='0' {% if not format %} checked="checked" {% endif %}/>
+    Text Only
+    <input type='radio' id='format1' name='format' value='1' {% if format %} checked="checked" {% endif %}/>
+    HTML
+    <span style='font-weight:bold;padding-left:1em;padding-right:.2em;'>Attach iCalendar</span>
+    <input type='radio' id='ics0' name='ics' value='0' {% if not ical %} checked="checked" {% endif %}/>
+    No
+    <input type='radio' id='ics1' name='ics' value='1' {% if ical %} checked="checked" {% endif %}/>
+    Yes
+    <span style='font-weight:bold;padding-left:1em;padding-right:.2em;'>No EMails</span>
+    <input type='radio' id='noemail0' name='noemail' value='0' {% if not noemail %} checked="checked" {% endif %}/>
+    No
+    <input type='radio' id='noemail1' name='noemail' value='1' {% if noemail %} checked="checked" {% endif %}/>
+    Yes
+    <span style='font-weight:bold;padding-left:1em;padding-right:.2em;'>Active</span>
+    <input type='radio' id='active0' name='active' value='0' {% if not active %} checked="checked" {% endif %}/>
+    No
+    <input type='radio' id='active1' name='active' value='1' {% if active %} checked="checked" {% endif %}/>
+    Yes
+    <br/>
+    <font size='-1'>
+     <i>Click the <b>help</b> button (above) for a detailed explanation of these flags.</i><br/>
+    </font>
+   </div>
+   <div class='bc_profile_label'>Privacy:</div>
+   <div class='bc_profile_data'>
+    <span style='font-weight:bold;padding-right:.2em;'>EMail Address</span>
+    <input type='radio' id='public_email0' name='public_email' value='0' {% if not public_email %} checked="checked" {% endif %}/>
+    Private
+    <input type='radio' id='public_email1' name='public_email' value='1' {% if public_email %} checked="checked" {% endif %}/>
+    Public
+    <span style='font-weight:bold;padding-left:1em;padding-right:.2em;'>Receive EMail from others</span>
+    <input type='radio' id='receive0' name='receive' value='0' {% if not receive_others %} checked="true" {% endif %}/>
+    No
+    <input type='radio' id='receive1' name='receive' value='1' {% if receive_others %} checked="true" {% endif %}/>
+    Yes
+   </div>
+   <div class='bc_profile_label'>Book Club groups:</div>
+   <div class='bc_profile_data'>
+    {% if forwarder %}
+     Be sure to check the help information (EMail forwarder) if you wish to send mail to a group.
+    {% endif %}
+    <section class='bc_profile_groups'>
+     {% for group in groups %}
+      <div class='bc_profile_groups_id'>
+       {% if forwarder %}
+        <a href="mailto:?to={{ group.tag }} <{{ forwarder }}>"><img src='{{ images }}email.png'/></a>
+       {% else %}
+        {{ group.id }}
+       {% endif %}
+      </div>
+      <div class='bc_profile_groups_boxes'>
+       <input class="pref groupbox" type="checkbox" name="group{{ group.id }}" id="group{{ group.id }}" value="1"
+       {% if "1" == group.flag %} checked="checked" {% endif %}/>
+       {% if group.url %}
+        <a href='{{ group.url }}' target='_blank'>{{ group.description }}</a>
+       {% else %}
+        {{ group.description }}
+       {% endif %}
+      </div>
+     {% endfor %}
+    </section>
+   </div>
+   {% if extra|length %}
+    <div class='bc_profile_label'>WordPress groups:</div>
+    <div class='bc_profile_data'>
+     <section class='bc_profile_groups'>
+      {% for group in extra %}
+       <div class='bc_profile_groups_id'>
+        {% if forwarder %}
+         <a href="mailto:?to={{ group.tag }} <{{ forwarder }}>"><img src='{{ images }}email.png'/></a>
+        {% else %}
+         {{ group.id }}
+        {% endif %}
+       </div>
+       <div class='bc_profile_groups_boxes'>
+        <input class="pref groupbox" type="checkbox" name="group{{ group.id }}" id="group{{ group.id }}" value="1"
+        {% if "1" == group.flag %} checked="checked" {% endif %}/>
+        {{ group.description }}
+       </div>
+      {% endfor %}
+     </section>
+    </div>
+   {% endif %}
+  </section>
+  <hr/>
+
+  {% if events|length %}
+   <span style='font-size:140%;font-weight:bold;'>My future meetings:</span>
+   <span style='font-size:120%;'>click to RSVP</span>
+   <section class='bc_event_container'>
+    {% for event in events %}
+     <div class='bc_event_time'>{{ event.time|date('F d, H:i') }}</div>
+     <div class='bc_event_data'>
+      <a href='{{ event.url }}' target='_blank'>
+       <b>{{ event.summary|raw }}</b>
+      </a>
+      {% if 1 == event.rsvp %}
+       &nbsp;- You're not going
+      {% elseif 2 == event.rsvp %}
+       &nbsp;- You're going
+      {% elseif 3 == event.rsvp %}
+       &nbsp;- You might go
+      {% endif %}
+      {% if event.rsvp and event.waiting %}
+       but you are on the waiting list
+      {% endif %}
+     </div>
+    {% endfor %}
+   </section>
+   <br/>
+  {% endif %}
+
+  {% if others|length %}
+   <span style='font-size:140%;font-weight:bold;'>Open meetings:</span>
+   <span style='font-size:120%;'>click to join</span>
+   <section class='bc_event_container'>
+    {% for event in others %}
+     <div class='bc_event_time'>{{ event.time|date('F d, H:i') }}</div>
+     <div class='bc_event_data'>
+      <a href='{{ event.url }}' target='_blank'>
+       <b>{{ event.summary|raw }}</b>
+      </a>
+     </div>
+    {% endfor %}
+   </section>
+   <br/>
+  {% endif %}
+
+  {% if books|length %}
+   <div style='font-size:140%;font-weight:bold;'>Upcoming books:</div>
+   <section id='upcoming_books' class='bc_book_container'>
+    {% include 'upcoming_books.twig' %}
+   </section>
+  {% endif %}
+
+  <br/>
+  <span style='font-size:140%;font-weight:bold;'>GDPR compliance.</span>
+  <span style='font-size:120%;'>You can remove your account at any time. The
+   action is not reversible.</span><br/><br/>
+  <span style='font-size:120%;'>Click</span>
+  <button id="button_delete">
+   <img src='{{ images }}drop.png'/>
+   Remove all data
+  </button>
+  <span style='font-size:120%;'>and confirm if you are certain.</span>
+ </div>
+{% endif %}

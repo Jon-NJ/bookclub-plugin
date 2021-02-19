@@ -1,0 +1,25 @@
+{% autoescape false %}
+Dear {{ name }},
+
+(For long-time members who receive this email, skip down to * the message below.)
+
+We received a request from your email to join our Book Club. Please use the following link to create a WordPress account to complete the signup:
+  {{ signup }}
+
+This is a LOCAL account, it is not shared with any organizations.
+
+After you create the account, please login and go to your Book Club profile page:
+  {{ profile }}
+
+Be sure to select the groups you are interested in. Also make sure that "Active" is set to "Yes". If you don't want to receive any emails, you can also set the "No EMails" option to "Yes". But in this case you will have to check your profile to RSVP.
+
+If you didn't request to join, you can ignore this email but the link will remain active. The signup request with your contact information can also be removed at the given link.
+
+* For long-time members:
+The old software we used to manage our Book Club is going away. We are very grateful to everyone who has participated in the Book Club over the years. But we are also trying our best to comply with **GDPR. Anyone who does not create a WordPress account will eventually be set to inactive and then eventually removed. See the signup link above to create your account.
+
+** https://en.wikipedia.org/wiki/General_Data_Protection_Regulation
+
+Best regards,
+{{ signature }}
+{% endautoescape %}

@@ -1,0 +1,27 @@
+<h2 style='margin:0px;'>RSVP change history</h2>
+<hr>
+{% if 0 == participants|length %}
+ <h4 style='margin:0px;'>
+  No changes yet
+ </h4>
+{% else %}
+ <div class='bc_history_line'>
+  {% for participant in participants %}
+   <div class='bc_history_icon'>
+    {% if 1 ==  participant.rsvp %}
+     <img src='{{ images }}no.png'/>
+    {% elseif 2 == participant.rsvp %}
+     <img src='{{ images }}yes.png'/>
+    {% else %}
+     <img src='{{ images }}maybe.png'/>
+    {% endif %}
+   </div>
+   <div class='bc_history_name'>
+    {{ participant.name }}
+   </div>
+   <div class='bc_history_timestamp'>
+    {{ participant.time|date('Y-m-d H:i') }}
+   </div>
+  {% endfor %}
+ </div>
+{% endif %}
