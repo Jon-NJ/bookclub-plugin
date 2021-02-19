@@ -1,0 +1,12 @@
+/*.log
+/log
+/bookclub.json
+/bookclub.html
+/bookclub.txt
+/bookclub.tmp
+/bookclub.cron
+/bookclub*.eml
+/.buildpath
+/.project
+/.settings/
+/todo.txt

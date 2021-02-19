@@ -1,0 +1,26 @@
+{% macro show_class(section, list, suppress) %}
+ {% if not suppress or list %}
+  <b>{{ section }} ({{ list|length }}):</b><br/>
+  {% for user in list %}
+   <div style='font-size:75%'>
+    {% if user.email %}
+     <a href='mailto:{{ user.email }}'>{{ user.name }}</a>
+    {% else %}
+     {{ user.name }}
+    {% endif %}
+    {% if user.comment %}
+     - {{ user.comment }}
+    {% endif %}
+   </div>
+  {% endfor %}
+ {% endif %}
+{% endmacro %}
+
+{{ _self.show_class('Attending', attending, 0) }}
+{{ _self.show_class('Maybe', maybe, 1) }}
+{% if max_attend %}
+ {{ _self.show_class('Waiting', waiting, 1) }}
+ {{ _self.show_class('Waiting - Maybe', waiting_maybe, 1) }}
+{% endif %}
+{{ _self.show_class('Not attending', not_attending, 1) }}
+{# {{ _self.show_class('No response', no_response, 1) }} #}

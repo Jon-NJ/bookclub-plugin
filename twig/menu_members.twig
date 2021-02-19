@@ -1,0 +1,232 @@
+{% macro get_group(value) %}
+ bc_members_group
+ {% if "-" is same as(value) %} bc_members_group_voided
+ {% elseif "1" is same as(value) %} bc_members_group_selected
+ {% endif %}
+{% endmacro %}
+
+<div class='bc_help'>
+ <div id='htmlhelp'></div>
+ <button id="close_help">X</button>
+</div>
+<div class="bc_members bc_{{ mode }}">
+ <div class="bc_main">
+  <h1>{{ title }}</h1>
+  <input type="hidden" id="nonce" name="nonce" value="{{ nonce }}" />
+  <input type="hidden" id="referer" name="referer" value="{{ referer }}" />
+  <input type="hidden" id="mode" name="mode" value="{{ mode }}" />
+  <input type="hidden" id="delete_text" name="delete_text" value="Do you really want to delete?" />
+  <input type='hidden' id='reset_text' value='This will change the RSVP key. Old email invites will still have the old key and will become unusable so the user should be informed. Are you sure you want to continue?'/>
+  <section class='bc_toolbar'>
+   <section class='bc_form_lines'>
+    <div class='bc_form_label'>Tools:</div>
+    <div class='bc_form_data'>
+     <button id='button_help'>
+      <img src='{{ images }}help.png'/> Help
+     </button>
+     {% if "edit" == mode %}
+      <button id='button_add' disabled>
+       <img src='{{ images }}plus.png'/> Add
+      </button>
+      <button id='button_reset'>
+       <img src='{{ images }}reset.png'/> Restart
+      </button>
+     {% else %}
+      <button id='button_add'>
+       <img src='{{ images }}plus.png'/> Add
+      </button>
+      <button id='button_search'>
+       <img src='{{ images }}search.png'/> Search
+      </button>
+     {% endif %}
+     {% if "edit" == mode %}
+      <button id='button_save'>
+       <img src='{{ images }}save.png'/> Save
+      </button>
+      <button id='button_delete'>
+       <img src='{{ images }}drop.png'/> Delete
+      </button>
+     {% else %}
+      <button id='button_save' disabled>
+       <img src='{{ images }}save.png'/> Save
+      </button>
+      <button id='button_delete' disabled>
+       <img src='{{ images }}drop.png'/> Delete
+      </button>
+     {% endif %}
+    </div>
+   </section>
+  </section>
+  <div class='bc_notice_area'>
+   <div id='bc_notice' class='bc_notice'>
+    <p id='bc_message' class='bc_message'>***</p>
+   </div>
+  </div>
+  <section class='bc_form_lines'>
+   {% if "edit" != mode %}
+    <div class='bc_form_label'>Groups:</div>
+    <div class='bc_form_data'>
+     <select name="group" id="group">
+      <option value="0" {{ (0 == group) ? "selected='selected'" : '' }}>All Groups</option>
+      {% for item in groups %}
+       <option value="{{ item.groupid }}" {{ (item.groupid == group) ? "selected='selected'" : '' }}>{{ item.tag }}</option>
+      {% endfor %}
+     </select>
+     <button class='{{ _self.get_group(exclude) }}' id='exclude' name='exclude' {{ (0 == group) ? 'disabled' : '' }}>Exclude</button>
+     <button class='{{ _self.get_group(active) }}' id='active' name='active' type='button'>Active</button>
+    </div>
+   {% endif %}
+   <div class='bc_form_label'>Member ID:</div>
+   <div class='bc_form_data'>
+    {% if "edit" == mode %}
+     <input type='text' size='2' id='memberid' name='memberid' value='{{ id }}' readonly/>
+     <input type='text' size='25' id='pkey' name='pkey' value='{{ pkey }}' readonly/>
+     <button id='button_newkey'>
+      <img src='{{ images }}padlock.png'/> Reset Key
+     </button>
+    {% else %}
+     <input type='text' size='5' id='memberid' name='memberid' value='{{ id }}'/>
+     <span style='padding-left:1.65em;padding-right:.2em;'>WP ID:</span>
+     <input type='text' size='5' id='wpid' name='wpid' value='{{ wpid }}'/>
+     <span style='padding-left:1.65em;padding-right:.2em;'>WP login:</span>
+     <input type='text' size='5' id='login' value='{{ login }}'/>
+    {% endif %}
+   </div>
+   {% if "edit" != mode %}
+    <div class='bc_form_label'>Web Key:</div>
+    <div class='bc_form_data'>
+     <input type='text' size='50' id='pkey' name='pkey' value='{{ pkey }}'/>
+    </div>
+   {% else %}
+    {% if wordpress_id %}
+     <div class='bc_form_label'>WordPress profile:</div>
+     <div class='bc_form_data'>
+      <input type='text' size='2' id='wpid' name='wpid' value='{{ wordpress_id }}' readonly/>
+      <input type='text' size='6' id='login' value='{{ login }}' readonly/>
+      <input type='text' size='6' id='role' value='{{ role }}' readonly/>
+      <a href='{{ profile_url }}'>
+       <button id="profile_url"></button>
+      </a>
+     </div>
+    {% else %}
+     <div class='bc_form_label'>Signup URL:</div>
+     <div class='bc_form_data'>
+      <input type='text' size='50' id='signup' name='signup' value='{{ signup_url }}' readonly/>
+      <button id="copy_url"></button>
+      <button id="sendemail"></button>
+      <i id='sent_text'>
+       {% if signup %}
+        Sent {{ signup.timestamp|date('Y-m-d H:i') }} - {{ signup.message }}
+       {% endif %}
+      </i>
+     </div>
+    {% endif %}
+   {% endif %}
+   {% if "edit" == mode and wordpress_id %}
+    <div class='bc_form_label'>Name and email:</div>
+    <div class='bc_form_data'>
+     <input type='text' size='50' id='name' name='name' value='{{ name }} <{{ email }}>' readonly/>
+    </div>
+   {% else %}
+    <div class='bc_form_label'>Name:</div>
+    <div class='bc_form_data'>
+     <input type='text' size='50' id='name' name='name' value='{{ name }}'/>
+    </div>
+    <div class='bc_form_label'>E-Mail:</div>
+    <div class='bc_form_data'>
+     <input type='text' size='50' id='email' name='email' value='{{ email }}'/>
+    </div>
+   {% endif %}
+   {% if "edit" != mode %}
+    <div class='bc_form_label'>Last Visit:</div>
+    <div class='bc_form_data'>
+     <input type='text' size='5' id='last' name='last' value='{{ last }}'/>
+     <span style='padding-right: 20px;'>Months</span>
+     <input type='radio' name='ltgt' value='0' {% if not ltgt %} checked="checked" {% endif %}/>
+     More than
+     <input type='radio' name='ltgt' value='1' {% if ltgt %} checked="checked" {% endif %}/>
+     Less than
+    </div>
+   {% else %}
+    <div class='bc_form_label'>Settings:</div>
+    <div class='bc_form_data'>
+     <span style='font-weight:bold;padding-right:.2em;'>Format</span>
+     <input type='radio' name='format' value='0' {% if 0 == format %} checked="checked" {% endif %}/>
+     Text Only
+     <input type='radio' name='format' value='1' {% if 0 != format %} checked="checked" {% endif %}/>
+     HTML
+     <span style='font-weight:bold;padding-left:1em;padding-right:.2em;'>Attach iCalendar</span>
+     <input type='radio' name='ics' value='0' {% if 0 == ical %} checked="checked" {% endif %}/>
+     No
+     <input type='radio' name='ics' value='1' {% if 0 != ical %} checked="checked" {% endif %}/>
+     Yes
+     <span style='font-weight:bold;padding-left:1em;padding-right:.2em;'>No EMails</span>
+     <input type='radio' name='noemail' value='0' {% if not noemail %} checked="checked" {% endif %}/>
+     No
+     <input type='radio' name='noemail' value='1' {% if noemail %} checked="checked" {% endif %}/>
+     Yes
+     <span style='font-weight:bold;padding-left:1em;padding-right:.2em;'>Active</span>
+     <input type='radio' name='active' value='0' {% if not active %} checked="checked" {% endif %}/>
+     No
+     <input type='radio' name='active' value='1' {% if active %} checked="checked" {% endif %}/>
+     Yes
+    </div>
+    <div class='bc_profile_label'>Privacy:</div>
+    <div class='bc_profile_data'>
+     <span style='font-weight:bold;padding-right:.2em;'>EMail Address</span>
+     <input type='radio' id='public_email0' name='public_email' value='0' {% if 0 == public_email %} checked="checked" {% endif %}/>
+     Private
+     <input type='radio' id='public_email1' name='public_email' value='1' {% if 0 != public_email %} checked="checked" {% endif %}/>
+     Public
+     <span style='font-weight:bold;padding-left:1em;padding-right:.2em;'>Receive EMail from others</span>
+     <input type='radio' id='receive0' name='receive' value='0' {% if 0 == receive_others %} checked="checked" {% endif %} {% if not wordpress_id %} disabled{% endif %}/>
+     No
+     <input type='radio' id='receive1' name='receive' value='1' {% if 0 != receive_others %} checked="checked" {% endif %} {% if not wordpress_id %} disabled{% endif %}/>
+     Yes
+     {% if not wordpress_id %}- <i>WordPress only feature</i>{% endif %}
+    </div>
+    <div class='bc_profile_label'>Groups:</div>
+    <div class='bc_profile_data'>
+     <section class='bc_members_groups'>
+     {% for group in groups %}
+      <div class='bc_members_groups_id'>{{ group.id }}</div>
+      <div class='bc_members_groups_boxes'>
+       <input class="pref groupbox" type="checkbox" name="group{{ group.id }}" id="group{{ group.id }}" value="1"
+       {% if "1" == group.flag %} checked="checked" {% endif %}/>
+       {{ group.description }}
+      </div>
+     {% endfor %}
+     </section>
+    </div>
+   {% endif %}
+  </section>
+ </div>
+ {% if "search" == mode %}
+  <div class='bc_extra'>
+   {% if not found|length %}
+    <hr/>
+    <div class='bc_noresults'>Nothing matches.</div>
+   {% else %}
+    <section class='bc_members_results'>
+     <div class='bc_head bc_members_id'>ID</div>
+     <div class='bc_head bc_members_pkey'>Key</div>
+     <div class='bc_head bc_members_wpid'>WP ID</div>
+     <div class='bc_head bc_members_login'>login</div>
+     <div class='bc_head bc_members_name'>Name</div>
+     <div class='bc_head bc_members_email'>E-Mail</div>
+     <div class='bc_head bc_members_hittime'>Last visit</div>
+     {% for find in found %}
+      {% set inactive = find.active ? '' : ' bc_members_inactive' %}
+      <div class='bc_line bc_members_id{{ inactive }}' id='id_{{ find.id }}'>{{ find.id }}</div>
+      <div class='bc_line bc_members_pkey{{ inactive }}' style='font-family:monospace' id='pkey_{{ find.id }}'>{{ find.pkey }}</div>
+      <div class='bc_line bc_members_wpid{{ inactive }}' id='wpid_{{ find.id }}'>{{ find.wpid ?: ''}}</div>
+      <div class='bc_line bc_members_login{{ inactive }}' id='login_{{ find.id }}'>{{ find.login ?: ''}}</div>
+      <div class='bc_line bc_members_name{{ inactive }}' id='name_{{ find.id }}'>{{ find.name }}</div>
+      <div class='bc_line bc_members_email{{ inactive }}' id='email_{{ find.id }}'>{{ find.email }}</div>
+      <div class='bc_line bc_members_hittime{{ inactive }}' id='ht_{{ find.id }}'>{{ find.hittime is null ? '&lt;never&gt;' : find.hittime|date('Y-m-d') }}</div>
+     {% endfor %}
+    </section>
+   {% endif %}
+  </div>
+ {% endif %}
+</div>

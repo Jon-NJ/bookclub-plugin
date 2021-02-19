@@ -1,0 +1,100 @@
+<div class='bc_help'>
+ <div id='htmlhelp'></div>
+ <button id="close_help">X</button>
+</div>
+<div class="bc_authors bc_{{ mode }}">
+ <div class="bc_main">
+  <h1>{{ title }}</h1>
+  <input type="hidden" id="nonce" name="nonce" value="{{ nonce }}" />
+  <input type="hidden" id="referer" name="referer" value="{{ referer }}" />
+  <input type="hidden" id="mode" name="mode" value="{{ mode }}" />
+  <section class='bc_toolbar'>
+   <section class='bc_form_lines'>
+    <div class='bc_form_label'>Tools:</div>
+    <div class='bc_form_data'>
+     <button id='button_help' name='button_help'>
+      <img src='{{ images }}help.png'/> Help
+     </button>
+     {% if "edit" == mode %}
+      <button id='button_add' disabled>
+       <img src='{{ images }}plus.png'/> Add
+      </button>
+      <button id='button_reset'>
+       <img src='{{ images }}reset.png'/> Restart
+      </button>
+     {% else %}
+      <button id='button_add'>
+       <img src='{{ images }}plus.png'/> Add
+      </button>
+      <button id='button_search'>
+       <img src='{{ images }}search.png'/> Search
+      </button>
+     {% endif %}
+     {% if "edit" == mode %}
+      <button id='button_save'>
+       <img src='{{ images }}save.png'/> Save
+      </button>
+      <button id='button_delete'>
+       <img src='{{ images }}drop.png'/> Delete
+      </button>
+     {% else %}
+      <button id='button_save' disabled>
+       <img src='{{ images }}save.png'/> Save
+      </button>
+      <button id='button_delete' disabled>
+       <img src='{{ images }}drop.png'/> Delete
+      </button>
+     {% endif %}
+    </div>
+   </section>
+  </section>
+  <div class='bc_notice_area'>
+   <div id='bc_notice' class='bc_notice'>
+    <p id='bc_message' class='bc_message'>***</p>
+   </div>
+  </div>
+  <section class='bc_form_lines'>
+   <div class='bc_form_label'>Author ID:</div>
+   <div class='bc_form_data'>
+    {% if "edit" == mode %}
+     <input type='text' size='3' id='author_id' name='author_id' value='{{ author_id }}' readonly/>
+    {% else %}
+     <input type='text' size='3' id='author_id' name='author_id' value='{{ author_id }}'/>
+    {% endif %}
+   </div>
+   <div class='bc_form_label'>Name:</div>
+   <div class='bc_form_data'>
+    <input type='text' size='50' id='name' name='name' value='{{ author_name }}'/><br/>
+   </div>
+   <div class='bc_form_label'>Link:</div>
+   <div class='bc_form_data'>
+    <input type='text' size='50' id='link' name='link' value='{{ link }}'/><br/>
+   </div>
+   <div class='bc_form_label'>Bio:</div>
+   <div class='bc_form_data'>
+    {% if "edit" == mode %}
+     <textarea rows='15' cols='100' id='bio' name='bio'>{{ bio }}</textarea>
+    {% else %}
+     <textarea rows='2' cols='49' id='bio' name='bio'>{{ bio }}</textarea>
+    {% endif %}
+   </div>
+  </section>
+ </div>
+ {% if "search" == mode %}
+  <div class='bc_extra'>
+   {% if not found|length %}
+    <hr/>
+    <div class='bc_noresults'>Nothing matches.</div>
+   {% else %}
+    <section class='bc_authors_results'>
+     <div class='bc_head bc_authors_id'>ID</div>
+     <div class='bc_head bc_authors_author'>Name</div>
+     {% for find in found %}
+      <div class='bc_line bc_authors_id' id='id_{{ find.author_id }}'>{{ find.author_id }}</div>
+      <div class='bc_line bc_authors_author' id='author_{{ find.author_id }}'>{{ find.author_name }}</div>
+     {% endfor %}
+    </section>
+   {% endif %}
+  </div>
+ {% endif %}
+</div>

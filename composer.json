@@ -1,0 +1,11 @@
+{
+    "require": {
+        "apache/log4php": "^2.3",
+        "twig/twig": "^2.0",
+        "pear/mail": "^1.4",
+        "pear/net_smtp": "^1.9",
+        "pear/auth_sasl": "^1.1",
+        "twig/markdown-extra": "^3.0",
+        "erusev/parsedown": "^1.7"
+    }
+}

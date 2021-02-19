@@ -1,0 +1,193 @@
+/*
+ * Style sheet for RSVP-ing to an invitation.
+ * @author     Jon Wolfe <jonnj@connectberlin.de>
+ * @package    bookclub
+ * @license    https://opensource.org/licenses/MIT MIT
+ */
+
+:root {
+    --nice-blue: #00bfff;
+    --nice-gray: #444;
+    --line-blue: #006fbf;
+    --menu-blue: #6495ed;
+    --hover-blue: #3080ff;
+    --error-red: #dc3232;
+    --success-green: #46b450;
+    --warning-yellow: #ffb900;
+}
+
+.hide {
+  display: none !important;
+}
+
+.notice-error {
+    border-left-color: var(--error-red) !important;
+}
+
+.notice-success {
+    border-left-color: var(--success-green) !important;
+}
+
+.bc_notice p {
+    font-weight: bold;
+    margin: 0px;
+    padding: 0px;
+    margin-left: 1.2em;
+}
+
+.bc_notice_area {
+    padding: .4em 0 2.4em 0;
+    height: 2.5em;
+}
+
+.bc_notice {
+    background: white;
+    border-left: 4px solid white;
+    box-shadow: 0 1px 1px 0 rgba(0,0,0,.1);
+    visibility: hidden;
+}
+
+.bc_help {
+    display: none;
+    position: absolute;
+    overflow: auto;
+    top: -5em;
+    height:150%;
+    width: 100%;
+    background:white;
+    border: 1px solid var(--nice-gray);
+    border-radius: 1em;
+    box-shadow: inset 0 0 0.63em black;
+    z-index: 1;
+}
+
+#close_help {
+    position: fixed;
+    font-weight: bold;
+    color: black;
+    top: 4.5em;
+    right: 4em;
+}
+
+#htmlhelp {
+    font-size: 140%;
+    margin: 2em;
+}
+
+#htmlhelp li {
+    font-size: 1.5rem;
+    margin-left: 1em;
+    line-height: 1.2;
+    list-style-type: disc;
+}
+
+#htmlhelp p {
+    font-size: 120%;
+}
+
+.bc_rsvp {
+    
+}
+
+.bc_rsvp button img {
+    vertical-align: middle;
+}
+
+.bc_rsvp button {
+    font-weight: bold;
+}
+
+.bc_rsvp_title {
+    font-size: large;
+    font-weight: bold;
+}
+
+.bc_rsvp_container {
+    display: grid;
+    grid-template-columns: max-content minmax(auto, 5fr) minmax(min-content, max-content) 1fr;
+    grid-template-areas:
+        "label_what  what     label_who ."
+        "label_where where    who ."
+        "label_when  when     who ."
+        "body        body     who .";
+}
+
+.bc_rsvp_label_what {
+    border-top: 3px double;
+    border-left: 3px double;
+    padding: 0 1.2em 0 .5em;
+    font-weight: bold;
+    grid-area: label_what;
+}
+
+.bc_rsvp_label_where {
+    border-top: 1px solid;
+    border-left: 3px double;
+    padding: 0 1.2em 0 .5em;
+    font-weight: bold;
+    grid-area: label_where;
+}
+
+.bc_rsvp_label_when {
+    border-top: 1px solid;
+    border-left: 3px double;
+    padding: 0 1.2em 0 .5em;
+    font-weight: bold;
+    grid-area: label_when;
+}
+
+.bc_rsvp_label_who {
+    border-top: 3px double;
+    border-left: 1px solid;
+    border-right: 3px double;
+    padding: 0 1.2em 0 .5em;
+    font-weight: bold;
+    grid-area: label_who;
+}
+
+.bc_rsvp_what {
+    border-top: 3px double;
+    border-left: 1px solid;
+    padding: 0 1.2em 0 .5em;
+    grid-area: what;
+}
+
+.bc_rsvp_where {
+    border-top: 1px solid;
+    border-left: 1px solid;
+    padding: 0 1.2em 0 .5em;
+    grid-area: where;
+}
+
+.bc_rsvp_when {
+    border-top: 1px solid;
+    border-left: 1px solid;
+    padding: 0 1.2em 0 .5em;
+    grid-area: when;
+}
+
+.bc_rsvp_body {
+    border-top: 1px solid;
+    border-left: 3px double;
+    border-bottom: 3px double;
+    grid-area: body;
+}
+
+.bc_rsvp_who {
+    border-top: 1px solid;
+    border-left: 1px solid;
+    border-right: 3px double;
+    border-bottom: 3px double;
+    padding: 0 1.2em 0 .5em;
+    grid-area: who;
+    max-width: 9em;
+}
+
+.bc_rsvp_signup {
+    font-size: large;
+    font-weight: bold;
+}
+
+.bc_rsvp_error {
+    font-size: xx-large;
+}

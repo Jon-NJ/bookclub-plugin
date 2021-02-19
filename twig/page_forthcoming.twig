@@ -1,0 +1,77 @@
+<div class='bc_forthcoming'>
+ <div class='bc_forthcoming_menu_group'>
+  {% for group in groups %}
+   {% if group.url %}
+    <span class='bc_forthcoming_menu_link'>
+     <a href="{{ group.url }}">{{ group.tag }}</a>
+    </span>
+   {% else %}
+    <span class='bc_forthcoming_menu_current'>{{ group.tag }}</span>
+   {% endif %}
+  {% endfor %}
+ </div>
+ {% if records|length == 0 %}
+  <div class='bc_forthcoming_no_results'>
+   Nothing scheduled.
+  </div>
+ {% endif %}
+ {% for record in records %}
+ <div class='bc_forthcoming_row'>
+  <div class='bc_forthcoming_left'>
+   <div class='bc_forthcoming_date'>
+    Book for {{ record.date|date('F j, Y') }}
+   </div>
+   <div class='bc_forthcoming_group'>
+    {% if record.groupurl %}
+     <a href="{{ record.groupurl }}">
+      {{ record.tag }}
+     </a>
+    {% else %}
+     {{ record.tag }}
+    {% endif %}
+   </div>
+   {% if record.priority %}
+    <div class='bc_forthcoming_meeting'>
+     <i>General RSVP opens {{ record.priority }} hours prior to the meeting.</i>
+    </div>
+   {% elseif record.private %}
+    <div class='bc_forthcoming_meeting'>
+     <i>This meeting is private.</i>
+    </div>
+   {% elseif record.place_id %}
+    <div class='bc_forthcoming_meeting'>
+      Meeting at {{ record.place }}'s place
+    </div>
+   {% endif %}
+   <a href="{{ record.bookurl }}">
+    <img src="{{ record.cover }}" alt="{{ record.title }}"/>
+   </a>
+  </div>
+  <div class='bc_forthcoming_right'>
+   <div class='bc_forthcoming_title'>
+    <a href="{{ record.bookurl }}">
+     {{ record.title }}
+    </a>
+   </div>
+   <div class='bc_forthcoming_byline'>
+   {% if record.link %}
+    by
+    <a href="{{ record.link }}" target="_blank">
+     {{ record.author }}
+    </a>
+   {% else %}
+    <span>by {{ record.author }}</span>
+   {% endif %}
+   </div>
+   {{ record.summary|raw }}
+   {% if record.bio %}
+   <div class='bc_forthcoming_authorline'>Author: </div>
+   <div class='bc_forthcoming_author'>
+    {{ record.author|raw }}
+   </div>
+   {{ record.bio|raw }}
+   {% endif %}
+  </div>
+ </div>
+ {% endfor %}
+</div>

@@ -1,0 +1,182 @@
+/*
+ * Style sheet for editing authors page.
+ * @author     Jon Wolfe <jonnj@connectberlin.de>
+ * @package    bookclub
+ * @license    https://opensource.org/licenses/MIT MIT
+ */
+
+:root {
+    --nice-blue: #00bfff;
+    --nice-gray: #444;
+    --line-blue: #006fbf;
+    --menu-blue: #6495ed;
+    --hover-blue: #3080ff;
+    --error-red: #dc3232;
+    --success-green: #46b450;
+    --warning-yellow: #ffb900;
+}
+
+.hide {
+  display: none !important;
+}
+
+.notice-error {
+    border-left-color: var(--error-red) !important;
+}
+
+.notice-success {
+    border-left-color: var(--success-green) !important;
+}
+
+.bc_notice p {
+    font-weight: bold;
+    margin: 0px;
+    padding: 0px;
+}
+
+.bc_notice {
+    background: white;
+    border-left: 0.25em solid white;
+    box-shadow: 0 1px 1px 0 rgba(0,0,0,.1);
+    visibility: hidden;
+    margin-left: 8em;
+}
+
+.bc_notice_area {
+    height: 2em;
+    width: 85vw;
+}
+
+.bc_help {
+    display: none;
+    position: absolute;
+    overflow: auto;
+    top: 1em;
+    height:95%;
+    width: 98%;
+    background:white;
+    border: 1px solid var(--nice-gray);
+    border-radius: 1em;
+    box-shadow: inset 0 0 0.63em black;
+    z-index: 1;
+}
+
+#close_help {
+    position: fixed;
+    font-weight: bold;
+    color: black;
+    top: 4.5em;
+    right: 4em;
+}
+
+#htmlhelp {
+    font-size: 140%;
+    margin: 2em;
+}
+
+#htmlhelp li {
+    font-size: 1.5rem;
+    margin-left: 1em;
+    line-height: 1.2;
+    list-style-type: disc;
+}
+
+#htmlhelp p {
+    font-size: 120%;
+}
+
+.bc_toolbar {
+    display: flex;
+}
+
+.bc_form_lines {
+    display: grid;
+    grid-template-columns: [label] 8em [data] 62em;
+    grid-template-rows: auto;
+    grid-row-gap:0.63em;
+}
+
+.bc_form_label {
+    padding: 1px 1px 1px 1px;
+    grid-column-start: label;
+}
+
+.bc_form_data {
+    padding: 1px 1px 1px 1px;
+    grid-column-start: data;
+}
+
+.bc_authors {
+    display: flex;
+    height: 92vh;
+    flex-direction: column;
+    width: 90%;
+}
+
+.bc_authors.bc_search {
+    position: fixed;
+} 
+
+.bc_authors button img {
+    vertical-align: middle;
+}
+
+.bc_authors button {
+    padding: 0px 4px 0px 4px;
+}
+
+.bc_main {
+    height: auto;
+    padding-bottom: 0.5em;
+}
+
+.bc_extra {
+    overflow-y: auto;
+    position: sticky;
+    top: 0;
+}
+
+.bc_noresults {
+    font-size: xx-large;
+    padding-top: 0.5em;
+    height: 1.5em;
+}
+
+.bc_head {
+    font-weight: bold;
+    font-size: large;
+    position: sticky;
+    height: 100%;
+    margin-bottom: 0.3em;
+    top: 0;
+    color: yellow;
+    background-color: blue;
+}
+
+.bc_line {
+    font-size: large;
+    color: var(--line-blue);
+}
+
+.bc_authors_results {
+    display: grid;
+    grid-template-columns: [authorid] auto [author] 15fr;
+    grid-template-rows: auto;
+    grid-row-gap:2px;
+}
+
+.bc_authors_id {
+    padding: 0 0.3em 0 0;
+    text-align: center;
+    grid-column-start: authorid;
+}
+
+.bc_authors_author {
+    padding: 0 0 0 0.3em;
+    grid-column-start: author;
+}
+
+.bc_results_highlight {
+    background-color: var(--nice-blue);
+    color: white !important;
+}

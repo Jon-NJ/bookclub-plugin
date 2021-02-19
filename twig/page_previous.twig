@@ -1,0 +1,68 @@
+<div class='bc_previous'>
+ <div class='bc_previous_menu_year'>
+  {% for year in years %}
+   {% if year.url %}
+    <span class='bc_previous_menu_link'>
+     <a href="{{ year.url }}">
+      {{ year.year }}
+     </a>
+    </span>
+   {% else %}
+    <span class='bc_previous_menu_current'>
+     {{ year.year }}
+    </span>
+   {% endif %}
+  {% endfor %}
+ </div>
+ <div class='bc_previous_menu_group'>
+  {% for group in groups %}
+   {% if group.url %}
+    <span class='bc_previous_menu_link'>
+     <a href="{{ group.url }}">
+      {{ group.tag }}
+     </a>
+    </span>
+   {% else %}
+    <span class='bc_previous_menu_current'>
+     {{ group.tag }}
+    </span>
+   {% endif %}
+  {% endfor %}
+ </div>
+ {% if books|length == 0 %}
+  <div class='bc_previous_empty'>
+   Nothing found &#x02013; choose another combination.
+   (Year={{ year }}, Group={{ group }})
+  </div>
+ {% endif %}
+ {% for line in books|batch(3) %}
+  <div class='bc_previous_row'>
+   {% for book in line %}
+    <div class='bc_previous_cell'>
+     <div class='bc_previous_date'>
+      {{ book.date|date('F j') }}
+     </div>
+     {% if book.link|length > 0 %}
+      <div class='bc_previous_author'>
+       <a href="{{ book.link }}" target="_blank">
+        {{ book.author }}
+       </a>
+      </div>
+     {% else %}
+      <div class='bc_previous_author'>
+       {{ book.author }}
+      </div>
+     {% endif %}
+     <div class='bc_previous_title'>
+      <a href="{{ book.url }}">
+       {{ book.title }}
+      </a>
+     </div>
+     <a href="{{ book.url }}">
+      <img src="{{ book.cover }}" alt="{{ book.title }}"/>
+     </a>
+    </div>
+   {% endfor %}
+  </div>
+ {% endfor %}
+</div>

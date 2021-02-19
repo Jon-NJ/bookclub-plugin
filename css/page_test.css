@@ -1,0 +1,80 @@
+/*
+ * Style sheet for WordPress test page.
+ * @author     Jon Wolfe <jonnj@connectberlin.de>
+ * @package    bookclub
+ * @license    https://opensource.org/licenses/MIT MIT
+ */
+
+:root {
+    --nice-blue: #00bfff;
+    --nice-gray: #444;
+    --line-blue: #006fbf;
+    --menu-blue: #6495ed;
+    --hover-blue: #3080ff;
+    --error-red: #dc3232;
+    --success-green: #46b450;
+    --warning-yellow: #ffb900;
+}
+
+.hide {
+  display: none !important;
+}
+
+.bc_test {
+}
+
+.ui-datepicker-today {
+    border: 1px solid var(--nice-blue);
+    color: blue;
+    font-weight: bold;
+}
+
+.ui-datepicker-current-day {
+    font-size: large;
+    text-align: center;
+    padding: 5px 14px 5px 14px;
+    border-radius: 10px;
+}
+
+.ui-datepicker-title {
+    background-color: blue;
+    color: white;
+    text-align: center;
+    font-size: x-large;
+    font-weight: bold;
+    padding-top: 8px;
+    padding-bottom: 8px;
+}
+
+.ui-datepicker-calendar th {
+    font-weight: bold;
+}
+
+.ui-datepicker-prev {
+    background-image: url( '../images/plus.png' );
+}
+
+.ui-datepicker-next {
+    background-image: url( '../images/save.png' );
+}
+
+.ui-datepicker-prev, .ui-datepicker-next {
+    display: inline-block;
+    width: 30px;
+    height: 30px;
+    text-align: center;
+    cursor: pointer;
+    background-repeat: no-repeat;
+    line-height: 200%;
+    overflow: hidden;
+}
+
+.ui-datepicker-prev {
+    float: left;
+    background-position: center -30px;
+}
+
+.ui-datepicker-next {
+    float: right;
+    background-position: center 0px;
+}

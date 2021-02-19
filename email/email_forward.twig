@@ -1,0 +1,24 @@
+{% if not html %}{# text only #}
+{% include 'email_forward_text.twig' %}
+{% else %}{# text and html #}
+--MIME-mixed-{{ hash }}
+Content-Type: multipart/alternative; boundary=MIME-alt-{{ hash }}
+
+--MIME-alt-{{ hash }}
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+
+{% include 'email_forward_text.twig' %}
+--MIME-alt-{{ hash }}
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+
+{% autoescape false %}{{ html }}{% endautoescape %}
+--MIME-alt-{{ hash }}--
+--MIME-mixed-{{ hash }}
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+
+{% include 'email_forward_extra.twig' %}
+--MIME-mixed-{{ hash }}--
+{% endif %}

@@ -1,0 +1,112 @@
+/*
+ * Style sheet for showing previous books.
+ * @author     Jon Wolfe <jonnj@connectberlin.de>
+ * @package    bookclub
+ * @license    https://opensource.org/licenses/MIT MIT
+ */
+
+:root {
+    --nice-blue: #00bfff;
+    --nice-gray: #444;
+    --line-blue: #006fbf;
+    --menu-blue: #6495ed;
+    --hover-blue: #3080ff;
+    --error-red: #dc3232;
+    --success-green: #46b450;
+    --warning-yellow: #ffb900;
+}
+
+.bc_previous a {
+    text-decoration: none !important;
+    border-bottom: none !important;
+}
+
+.bc_previous a:hover {
+    text-decoration: underline !important;
+}
+
+.bc_previous_menu_year, .bc_previous_menu_group {
+    border-collapse: collapse;
+    border-spacing: 0;
+    background-color: var(--menu-blue);
+    color: white;
+    padding: 4px 4px 4px 14px;
+}
+
+.bc_previous_menu_year {
+    font-size: small;
+}
+
+.bc_previous_menu_current {
+    text-align: center;
+    font-weight: bold;
+    font-size: large;
+    padding: 4px 6px 4px 6px;
+    border: 3px solid red;
+    border-radius: 30px;
+}
+
+.bc_previous_menu_link {
+    text-align: center;
+}
+
+.bc_previous_menu_link a {
+    color: white;
+    text-decoration: none !important;
+    border-bottom: none !important;
+    padding: 4px 6px 4px 6px;
+}
+
+.bc_previous_menu_link:hover a {
+    text-decoration: none !important;
+    color: var(--hover-blue);
+    background-color: white;
+}
+
+.bc_previous_empty {
+    padding-top: 20px;
+    font-size: xx-large;
+    color: red;
+}
+
+.bc_previous_row {
+    padding-bottom: 20px;
+    padding-top: 20px;
+    clear: both;
+}
+
+.bc_previous_cell {
+    float: left;
+    width: 32%;
+    padding-right: 10px;
+}
+
+.bc_previous_cell img {
+    border: 0;
+    width: 250px;
+    vertical-align: top !important;
+    display:inline !important;
+}
+
+.bc_previous_date {
+    font-weight: bold !important;
+}
+
+.bc_previous_author {
+    font-size: small;
+}
+
+.bc_previous_title {
+    font-size: small;
+    font-style: italic;
+}
+
+.bc_previous_left {
+    float: left;
+}
+
+.bc_previous_right {
+    /*font-size: smaller;*/
+    padding-left: 20px;
+    overflow: hidden;
+}

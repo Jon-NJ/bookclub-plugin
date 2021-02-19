@@ -1,0 +1,109 @@
+{
+    "version" : "030218",
+    "021230": {
+        "next": "030218",
+        "comment": "Remove unused member receive from others flag. Add subject to imap table",
+        "steps": [
+            "ALTER TABLE {{prefix}}members DROP COLUMN receive_others",
+            "ALTER TABLE {{prefix}}imap ADD COLUMN subject varchar(100) NOT NULL DEFAULT '' AFTER message_id"
+        ]
+    },
+    "021203": {
+        "next": "021230",
+        "comment": "Create new imap and forward tables, receive from others now meta data",
+        "steps": [
+            "table imap",
+            "table forwards",
+            "table groupusers",
+            "ALTER TABLE `{{prefix}}groupmembers` ADD UNIQUE KEY `group_id` (`group_id`,`member_id`)",
+            "exec updateReceiveFromOthers"
+        ]
+    },
+    "021114": {
+        "next": "021203",
+        "comment": "Rename some options",
+        "steps": [
+            "UPDATE wp_options SET option_name = 'bc_email_headers' WHERE option_name = 'bc_headers'",
+            "UPDATE wp_options SET option_name = 'bc_email_password' WHERE option_name = 'bc_smtp_password'"
+        ]
+    },
+    "021109": {
+        "next": "021114",
+        "comment": "Drop old options table",
+        "steps": [
+            "DROP TABLE {{prefix}}options_old"
+        ]
+    },
+    "021106": {
+        "next": "021109",
+        "comment": "Remove options table, use the WP system, add more member options",
+        "steps": [
+            "RENAME TABLE {{prefix}}options to {{prefix}}options_old",
+            "ALTER TABLE {{prefix}}members ADD COLUMN public_email int(10) UNSIGNED NOT NULL DEFAULT '0' AFTER wordpress_id",
+            "ALTER TABLE {{prefix}}members ADD COLUMN receive_others int(10) UNSIGNED NOT NULL DEFAULT '0' AFTER public_email"
+        ]
+    },
+    "021105": {
+        "next": "021106",
+        "comment": "Change prefixes to conform to WordPress - doesn't really work, needs to be done manually",
+        "steps": [],
+        "ignore_steps": [
+            "RENAME TABLE bc_authors      TO {{prefix}}authors",
+            "RENAME TABLE bc_books        TO {{prefix}}books",
+            "RENAME TABLE bc_dates        TO {{prefix}}dates",
+            "RENAME TABLE bc_emails       TO {{prefix}}emails",
+            "RENAME TABLE bc_events       TO {{prefix}}events",
+            "RENAME TABLE bc_groupmembers TO {{prefix}}groupmembers",
+            "RENAME TABLE bc_groups       TO {{prefix}}groups",
+            "RENAME TABLE bc_logs         TO {{prefix}}logs",
+            "RENAME TABLE bc_members      TO {{prefix}}members",
+            "RENAME TABLE bc_news         TO {{prefix}}news",
+            "RENAME TABLE bc_options      TO {{prefix}}options",
+            "RENAME TABLE bc_participants TO {{prefix}}participants",
+            "RENAME TABLE bc_places       TO {{prefix}}places",
+            "RENAME TABLE bc_recipients   TO {{prefix}}recipients",
+            "RENAME TABLE bc_rsvp         TO {{prefix}}rsvp"
+        ]
+    },
+    "020924": {
+        "next": "021105",
+        "comment": "Split format flags - email text only/html and attach ical",
+        "steps": [
+            "ALTER TABLE {{prefix}}members ADD COLUMN ical int(10) UNSIGNED NOT NULL DEFAULT '1' AFTER format",
+            "UPDATE {{prefix}}members SET ical = format & 1",
+            "UPDATE {{prefix}}members SET format = format >> 1",
+            "ALTER TABLE {{prefix}}members DROP COLUMN admin",
+            "ALTER TABLE {{prefix}}options MODIFY COLUMN value varchar(200) NOT NULL",
+            "INSERT INTO {{prefix}}options(option_name, value) SELECT 'headers', GROUP_CONCAT(value SEPARATOR '\n') FROM {{prefix}}options WHERE option_name LIKE 'header%' ORDER BY option_name"
+        ]
+    },
+    "020923": {
+        "next": "020924",
+        "comment": "Old version no update mechanism yet.",
+        "steps": [
+            "ALTER TABLE {{prefix}}members DROP COLUMN IP"
+        ]
+    },
+    "020920": {
+        "next": "020923",
+        "comment": "Old version no update mechanism yet.",
+        "steps": [
+            "RENAME TABLE {{prefix}}email       TO {{prefix}}emails",
+            "RENAME TABLE {{prefix}}event       TO {{prefix}}events",
+            "RENAME TABLE {{prefix}}group       TO {{prefix}}groups",
+            "RENAME TABLE {{prefix}}groupmember TO {{prefix}}groupmembers",
+            "RENAME TABLE {{prefix}}logger      TO {{prefix}}logs",
+            "RENAME TABLE {{prefix}}member      TO {{prefix}}members"
+        ]
+    },
+    "020917": {
+        "next": "020920",
+        "comment": "Old version no update mechanism yet.",
+        "steps": [
+            "ALTER TABLE {{prefix}}books  DROP COLUMN summary_url",
+            "ALTER TABLE {{prefix}}member DROP COLUMN forum_id",
+            "ALTER TABLE {{prefix}}dates  ADD COLUMN priority int(10) UNSIGNED NOT NULL DEFAULT '0' AFTER private",
+            "ALTER TABLE {{prefix}}event  ADD COLUMN priority int(10) UNSIGNED NOT NULL DEFAULT '0' AFTER private"
+        ]
+    }
+}

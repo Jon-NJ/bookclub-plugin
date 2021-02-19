@@ -1,0 +1,88 @@
+/*
+ * Style sheet for showing book information.
+ * @author     Jon Wolfe <jonnj@connectberlin.de>
+ * @package    bookclub
+ * @license    https://opensource.org/licenses/MIT MIT
+ */
+
+:root {
+    --nice-blue: #00bfff;
+    --nice-gray: #444;
+    --line-blue: #006fbf;
+    --menu-blue: #6495ed;
+    --hover-blue: #3080ff;
+    --error-red: #dc3232;
+    --success-green: #46b450;
+    --warning-yellow: #ffb900;
+}
+
+.bc_book a {
+    text-decoration: none !important;
+    border-bottom: none !important;
+}
+
+.bc_book a:hover {
+    text-decoration: underline !important;
+}
+
+.bc_book_title {
+    font-size: 3em;
+    font-weight: bold;
+}
+
+.bc_book_byline {
+    font-size: larger;
+    padding-bottom: 20px;
+}
+
+.bc_book_byline span, .bc_book_byline a {
+    font-weight: bold;
+}
+
+.bc_book_left {
+    padding-top: 10px;
+    float: left;
+}
+
+.bc_book_left img {
+    border: 0;
+    width: 250px;
+    vertical-align: top !important;
+    display: inline !important;
+}
+
+.bc_book_left span {
+    font-weight: bold;
+}
+
+.bc_book_right {
+    font-size: smaller;
+    padding-left: 20px;
+    overflow: hidden;
+}
+
+.bc_book_about {
+    font-weight: bold;
+    font-size: x-large;
+    padding-top: 20px;
+}
+
+.bc_book_author {
+    font-size: larger;
+    font-weight: bold;
+}
+
+.bc_book_other {
+    padding-top: 20px;
+}
+
+.bc_book_other p {
+    font-size: x-large;
+    font-weight: bold;
+    margin: 0 0 5px 0;
+}
+
+.bc_book_other a {
+    font-size: larger;
+    margin-left: 10px;
+}

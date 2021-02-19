@@ -1,0 +1,55 @@
+<div class='bc_main'>
+ {% for record in records %}
+ <div class='bc_main_row'>
+  <div class='bc_main_left'>
+   {% for book in record.books %}
+    <a href="{{ book.url }}">
+     <img src="{{ book.cover }}" alt="{{ book.title }}"/>
+    </a>
+   {% endfor %}
+  </div>
+  <div class='bc_main_right'>
+   <div class='bc_main_title'>
+    This month's book &#x02013;
+    {% if record.url %}
+     <a href="{{ record.url }}">
+      {{ record.tag }}
+     </a>
+    {% else %}
+     {{ record.tag }}
+    {% endif %}
+   </div>
+   {% if ("0" == record.place_id) or ("1" == record.private) %}
+    On
+    <span class='bc_main_date'>
+     {{ record.date|date('F j') }},
+    </span>
+    we will be discussing:<br/>
+   {% else %}
+    On
+    <span class='bc_main_date'>
+     {{ record.date|date('F j') }},
+    </span>
+    we are meeting at {{ record.place }}'s place.<br/>
+    We will be discussing:<br/>
+   {% endif %}
+   {% for book in record.books %}
+    <a href="{{ book.url }}">
+     {{ book.title }}
+    </a>
+    by
+    <span class='bc_main_author'>
+     {{ book.author }}
+    </span>
+   {% endfor %}
+   {% if record.priority %}
+    <br/>
+    <i>General RSVP opens {{ record.priority }} hours prior to the meeting.</i>
+   {% elseif record.private %}
+    <br/>
+    <i>This will be a private meeting.</i>
+   {% endif %}
+  </div>
+ </div>
+ {% endfor %}
+</div>

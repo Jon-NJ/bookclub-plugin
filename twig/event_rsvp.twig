@@ -1,0 +1,41 @@
+{% if yes|length %}
+ <option class='bc_rsvp_catagory'>Yes ({{ yes|length }})</option>
+ {% for member in yes %}
+  <option class='bc_rsvp_participant bc_rsvp_yes bc_rsvp_nowait' value='{{ member.id }}'>{{ member.name }}</option>
+ {% endfor %}
+{% endif %}
+
+{% if maybe|length %}
+<option class='bc_rsvp_catagory'>Maybe ({{ maybe|length }})</option>
+{% for member in maybe %}
+ <option class='bc_rsvp_participant bc_rsvp_maybe bc_rsvp_nowait' value='{{ member.id }}'>{{ member.name }}</option>
+{% endfor %}
+{% endif %}
+
+{% if wait_yes|length %}
+<option class='bc_rsvp_catagory'>Yes Waiting ({{ wait_yes|length }})</option>
+{% for member in wait_yes %}
+ <option class='bc_rsvp_participant bc_rsvp_yes bc_rsvp_wait' value='{{ member.id }}'>{{ member.name }}</option>
+{% endfor %}
+{% endif %}
+
+{% if wait_maybe|length %}
+<option class='bc_rsvp_catagory'>Maybe Waiting ({{ wait_maybe|length }})</option>
+{% for member in wait_maybe %}
+ <option class='bc_rsvp_participant bc_rsvp_maybe bc_rsvp_wait' value='{{ member.id }}'>{{ member.name }}</option>
+{% endfor %}
+{% endif %}
+
+{% if no|length %}
+<option class='bc_rsvp_catagory'>No ({{ no|length }})</option>
+{% for member in no %}
+ <option class='bc_rsvp_participant bc_rsvp_no' value='{{ member.id }}'>{{ member.name }}</option>
+{% endfor %}
+{% endif %}
+
+{% if rest|length %}
+<option class='bc_rsvp_catagory'>No response ({{ rest|length }})</option>
+{% for member in rest %}
+ <option class='bc_rsvp_participant bc_rsvp_no_response' value='{{ member.id }}'>{{ member.name }}</option>
+{% endfor %}
+{% endif %}

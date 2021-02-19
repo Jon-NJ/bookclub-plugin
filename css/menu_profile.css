@@ -1,0 +1,166 @@
+/*
+ * Style sheet for editing profiles page.
+ * @author     Jon Wolfe <jonnj@connectberlin.de>
+ * @package    bookclub
+ * @license    https://opensource.org/licenses/MIT MIT
+ */
+
+:root {
+    --nice-blue: #00bfff;
+    --nice-gray: #444;
+    --line-blue: #006fbf;
+    --menu-blue: #6495ed;
+    --hover-blue: #3080ff;
+    --error-red: #dc3232;
+    --success-green: #46b450;
+    --warning-yellow: #ffb900;
+}
+
+.hide {
+  display: none !important;
+}
+
+.notice-error {
+    border-left-color: var(--error-red) !important;
+}
+
+.notice-success {
+    border-left-color: var(--success-green) !important;
+}
+
+.bc_notice p {
+    font-weight: bold;
+    margin: 10px;
+    padding: 0px;
+    display: inline;
+}
+
+.bc_notice {
+    background: white;
+    border-left: 4px solid white;
+    box-shadow: 0 1px 1px 0 rgba(0,0,0,.1);
+    display: inline;
+    visibility: hidden;
+    margin-left: 0px;
+}
+
+.bc_help {
+    display: none;
+    position: absolute;
+    overflow: auto;
+    top: 1em;
+    height:95%;
+    width: 98%;
+    background:white;
+    border: 1px solid var(--nice-gray);
+    border-radius: 1em;
+    box-shadow: inset 0 0 0.63em black;
+    z-index: 1;
+}
+
+#close_help {
+    position: fixed;
+    font-weight: bold;
+    color: black;
+    top: 4.5em;
+    right: 4em;
+}
+
+#htmlhelp {
+    font-size: 140%;
+    margin: 2em;
+}
+
+#htmlhelp li {
+    font-size: 1.5rem;
+    margin-left: 1em;
+    line-height: 1.2;
+    list-style-type: disc;
+}
+
+#htmlhelp p {
+    font-size: 120%;
+}
+
+.bc_no_profile {
+    font-size: large;
+}
+
+.bc_profile {
+    
+}
+
+.bc_profile button img {
+    vertical-align: middle;
+}
+
+.bc_profile_container {
+    display: grid;
+    grid-template-columns: [label] 12.5em [data] 1fr;
+    grid-template-rows: auto;
+    grid-row-gap:10px;
+}
+
+.bc_profile_label {
+    padding: 1px 1px 1px 1px;
+    grid-column-start: label;
+}
+
+.bc_profile_data {
+    padding: 1px 1px 1px 1px;
+    grid-column-start: data;
+}
+
+.bc_profile_groups {
+    display: grid;
+    grid-template-columns: [id] auto [boxes] 1fr;
+}
+
+.bc_profile_groups_id {
+    text-align: right;
+    padding-right: 1em;
+    grid-column-start: id;
+}
+
+.bc_profile_groups_boxes {
+    grid-column-start: boxes;
+}
+
+.bc_event_container {
+    display: grid;
+    grid-template-columns: [event_date] 12.5em [event] 1fr;
+    grid-template-rows: auto;
+    grid-row-gap: .3em;
+}
+
+.bc_event_time {
+    padding: 1px 1px 1px 1px;
+    grid-column-start: event_date;
+}
+
+.bc_event_data {
+    padding: 1px 1px 1px 1px;
+    grid-column-start: event;
+}
+
+.bc_book_container {
+    display: grid;
+    grid-template-columns: [book_date] 8em [group] 4.5em [book] auto;
+    grid-template-rows: auto;
+    grid-row-gap: .3em;
+}
+
+.bc_book_date {
+    padding: 1px 1px 1px 1px;
+    grid-column-start: book_date;
+}
+
+.bc_book_group {
+    padding: 1px 1px 1px 1px;
+    grid-column-start: group;
+}
+
+.bc_book_link {
+    padding: 1px 1px 1px 1px;
+    grid-column-start: book;
+}

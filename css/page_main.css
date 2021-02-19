@@ -1,0 +1,64 @@
+/*
+ * Style sheet for main page with next book for each group.
+ * @author     Jon Wolfe <jonnj@connectberlin.de>
+ * @package    bookclub
+ * @license    https://opensource.org/licenses/MIT MIT
+ */
+
+:root {
+    --nice-blue: #00bfff;
+    --nice-gray: #444;
+    --line-blue: #006fbf;
+    --menu-blue: #6495ed;
+    --hover-blue: #3080ff;
+    --error-red: #dc3232;
+    --success-green: #46b450;
+    --warning-yellow: #ffb900;
+}
+
+.bc_main a {
+    text-decoration: none !important;
+    border-bottom: none !important;
+    /*margin-left: 20px;*/
+}
+
+.bc_main a:hover {
+    text-decoration: underline !important;
+}
+
+.bc_main_row {
+    padding-bottom: 20px;
+    padding-top: 20px;
+    clear: both;
+}
+
+.bc_main_row img {
+    border: 0;
+    width: 250px;
+    vertical-align: top !important;
+    display: inline !important;
+}
+
+.bc_main_left {
+    padding-top: 15px;
+    float: left;
+}
+
+.bc_main_right {
+    padding-left: 20px;
+    overflow: hidden;
+}
+
+.bc_main_title {
+    font-size: x-large;
+    font-weight: bold;
+}
+
+.bc_main_date {
+    font-weight: bold;
+}
+
+.bc_main_author {
+    font-weight: bold;
+    font-style: italic;
+}

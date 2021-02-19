@@ -1,0 +1,25 @@
+{% autoescape false %}
+What: {{ summary }}
+Where: {{ location }} {{ map }}
+When: {{ starttime|date('F d, Y, H:i') }} - {{ endtime|date('H:i') }}
+{% apply html_to_text %}{% include description %}{% endapply %}
+
+Click on the link below or copy it to your browser to RSVP
+  {{ rsvplink }}
+
+---
+{% if signup %}
+We are asking our members to create an account to be able to edit their
+preferences. The old software you used in the past is no longer active. The
+newer software is more secure. There is a link to the signup page below. On
+this page, there is also a help button for more information and additionally a
+button to remove you from our database if you are no longer interested in the
+Book Club and wish to have your data deleted.
+{{ signup }}
+{% else %}
+Open the link below in your browser to edit your bookclub profile.
+{{ profile }}
+{% endif %}
+
+Let us know if you need any help or have any questions {{ support }}.
+{% endautoescape %}

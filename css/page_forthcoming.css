@@ -1,0 +1,125 @@
+/*
+ * Style sheet for showing future books.
+ * @author     Jon Wolfe <jonnj@connectberlin.de>
+ * @package    bookclub
+ * @license    https://opensource.org/licenses/MIT MIT
+ */
+
+:root {
+    --nice-blue: #00bfff;
+    --nice-gray: #444;
+    --line-blue: #006fbf;
+    --menu-blue: #6495ed;
+    --hover-blue: #3080ff;
+    --error-red: #dc3232;
+    --success-green: #46b450;
+    --warning-yellow: #ffb900;
+}
+
+.bc_forthcoming a {
+    text-decoration: none !important;
+    border-bottom: none !important;
+}
+
+.bc_forthcoming a:hover {
+    text-decoration: underline !important;
+}
+
+.bc_forthcoming_menu_group {
+    border-collapse: collapse;
+    border-spacing: 0;
+    background-color: var(--menu-blue);
+    color: white;
+    padding: 4px 4px 4px 14px;
+}
+
+.bc_forthcoming_menu_current {
+    text-align: center;
+    font-weight: bold;
+    font-size: large;
+    padding: 4px 6px 4px 6px;
+    border: 3px solid red;
+    border-radius: 30px;
+}
+
+.bc_forthcoming_menu_link {
+    text-align: center;
+}
+
+.bc_forthcoming_menu_link a {
+    color: white;
+    text-decoration: none !important;
+    border-bottom: none !important;
+    padding: 4px 6px 4px 6px;
+}
+
+.bc_forthcoming_menu_link:hover a {
+    text-decoration: none !important;
+    color: var(--hover-blue);
+    background-color: white;
+}
+
+.bc_forthcoming_row {
+    padding-bottom: 20px;
+    padding-top: 20px;
+    clear: both;
+}
+
+.bc_forthcoming_left {
+    padding-top: 10px;
+    float: left;
+}
+
+.bc_forthcoming_left img {
+    border: 0;
+    width: 250px;
+    vertical-align: top !important;
+    display: inline !important;
+    padding-bottom: 40px;
+}
+
+.bc_forthcoming_date {
+    font-weight: bold;
+}
+
+.bc_forthcoming_group {
+    font-weight: bold;
+}
+
+.bc_forthcoming_no_results {
+    font-size: xx-large;
+    padding-top: 10px;
+}
+
+.bc_forthcoming_meeting {
+}
+
+.bc_forthcoming_right {
+    font-size: smaller;
+    padding-left: 20px;
+    overflow: hidden;
+}
+
+.bc_forthcoming_title {
+    font-size: 2em;
+    font-weight: bold;
+    font-style: italic;
+}
+
+.bc_forthcoming_byline {
+    font-size: larger;
+}
+
+.bc_forthcoming_byline span, .bc_forthcoming_byline a {
+    font-weight: bold;
+}
+
+.bc_forthcoming_authorline {
+    font-weight: bold;
+    font-size: x-large;
+}
+
+.bc_forthcoming_author {
+    font-size: x-large;
+    font-weight: bold;
+}

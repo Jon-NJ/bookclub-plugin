@@ -1,0 +1,48 @@
+<table border='1'>
+ <tr>
+  <td><b>What:</b></td><td>{{ summary }}</td
+ </tr>
+ <tr>
+  <td><b>Where:</b></td>
+  <td>
+   {% if map %}
+    <a href='{{ map }}'>{{ location }}</a>
+   {% else %}
+    {{ location }}
+   {% endif %}
+  </td>
+ </tr>
+ <tr>
+  <td><b>When:</b></td><td>{{ starttime|date('F d, Y, H:i') }} - {{ endtime|date('H:i') }}</td>
+ </tr>
+ <tr>
+  <td colspan='2' width='600' valign='top'>{% include description %}</td>
+ </tr>
+ <tr>
+  <td colspan='2'>
+   <b>RSVP: {{ name }}</b> will attend?&nbsp;
+   <a href='{{ rsvplink }}&status=2'>Yes</a>&nbsp;
+   <a href='{{ rsvplink }}&status=3'>Maybe</a>&nbsp;
+   <a href='{{ rsvplink }}&status=1'>No</a><br>
+   If the buttons don't work, copy this link to your browser:<br>
+   <a href='{{ rsvplink }}'>{{ rsvplink }}</a><br>
+   <hr/>
+   {% if signup %}
+    We are asking our members to create an account to be able to edit their
+    preferences. The old software you used in the past is no longer active. The
+    newer software is more secure. There is a link to the signup page below. On
+    this page, there is also a help button for more information and additionally
+    a button to remove you from our database if you are no longer interested in
+    the Book Club and wish to have your data deleted.<br/>
+    <a href='{{ signup }}'>Signup here</a> {{ signup }}<br/>
+   {% else %}
+    Click <a href='{{ profile }}'>here</a> to edit your bookclub profile or
+    navigate to the link below in your browser.<br/>
+    {{ profile }}<br/>
+   {% endif %}
+   <br/>
+   Let us know if you need any help or have any questions
+   <a href='mailto:{{ support }}'>{{ support }}</a>.
+  </td>
+ </tr>
+</table>

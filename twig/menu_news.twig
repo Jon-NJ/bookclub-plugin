@@ -1,0 +1,116 @@
+<div class='bc_help'>
+ <div id='htmlhelp'></div>
+ <button id="close_help">X</button>
+</div>
+<div class="bc_news bc_{{ mode }}">
+ <div class="bc_main">
+  <h1>{{ title }}</h1>
+  <input type="hidden" id="nonce" name="nonce" value="{{ nonce }}" />
+  <input type="hidden" id="referer" name="referer" value="{{ referer }}" />
+  <input type="hidden" id="mode" name="mode" value="{{ mode }}" />
+  <input type="hidden" id="delete_text" name="delete_text" value="Do you really want to delete?" />
+  <section class='bc_toolbar'>
+   <section class='bc_form_lines'>
+    <div class='bc_form_label'>Tools:</div>
+    <div class='bc_form_data'>
+     <button id='button_help'>
+      <img src='{{ images }}help.png'/> Help
+     </button>
+     {% if "edit" == mode %}
+      <button id='button_add' disabled>
+       <img src='{{ images }}plus.png'/> Add
+      </button>
+      <button id='button_reset'>
+       <img src='{{ images }}reset.png'/> Restart
+      </button>
+     {% else %}
+      <button id='button_add'>
+       <img src='{{ images }}plus.png'/> Add
+      </button>
+      <button id='button_search'>
+       <img src='{{ images }}search.png'/> Search
+      </button>
+     {% endif %}
+     {% if "edit" == mode %}
+      <button id='button_save'>
+       <img src='{{ images }}save.png'/> Save
+      </button>
+      <button id='button_delete'>
+       <img src='{{ images }}drop.png'/> Delete
+      </button>
+     {% else %}
+      <button id='button_save' disabled>
+       <img src='{{ images }}save.png'/> Save
+      </button>
+      <button id='button_delete' disabled>
+       <img src='{{ images }}drop.png'/> Delete
+      </button>
+     {% endif %}
+    </div>
+   </section>
+  </section>
+  <div class='bc_notice_area'>
+   <div id='bc_notice' class='bc_notice'>
+    <p id='bc_message' class='bc_message'>***</p>
+   </div>
+  </div>
+  <section class='bc_form_lines'>
+   <div class='bc_form_label'>Post DateTime:</div>
+   <div class='bc_form_data'>
+    {% if "edit" == mode %}
+     <input type='text' size='12' id='datetime' name='datetime' value='{{ datetime }}' readonly/>
+    {% else %}
+     <input type='text' size='12' id='datetime' name='datetime' value='{{ datetime }}'/>
+     <i>YYYY-MM-DD format, leave empty when adding</i>
+    {% endif %}
+   </div>
+   {% if "edit" != mode %}
+    <div class='bc_dates_label'>Maximum Age:</div>
+    <div class='bc_dates_data'>
+     <input type='text' size='12' id='age' name='age' value='{{ age }}'/>
+     Months
+    </div>
+   {% endif %}
+   <div class='bc_form_label'>Poster:</div>
+   <div class='bc_form_data'>
+    <input type='text' size='12' id='poster' name='poster' list='poster_list' value='{{ poster }}'/>
+    <datalist id='poster_list'>
+     {% for poster in posters|keys %}
+      <option value='{{ poster }}'/>
+     {% endfor %}
+    </datalist>
+    {% if "edit" != mode %}
+     <i>leave empty when adding</i>
+    {% endif %}
+   </div>
+   <div class='bc_form_label'>Post:</div>
+   <div class='bc_form_data'>
+    {% if "edit" == mode %}
+     <textarea rows='15' cols='100' id='news' name='news'>{{ news }}</textarea>
+    {% else %}
+     <textarea rows='2' cols='50' id='news' name='news'>{{ news }}</textarea>
+    {% endif %}
+   </div>
+  </section>
+ </div>
+ {% if "search" == mode %}
+  <div class='bc_extra'>
+   {% if not found|length %}
+    <hr/>
+    <div class='bc_noresults'>Nothing matches.</div>
+   {% else %}
+    <section class='bc_news_results'>
+     <div class='bc_head bc_news_date'>When</div>
+     <div class='bc_head bc_news_poster'>Who</div>
+     <div class='bc_head bc_news_news'>Post</div>
+     {% for find in found %}
+      <div class='bc_line bc_news_date' id='date_{{ find.line }}'>{{ find.datetime|date('Y-m-d') }}</div>
+      <div class='bc_line bc_news_datetime' id='dt_{{ find.line }}'>{{ find.datetime|date('Y-m-d H:i:s') }}</div>
+      <div class='bc_line bc_news_poster' id='poster_{{ find.line }}'>{{ find.poster }}</div>
+      <div class='bc_line bc_news_news' id='news_{{ find.line }}'>{{ find.news }}</div>
+     {% endfor %}
+    </section>
+   {% endif %}
+  </div>
+ {% endif %}
+</div>

@@ -1,0 +1,13 @@
+{% for book in books %}
+ <div class='bc_book_date'>{{ book.date|date('F j') }}</div>
+ <div class='bc_book_group'>{{ book.tag }}</div>
+ <div class='bc_book_link'>
+  <i><b>
+   <a href='{{ book.url }}' target="_blank">{{ book.title }}</a>
+  </b></i>
+  by <b>{{ book.author }}</b>
+  {% if book.private %}
+   (<i>private</i>)
+  {% endif %}
+ </div>
+{% endfor %}

@@ -1,0 +1,7 @@
+{% if 0 == participants|length %}
+ <h4 style='margin:0px;'>- none -</h4>
+{% else %}
+ {% for participant in participants %}
+  {{ participant }}<br/>
+ {% endfor %}
+{% endif %}
