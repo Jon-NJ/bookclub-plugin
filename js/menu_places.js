@@ -16,39 +16,44 @@ function handle_result(flag, message, redirect) {
         notice.attr('class', 'bc_notice notice notice-success');
     }
     notice.css("visibility", "visible");
-    setTimeout(function() {
+    setTimeout(function () {
         notice.css("visibility", "hidden");
         if (redirect) {
             window.location = redirect;
-        }}, 3000);
+        }
+    }, 3000);
 }
 
-jQuery('#close_help').on('click', function(e) {
+jQuery('#close_help').on('click', function (e) {
     e.preventDefault();
     jQuery(".bc_help").hide();
 });
 
-jQuery('#button_help').on('click', function(e) {
+jQuery('#button_help').on('click', function (e) {
     e.preventDefault();
     jQuery.ajax({
         type: "post",
-        url:  bookclub_ajax_object.ajax_url,
+        url: bookclub_ajax_object.ajax_url,
         data: {
-            'action':  'bc_places_help',
-            'nonce':   jQuery('#nonce').val()
+            'action': 'bc_places_help',
+            'nonce': jQuery('#nonce').val()
         }
     })
-    .done(function(data) {
-        if (data) {
-            let json = jQuery.parseJSON(data);
+        .done(function (data) {
+            let json;
+            try {
+                json = jQuery.parseJSON(data);
+            } catch (e) {
+                console.log(`bc_places_help exception ${e.message}`);
+                return;
+            }
             jQuery('#htmlhelp').html(json['html']);
             jQuery(".bc_help").show();
-        }
-    })
-    .fail(function(jqXHR, text, error) {
-        console.log(error);
-        handle_result(true, error);
-    });
+        })
+        .fail(function (jqXHR, text, error) {
+            console.log(`bc_places_help ${text} ${error}`);
+            handle_result(true, error);
+        });
 });
 
 function add_highlight(name, style) {
@@ -73,9 +78,9 @@ function remove_hide(name) {
     jQuery('#' + name).removeClass('hide');
 }
 
-jQuery('#button_search').on('click', function(e) {
+jQuery('#button_search').on('click', function (e) {
     e.preventDefault();
-    let parms = { action:'search' };
+    let parms = { action: 'search' };
     let placeid = jQuery('#place_id').val();
     if ('' !== placeid) {
         parms.placeid = placeid;
@@ -100,146 +105,158 @@ jQuery('#button_search').on('click', function(e) {
     window.location = searchurl;
 });
 
-jQuery('#button_reset').on('click', function(e) {
+jQuery('#button_reset').on('click', function (e) {
     e.preventDefault();
     window.location = jQuery('#referer').val();
 });
 
-jQuery('#button_delete').on('click', function(e) {
+jQuery('#button_delete').on('click', function (e) {
     e.preventDefault();
     if (confirm(jQuery('#delete_text').val())) {
         jQuery.ajax({
             type: "post",
-            url:  bookclub_ajax_object.ajax_url,
+            url: bookclub_ajax_object.ajax_url,
             data: {
-                'action':  'bc_places_delete',
-                'nonce':   jQuery('#nonce').val(),
+                'action': 'bc_places_delete',
+                'nonce': jQuery('#nonce').val(),
                 'placeid': jQuery('#place_id').val()
             }
         })
-        .done(function(data) {
-            if (data) {
-                let json = jQuery.parseJSON(data);
+            .done(function (data) {
+                let json;
+                try {
+                    json = jQuery.parseJSON(data);
+                } catch (e) {
+                    console.log(`bc_places_delete exception ${e.message}`);
+                    return;
+                }
                 if (json['error']) {
                     handle_result(json['error'], json['message']);
                 } else {
                     handle_result(json['error'], json['message'],
                         window.location = jQuery('#referer').val());
                 }
-            }
-        })
-        .fail(function(jqXHR, text, error) {
-            console.log(error);
-            handle_result(true, error);
-        });
+            })
+            .fail(function (jqXHR, text, error) {
+                console.log(`bc_places_delete ${text} ${error}`);
+                handle_result(true, error);
+            });
     }
 });
 
-jQuery('#button_save').on('click', function(e) {
+jQuery('#button_save').on('click', function (e) {
     e.preventDefault();
     jQuery.ajax({
         type: "post",
-        url:  bookclub_ajax_object.ajax_url,
+        url: bookclub_ajax_object.ajax_url,
         data: {
-            'action':     'bc_places_save',
-            'nonce':      jQuery('#nonce').val(),
-            'referer':    jQuery('#referer').val(),
-            'placeid':    jQuery('#place_id').val(),
-            'place':      jQuery('#place').val(),
-            'address':    jQuery('#address').val(),
-            'map':        jQuery('#map').val(),
+            'action': 'bc_places_save',
+            'nonce': jQuery('#nonce').val(),
+            'referer': jQuery('#referer').val(),
+            'placeid': jQuery('#place_id').val(),
+            'place': jQuery('#place').val(),
+            'address': jQuery('#address').val(),
+            'map': jQuery('#map').val(),
             'directions': jQuery('#directions').val()
         }
     })
-    .done(function(data) {
-        if (data) {
-            let json = jQuery.parseJSON(data);
+        .done(function (data) {
+            let json;
+            try {
+                json = jQuery.parseJSON(data);
+            } catch (e) {
+                console.log(`bc_places_save exception ${e.message}`);
+                return;
+            }
             handle_result(json['error'], json['message']);
-        }
-    })
-    .fail(function(jqXHR, text, error) {
-        console.log(error);
-    });
+        })
+        .fail(function (jqXHR, text, error) {
+            console.log(`bc_places_save ${text} ${error}`);
+        });
 });
 
-jQuery('#button_add').on('click', function(e) {
+jQuery('#button_add').on('click', function (e) {
     e.preventDefault();
     jQuery.ajax({
         type: "post",
-        url:  bookclub_ajax_object.ajax_url,
+        url: bookclub_ajax_object.ajax_url,
         data: {
-            'action':     'bc_places_add',
-            'nonce':      jQuery('#nonce').val(),
-            'referer':    jQuery('#referer').val(),
-            'placeid':    jQuery('#place_id').val(),
-            'place':      jQuery('#place').val(),
-            'address':    jQuery('#address').val(),
-            'map':        jQuery('#map').val(),
+            'action': 'bc_places_add',
+            'nonce': jQuery('#nonce').val(),
+            'referer': jQuery('#referer').val(),
+            'placeid': jQuery('#place_id').val(),
+            'place': jQuery('#place').val(),
+            'address': jQuery('#address').val(),
+            'map': jQuery('#map').val(),
             'directions': jQuery('#directions').val()
         }
     })
-    .done(function(data) {
-        if (data) {
-            let json = jQuery.parseJSON(data);
-            let parms = {action:'edit'};
+        .done(function (data) {
+            let json;
+            try {
+                json = jQuery.parseJSON(data);
+            } catch (e) {
+                console.log(`bc_places_add exception ${e.message}`);
+                return;
+            }
+            let parms = { action: 'edit' };
             parms.placeid = json['place_id'];
             editurl = jQuery('#referer').val() + '&' + jQuery.param(parms);
             handle_result(json['error'], json['message'], editurl);
-        }
-    })
-    .fail(function(jqXHR, text, error) {
-        console.log(error);
-    });
+        })
+        .fail(function (jqXHR, text, error) {
+            console.log(`bc_places_add ${text} ${error}`);
+        });
 });
 
 function edit_place(placeid) {
-    let parms = {action:'edit'};
+    let parms = { action: 'edit' };
     parms.placeid = placeid;
     editurl = jQuery('#referer').val() + '&' + jQuery.param(parms);
     window.location = editurl;
 }
 
-jQuery('.bc_places_id').on('click', function(e) {
+jQuery('.bc_places_id').on('click', function (e) {
     edit_place(e.target.id.substring(3));
 });
 
-jQuery('.bc_places_place').on('click', function(e) {
+jQuery('.bc_places_place').on('click', function (e) {
     edit_place(e.target.id.substring(6));
 });
 
-jQuery('.bc_places_address').on('click', function(e) {
+jQuery('.bc_places_address').on('click', function (e) {
     edit_place(e.target.id.substring(4));
 });
 
 function highlight_line(placeid) {
-    add_highlight('id_'    + placeid, 'bc_results_highlight');
+    add_highlight('id_' + placeid, 'bc_results_highlight');
     add_highlight('place_' + placeid, 'bc_results_highlight');
-    add_highlight('adr_'   + placeid, 'bc_results_highlight');
+    add_highlight('adr_' + placeid, 'bc_results_highlight');
 }
 
 function unhighlight_line(placeid) {
-    remove_highlight('id_'    + placeid, 'bc_results_highlight');
+    remove_highlight('id_' + placeid, 'bc_results_highlight');
     remove_highlight('place_' + placeid, 'bc_results_highlight');
-    remove_highlight('adr_'   + placeid, 'bc_results_highlight');
+    remove_highlight('adr_' + placeid, 'bc_results_highlight');
 }
 
 jQuery('.bc_places_id').hover(function (e) {
     highlight_line(e.target.id.substring(3));
-}, 
-function (e) {
-    unhighlight_line(e.target.id.substring(3));
-});
+},
+    function (e) {
+        unhighlight_line(e.target.id.substring(3));
+    });
 
 jQuery('.bc_places_place').hover(function (e) {
     highlight_line(e.target.id.substring(6));
-}, 
-function (e) {
-    unhighlight_line(e.target.id.substring(6));
-});
+},
+    function (e) {
+        unhighlight_line(e.target.id.substring(6));
+    });
 
 jQuery('.bc_places_address').hover(function (e) {
     highlight_line(e.target.id.substring(4));
-}, 
-function (e) {
-    unhighlight_line(e.target.id.substring(4));
-});
+},
+    function (e) {
+        unhighlight_line(e.target.id.substring(4));
+    });

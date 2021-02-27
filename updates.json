@@ -1,5 +1,12 @@
 {
-    "version" : "030218",
+    "version" : "030227",
+    "030218": {
+        "next": "030227",
+        "comment": "Widen group description column",
+        "steps": [
+            "ALTER TABLE {{prefix}}groups MODIFY COLUMN description varchar(80) NOT NULL DEFAULT ''"
+        ]
+    },
     "021230": {
         "next": "030218",
         "comment": "Remove unused member receive from others flag. Add subject to imap table",

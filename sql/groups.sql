@@ -2,7 +2,7 @@ CREATE TABLE `{{table}}` (
   `group_id` int(10) UNSIGNED NOT NULL,
   `type` int(10) UNSIGNED NOT NULL,
   `tag` varchar(20) NOT NULL DEFAULT '',
-  `description` varchar(50) NOT NULL DEFAULT '',
+  `description` varchar(80) NOT NULL DEFAULT '',
   `url` varchar(50) NOT NULL DEFAULT '',
   `t_event_id` varchar(80) NOT NULL DEFAULT '',
   `t_max_attend` varchar(5) NOT NULL DEFAULT '',

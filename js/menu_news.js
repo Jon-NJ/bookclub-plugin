@@ -16,11 +16,12 @@ function handle_result(flag, message, redirect) {
         notice.attr('class', 'bc_notice notice notice-success');
     }
     notice.css("visibility", "visible");
-    setTimeout(function() {
+    setTimeout(function () {
         notice.css("visibility", "hidden");
         if (redirect) {
             window.location = redirect;
-        }}, 3000);
+        }
+    }, 3000);
 }
 
 function add_highlight(name, style) {
@@ -45,37 +46,41 @@ function remove_hide(name) {
     jQuery('#' + name).removeClass('hide');
 }
 
-jQuery('#close_help').on('click', function(e) {
+jQuery('#close_help').on('click', function (e) {
     e.preventDefault();
     jQuery(".bc_help").hide();
 });
 
-jQuery('#button_help').on('click', function(e) {
+jQuery('#button_help').on('click', function (e) {
     e.preventDefault();
     jQuery.ajax({
         type: "post",
-        url:  bookclub_ajax_object.ajax_url,
+        url: bookclub_ajax_object.ajax_url,
         data: {
-            'action':  'bc_news_help',
-            'nonce':   jQuery('#nonce').val()
+            'action': 'bc_news_help',
+            'nonce': jQuery('#nonce').val()
         }
     })
-    .done(function(data) {
-        if (data) {
-            let json = jQuery.parseJSON(data);
+        .done(function (data) {
+            let json;
+            try {
+                json = jQuery.parseJSON(data);
+            } catch (e) {
+                console.log(`bc_news_help exception ${e.message}`);
+                return;
+            }
             jQuery('#htmlhelp').html(json['html']);
             jQuery(".bc_help").show();
-        }
-    })
-    .fail(function(jqXHR, text, error) {
-        console.log(error);
-        handle_result(true, error);
-    });
+        })
+        .fail(function (jqXHR, text, error) {
+            console.log(`bc_news_help ${text} ${error}`);
+            handle_result(true, error);
+        });
 });
 
-jQuery('#button_search').on('click', function(e) {
+jQuery('#button_search').on('click', function (e) {
     e.preventDefault();
-    let parms = { action:'search' };
+    let parms = { action: 'search' };
     let datetime = jQuery('#datetime').val();
     if ('' !== datetime) {
         parms.datetime = datetime;
@@ -96,146 +101,158 @@ jQuery('#button_search').on('click', function(e) {
     window.location = searchurl;
 });
 
-jQuery('#button_reset').on('click', function(e) {
+jQuery('#button_reset').on('click', function (e) {
     e.preventDefault();
     window.location = jQuery('#referer').val();
 });
 
-jQuery('#button_delete').on('click', function(e) {
+jQuery('#button_delete').on('click', function (e) {
     e.preventDefault();
     if (confirm(jQuery('#delete_text').val())) {
         jQuery.ajax({
             type: "post",
-            url:  bookclub_ajax_object.ajax_url,
+            url: bookclub_ajax_object.ajax_url,
             data: {
-                'action':   'bc_news_delete',
-                'nonce':    jQuery('#nonce').val(),
+                'action': 'bc_news_delete',
+                'nonce': jQuery('#nonce').val(),
                 'datetime': jQuery('#datetime').val()
             }
         })
-        .done(function(data) {
-            if (data) {
-                let json = jQuery.parseJSON(data);
+            .done(function (data) {
+                let json;
+                try {
+                    json = jQuery.parseJSON(data);
+                } catch (e) {
+                    console.log(`bc_news_delete exception ${e.message}`);
+                    return;
+                }
                 if (json['error']) {
                     handle_result(json['error'], json['message']);
                 } else {
                     handle_result(json['error'], json['message'],
                         window.location = jQuery('#referer').val());
                 }
-            }
-        })
-        .fail(function(jqXHR, text, error) {
-            console.log(error);
-            handle_result(true, error);
-        });
+            })
+            .fail(function (jqXHR, text, error) {
+                console.log(`bc_news_delete ${text} ${error}`);
+                handle_result(true, error);
+            });
     }
 });
 
-jQuery('#button_save').on('click', function(e) {
+jQuery('#button_save').on('click', function (e) {
     e.preventDefault();
     jQuery.ajax({
         type: "post",
-        url:  bookclub_ajax_object.ajax_url,
+        url: bookclub_ajax_object.ajax_url,
         data: {
-            'action':   'bc_news_save',
-            'nonce':    jQuery('#nonce').val(),
-            'referer':  jQuery('#referer').val(),
+            'action': 'bc_news_save',
+            'nonce': jQuery('#nonce').val(),
+            'referer': jQuery('#referer').val(),
             'datetime': jQuery('#datetime').val(),
-            'poster':   jQuery('#poster').val(),
-            'news':     jQuery('#news').val()
+            'poster': jQuery('#poster').val(),
+            'news': jQuery('#news').val()
         }
     })
-    .done(function(data) {
-        if (data) {
-            let json = jQuery.parseJSON(data);
+        .done(function (data) {
+            let json;
+            try {
+                json = jQuery.parseJSON(data);
+            } catch (e) {
+                console.log(`bc_news_save exception ${e.message}`);
+                return;
+            }
             handle_result(json['error'], json['message']);
-        }
-    })
-    .fail(function(jqXHR, text, error) {
-        console.log(error);
-    });
+        })
+        .fail(function (jqXHR, text, error) {
+            console.log(`bc_news_save ${text} ${error}`);
+        });
 });
 
-jQuery('#button_add').on('click', function(e) {
+jQuery('#button_add').on('click', function (e) {
     e.preventDefault();
     jQuery.ajax({
         type: "post",
-        url:  bookclub_ajax_object.ajax_url,
+        url: bookclub_ajax_object.ajax_url,
         data: {
-            'action':   'bc_news_add',
-            'nonce':    jQuery('#nonce').val(),
-            'referer':  jQuery('#referer').val(),
+            'action': 'bc_news_add',
+            'nonce': jQuery('#nonce').val(),
+            'referer': jQuery('#referer').val(),
             'datetime': jQuery('#datetime').val(),
-            'poster':   jQuery('#poster').val(),
-            'news':     jQuery('#news').val()
+            'poster': jQuery('#poster').val(),
+            'news': jQuery('#news').val()
         }
     })
-    .done(function(data) {
-        if (data) {
-            let json = jQuery.parseJSON(data);
-            let error   = json['error'];
+        .done(function (data) {
+            let json;
+            try {
+                json = jQuery.parseJSON(data);
+            } catch (e) {
+                console.log(`bc_news_add exception ${e.message}`);
+                return;
+            }
+            let error = json['error'];
             let editurl = '';
             if (!error) {
-                let parms = {action:'edit'};
+                let parms = { action: 'edit' };
                 parms.datetime = json['datetime'];
                 editurl = jQuery('#referer').val() + '&' + jQuery.param(parms);
             }
             handle_result(json['error'], json['message'], editurl);
-        }
-    })
-    .fail(function(jqXHR, text, error) {
-        console.log(error);
-    });
+        })
+        .fail(function (jqXHR, text, error) {
+            console.log(`bc_news_add ${text} ${error}`);
+        });
 });
 
 function edit_news(line) {
-    let parms = {action:'edit'};
+    let parms = { action: 'edit' };
     parms.datetime = jQuery('#dt_' + line).text();
     editurl = jQuery('#referer').val() + '&' + jQuery.param(parms);
     window.location = editurl;
 }
 
-jQuery('.bc_news_date').on('click', function(e) {
+jQuery('.bc_news_date').on('click', function (e) {
     edit_news(e.target.id.substring(5));
 });
 
-jQuery('.bc_news_poster').on('click', function(e) {
+jQuery('.bc_news_poster').on('click', function (e) {
     edit_news(e.target.id.substring(7));
 });
 
-jQuery('.bc_news_news').on('click', function(e) {
+jQuery('.bc_news_news').on('click', function (e) {
     edit_news(e.target.id.substring(5));
 });
 
 function highlight_line(placeid) {
-    add_highlight('date_'   + placeid, 'bc_results_highlight');
+    add_highlight('date_' + placeid, 'bc_results_highlight');
     add_highlight('poster_' + placeid, 'bc_results_highlight');
-    add_highlight('news_'   + placeid, 'bc_results_highlight');
+    add_highlight('news_' + placeid, 'bc_results_highlight');
 }
 
 function unhighlight_line(placeid) {
-    remove_highlight('date_'   + placeid, 'bc_results_highlight');
+    remove_highlight('date_' + placeid, 'bc_results_highlight');
     remove_highlight('poster_' + placeid, 'bc_results_highlight');
-    remove_highlight('news_'   + placeid, 'bc_results_highlight');
+    remove_highlight('news_' + placeid, 'bc_results_highlight');
 }
 
 jQuery('.bc_news_date').hover(function (e) {
     highlight_line(e.target.id.substring(5));
-}, 
-function (e) {
-    unhighlight_line(e.target.id.substring(5));
-});
+},
+    function (e) {
+        unhighlight_line(e.target.id.substring(5));
+    });
 
 jQuery('.bc_news_poster').hover(function (e) {
     highlight_line(e.target.id.substring(7));
-}, 
-function (e) {
-    unhighlight_line(e.target.id.substring(7));
-});
+},
+    function (e) {
+        unhighlight_line(e.target.id.substring(7));
+    });
 
 jQuery('.bc_news_news').hover(function (e) {
     highlight_line(e.target.id.substring(5));
-}, 
-function (e) {
-    unhighlight_line(e.target.id.substring(5));
-});
+},
+    function (e) {
+        unhighlight_line(e.target.id.substring(5));
+    });

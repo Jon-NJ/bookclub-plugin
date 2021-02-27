@@ -16,11 +16,12 @@ function handle_result(flag, message, redirect) {
         notice.attr('class', 'bc_notice notice notice-success');
     }
     notice.css("visibility", "visible");
-    setTimeout(function() {
+    setTimeout(function () {
         notice.css("visibility", "hidden");
         if (redirect) {
             window.location = redirect;
-        }}, 3000);
+        }
+    }, 3000);
 }
 
 function add_highlight(name, style) {
@@ -45,74 +46,82 @@ function remove_hide(name) {
     jQuery('#' + name).removeClass('hide');
 }
 
-jQuery('#close_help').on('click', function(e) {
+jQuery('#close_help').on('click', function (e) {
     e.preventDefault();
     jQuery(".bc_help").hide();
 });
 
-jQuery('#button_help').on('click', function(e) {
+jQuery('#button_help').on('click', function (e) {
     e.preventDefault();
     jQuery.ajax({
         type: "post",
-        url:  bookclub_ajax_object.ajax_url,
+        url: bookclub_ajax_object.ajax_url,
         data: {
-            'action':  'bc_covers_help',
-            'nonce':   jQuery('#nonce').val()
+            'action': 'bc_covers_help',
+            'nonce': jQuery('#nonce').val()
         }
     })
-    .done(function(data) {
-        if (data) {
-            let json = jQuery.parseJSON(data);
+        .done(function (data) {
+            let json;
+            try {
+                json = jQuery.parseJSON(data);
+            } catch (e) {
+                console.log(`bc_covers_help exception ${e.message}`);
+                return;
+            }
             jQuery('#htmlhelp').html(json['html']);
             jQuery(".bc_help").show();
-        }
-    })
-    .fail(function(jqXHR, text, error) {
-        console.log(error);
-        handle_result(true, error);
-    });
+        })
+        .fail(function (jqXHR, text, error) {
+            console.log(`bc_covers_help ${text} ${error}`);
+            handle_result(true, error);
+        });
 });
 
 var stuck = '';
 
-jQuery('#button_rename').on('click', function(e) {
+jQuery('#button_rename').on('click', function (e) {
     e.preventDefault();
     let newname = jQuery('#cover').val();
     let original = jQuery('#filename').val();
     jQuery.ajax({
         type: "post",
-        url:  bookclub_ajax_object.ajax_url,
+        url: bookclub_ajax_object.ajax_url,
         data: {
-            'action':  'bc_covers_rename',
-            'nonce':    jQuery('#nonce').val(),
-            'referer':  jQuery('#referer').val(),
+            'action': 'bc_covers_rename',
+            'nonce': jQuery('#nonce').val(),
+            'referer': jQuery('#referer').val(),
             'original': original,
-            'newname':  newname
+            'newname': newname
         }
     })
-    .done(function(data) {
-        if (data) {
-            let json = jQuery.parseJSON(data);
+        .done(function (data) {
+            let json;
+            try {
+                json = jQuery.parseJSON(data);
+            } catch (e) {
+                console.log(`bc_covers_rename exception ${e.message}`);
+                return;
+            }
             if (json['error']) {
                 handle_result(json['error'], json['message']);
             } else {
-                let parms = {action:'edit'};
+                let parms = { action: 'edit' };
                 parms.cover = newname;
                 editurl = jQuery('#referer').val() + '&' + jQuery.param(parms);
                 handle_result(json['error'], json['message'], editurl);
             }
-        }
-    })
-    .fail(function(jqXHR, text, error) {
-        console.log(error);
-    });
+        })
+        .fail(function (jqXHR, text, error) {
+            console.log(`bc_covers_rename ${text} ${error}`);
+        });
 });
 
 function rename_validate() {
     let button_rename = jQuery('#button_rename');
     let undo_button = jQuery('#undo_name');
     if (('edit' === jQuery('#mode').val()) &&
-            (jQuery('#cover').val() !== jQuery('#filename').val())) {
+        (jQuery('#cover').val() !== jQuery('#filename').val())) {
         button_rename.removeAttr('disabled');
         undo_button.removeAttr('disabled');
     } else {
@@ -121,11 +130,11 @@ function rename_validate() {
     }
 }
 
-jQuery('#cover').on('input', function(e) {
+jQuery('#cover').on('input', function (e) {
     rename_validate();
 });
 
-jQuery('#undo_name').on('click', function(e) {
+jQuery('#undo_name').on('click', function (e) {
     e.preventDefault();
     let cover = jQuery('#cover');
     let original = jQuery('#filename').val();
@@ -133,9 +142,9 @@ jQuery('#undo_name').on('click', function(e) {
     rename_validate();
 });
 
-jQuery('#button_search').on('click', function(e) {
+jQuery('#button_search').on('click', function (e) {
     e.preventDefault();
-    let parms = { action:'search' };
+    let parms = { action: 'search' };
     let cover = jQuery('#cover').val();
     let older = jQuery('#older').val();
     let younger = jQuery('#younger').val();
@@ -160,60 +169,64 @@ jQuery('#button_search').on('click', function(e) {
     window.location = searchurl;
 });
 
-jQuery('#button_reset').on('click', function(e) {
+jQuery('#button_reset').on('click', function (e) {
     e.preventDefault();
     window.location = jQuery('#referer').val();
 });
 
-jQuery('#file-upload').on('input', function(e) {
+jQuery('#file-upload').on('input', function (e) {
     let fd = new FormData();
-    fd.append('file_0' , e.target.files[0]);
+    fd.append('file_0', e.target.files[0]);
     fd.append('length', 1);
     uploadCovers(fd);
 });
 
-jQuery('#button_add').on('click', function(e) {
+jQuery('#button_add').on('click', function (e) {
     e.preventDefault();
     let upload = jQuery('#file-upload');
     upload.click();
 });
 
-jQuery('#button_delete').on('click', function(e) {
+jQuery('#button_delete').on('click', function (e) {
     e.preventDefault();
     if (confirm(jQuery('#delete_text').val())) {
         jQuery.ajax({
             type: "post",
-            url:  bookclub_ajax_object.ajax_url,
+            url: bookclub_ajax_object.ajax_url,
             data: {
                 'action': 'bc_covers_delete',
-                'nonce':  jQuery('#nonce').val(),
-                'cover':  jQuery('#filename').val()
+                'nonce': jQuery('#nonce').val(),
+                'cover': jQuery('#filename').val()
             }
         })
-        .done(function(data) {
-            if (data) {
-                let json = jQuery.parseJSON(data);
+            .done(function (data) {
+                let json;
+                try {
+                    json = jQuery.parseJSON(data);
+                } catch (e) {
+                    console.log(`bc_covers_delete exception ${e.message}`);
+                    return;
+                }
                 if (json['error']) {
                     handle_result(json['error'], json['message']);
                 } else {
                     handle_result(json['error'], json['message'],
                         window.location = jQuery('#referer').val());
                 }
-            }
-        })
-        .fail(function(jqXHR, text, error) {
-            console.log(error);
-            handle_result(true, error);
-        });
+            })
+            .fail(function (jqXHR, text, error) {
+                console.log(`bc_covers_delete ${text} ${error}`);
+                handle_result(true, error);
+            });
     }
 });
 
-jQuery('.bc_covers_item').on('click', function(e) {
+jQuery('.bc_covers_item').on('click', function (e) {
     let div = e.target;
     if ('DIV' !== div.nodeName) {
         div = div.parentElement;
     }
-    let parms = {action:'edit'};
+    let parms = { action: 'edit' };
     parms.cover = div.lastElementChild.innerHTML;
     editurl = jQuery('#referer').val() + '&' + jQuery.param(parms);
     window.location = editurl;
@@ -239,15 +252,15 @@ jQuery('.bc_covers_item').hover(function (e) {
     }
     let cid = div.id.substring(4);
     highlight_line(cid);
-}, 
-function (e) {
-    let div = e.target;
-    if ('DIV' !== div.nodeName) {
-        div = div.parentElement;
-    }
-    let cid = div.id.substring(4);
-    unhighlight_line(cid);
-});
+},
+    function (e) {
+        let div = e.target;
+        if ('DIV' !== div.nodeName) {
+            div = div.parentElement;
+        }
+        let cid = div.id.substring(4);
+        unhighlight_line(cid);
+    });
 
 function uploadCovers(formdata) {
     formdata.append('action', 'bc_covers_upload');
@@ -255,28 +268,32 @@ function uploadCovers(formdata) {
     formdata.append('referer', jQuery('#referer').val());
     jQuery.ajax({
         type: "post",
-        url:  bookclub_ajax_object.ajax_url,
+        url: bookclub_ajax_object.ajax_url,
         data: formdata,
         processData: false,
         contentType: false
     })
-    .done(function(data) {
-        if (data) {
-            let json = jQuery.parseJSON(data);
+        .done(function (data) {
+            let json;
+            try {
+                json = jQuery.parseJSON(data);
+            } catch (e) {
+                console.log(`bc_covers_upload exception ${e.message}`);
+                return;
+            }
             if (json['error']) {
                 handle_result(json['error'], json['message']);
             } else {
-                let parms = {action:'edit'};
+                let parms = { action: 'edit' };
                 parms.cover = json['cover'];
                 editurl = jQuery('#referer').val() + '&' + jQuery.param(parms);
                 handle_result(json['error'], json['message'], editurl);
             }
-        }
-    })
-    .fail(function(jqXHR, text, error) {
-        console.log(error);
-        handle_result(true, error);
-    });
+        })
+        .fail(function (jqXHR, text, error) {
+            console.log(`bc_covers_upload ${text} ${error}`);
+            handle_result(true, error);
+        });
 }
 
 jQuery('html').on('dragover dragenter', false);
@@ -284,10 +301,10 @@ jQuery('form').on('drop', false);
 
 jQuery('.bc_covers_image').on(
     'drop',
-    function(e){
+    function (e) {
         e.preventDefault();
         e.stopPropagation();
-        if(e.originalEvent.dataTransfer && e.originalEvent.dataTransfer.files.length) {
+        if (e.originalEvent.dataTransfer && e.originalEvent.dataTransfer.files.length) {
             let fd = new FormData();
             let files = e.originalEvent.dataTransfer.files;
             for (let i = 0; i < files.length; ++i) {

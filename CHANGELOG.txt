@@ -1,3 +1,9 @@
+2021-02-27  3.2.27
+- JavaScript try/catch for ajax.
+- Twenty second timeout for imap open.
+- Widen group description field.
+- Re-label "Receive EMail from others" as "Participate in group email".
+
 2021-02-18  3.2.18
 - Changes for forwarding.
   - Switch using "first last" to "nicename" as the default for email forwarder.

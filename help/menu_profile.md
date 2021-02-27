@@ -23,7 +23,7 @@ The software is still in development. Please report any problems to your [site a
 
 **Privacy** - Privacy configuration.
 - **EMail Address** - Private/Public. If your email address is public, other book club members may see it on an RSVP.
-- **Receive EMail from others** - No/Yes - An email forwarder (list server) is available. This allows your bookclub group selection to also serve as a list server for email conversations. A more detailed explanation is given at the bottom of this help. This is an opt-in feature, but everyone is encouraged to select it.
+- **Participate in group email** - No/Yes - This indicates that you are to be included in group emails from list-server. Your email address is kept private. A more detailed explanation is given at the bottom of this help.
 
 **Book Club groups** - This is a list of bookclub groups. When the check mark is set, it indicates that you would like to be invited to future meetings of the given group. But it is also not a guarantee that you will be invited. Some meetings may be private, restricted to a core group.
 {% if forwarder %}
@@ -54,7 +54,7 @@ In computer-speak, this is often called a "**LISTSERV**" (list server). Typicall
 
 This forwarder is slightly different, it is configured with a single email account. In order for it to handle multiple lists and direct messages, the name part of the email address is taken as the list name or it identifies a user in order to send direct messages.
 
-The forwarder also serves as an anonymizer. If you send an email to the forwarder, your name and login ID will be disclosed but your email address will be kept private. The login name is unique, so it works as the best identifier. It is considered semi-private, only available to people with an account.
+The forwarder also serves as an anonymizer. If you send an email to the forwarder, your name and login ID will be disclosed but your email address will be kept private. The login name is unique, so it works as the best identifier.
 
 What this means for our bookclub is that for the group with the tag "Group 1" you would send an email to "Group 1 &lt;{{ forwarder }}&gt;".
 
@@ -65,7 +65,7 @@ This is an opt-in feature. But it is only useful if people opt-in, so you are en
 The feature is still experimental. Here are a few things to know before you use the feature:
 - You can only send from the email address registered in WordPress. **EMails from other addresses will be ignored.**
 - It is a WordPress only feature - members who have not yet created an account cannot participate.
-- Only users with the opt-in setting 'Receive EMail from others' of 'Yes'. Can send messages. This is because it must be possible to reply to them with a direct message.
+- Only users with the opt-in setting 'Participate in group email' of 'Yes'. Can send messages. This is because it must be possible to reply to them with a direct message.
 - There are various categories of forwarding behavior. The rules for who can send vary by the category.
   - Direct messages. The receiver must have opted-in, but they do not need to be in any groups.
   - Bookclub groups. The sender can be an administrator or a member of the group. Only users who have opted-in will receive the message.
