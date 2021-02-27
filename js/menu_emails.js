@@ -16,39 +16,44 @@ function handle_result(flag, message, redirect) {
         notice.attr('class', 'bc_notice notice notice-success');
     }
     notice.css("visibility", "visible");
-    setTimeout(function() {
+    setTimeout(function () {
         notice.css("visibility", "hidden");
         if (redirect) {
             window.location = redirect;
-        }}, 3000);
+        }
+    }, 3000);
 }
 
-jQuery('#close_help').on('click', function(e) {
+jQuery('#close_help').on('click', function (e) {
     e.preventDefault();
     jQuery(".bc_help").hide();
 });
 
-jQuery('#button_help').on('click', function(e) {
+jQuery('#button_help').on('click', function (e) {
     e.preventDefault();
     jQuery.ajax({
         type: "post",
-        url:  bookclub_ajax_object.ajax_url,
+        url: bookclub_ajax_object.ajax_url,
         data: {
-            'action':  'bc_email_help',
-            'nonce':   jQuery('#nonce').val()
+            'action': 'bc_email_help',
+            'nonce': jQuery('#nonce').val()
         }
     })
-    .done(function(data) {
-        if (data) {
-            let json = jQuery.parseJSON(data);
+        .done(function (data) {
+            let json;
+            try {
+                json = jQuery.parseJSON(data);
+            } catch (e) {
+                console.log(`bc_email_help exception ${e.message}`);
+                return;
+            }
             jQuery('#htmlhelp').html(json['html']);
             jQuery(".bc_help").show();
-        }
-    })
-    .fail(function(jqXHR, text, error) {
-        console.log(error);
-        handle_result(true, error);
-    });
+        })
+        .fail(function (jqXHR, text, error) {
+            console.log(`bc_email_help ${text} ${error}`);
+            handle_result(true, error);
+        });
 });
 
 function add_highlight(name, style) {
@@ -75,9 +80,9 @@ function remove_hide(name) {
 
 // Search functionality
 
-jQuery('#button_search').on('click', function(e) {
+jQuery('#button_search').on('click', function (e) {
     e.preventDefault();
-    let parms = { action:'search' };
+    let parms = { action: 'search' };
     let age = jQuery('#age').val();
     if ('' !== age) {
         parms.age = age;
@@ -99,108 +104,112 @@ jQuery('#button_search').on('click', function(e) {
 });
 
 function edit_email(line) {
-    let parms = {action:'edit'};
+    let parms = { action: 'edit' };
     let created = jQuery('#ts_' + line).text();
-    parms.created  = created;
+    parms.created = created;
     editurl = jQuery('#referer').val() + '&' + jQuery.param(parms);
     window.location = editurl;
 }
 
-jQuery('.bc_emails_timestamp').on('click', function(e) {
+jQuery('.bc_emails_timestamp').on('click', function (e) {
     edit_email(e.target.id.substring(3));
 });
 
-jQuery('.bc_emails_author').on('click', function(e) {
+jQuery('.bc_emails_author').on('click', function (e) {
     edit_email(e.target.id.substring(7));
 });
 
-jQuery('.bc_emails_subject').on('click', function(e) {
+jQuery('.bc_emails_subject').on('click', function (e) {
     edit_email(e.target.id.substring(8));
 });
 
-jQuery('#button_add').on('click', function(e) {
+jQuery('#button_add').on('click', function (e) {
     e.preventDefault();
     jQuery.ajax({
         type: "post",
-        url:  bookclub_ajax_object.ajax_url,
+        url: bookclub_ajax_object.ajax_url,
         data: {
-            'action':  'bc_emails_add',
-            'nonce':   jQuery('#nonce').val(),
+            'action': 'bc_emails_add',
+            'nonce': jQuery('#nonce').val(),
             'referer': jQuery('#referer').val(),
-            'author':  jQuery('#author').val(),
+            'author': jQuery('#author').val(),
             'subject': jQuery('#subject').val(),
-            'body':    jQuery('#body').val()
+            'body': jQuery('#body').val()
         }
     })
-    .done(function(data) {
-        if (data) {
-            let json    = jQuery.parseJSON(data);
-            let error   = json['error'];
+        .done(function (data) {
+            let json;
+            try {
+                json = jQuery.parseJSON(data);
+            } catch (e) {
+                console.log(`bc_emails_add exception ${e.message}`);
+                return;
+            }
+            let error = json['error'];
             let editurl = '';
             if (!error) {
-                let parms      = {action:'edit'};
-                parms.created  = json['created'];
-                editurl        = jQuery('#referer').val() + '&' +
-                        jQuery.param(parms);
+                let parms = { action: 'edit' };
+                parms.created = json['created'];
+                editurl = jQuery('#referer').val() + '&' +
+                    jQuery.param(parms);
             }
             handle_result(error, json['message'], editurl);
-        }
-    })
-    .fail(function(jqXHR, text, error) {
-        console.log(error);
-        handle_result(true, error);
-    });
+        })
+        .fail(function (jqXHR, text, error) {
+            console.log(`bc_emails_add ${text} ${error}`);
+            handle_result(true, error);
+        });
 });
 
 function highlight_line(line) {
-    add_highlight('ts_'      + line, 'bc_results_highlight');
-    add_highlight('author_'  + line, 'bc_results_highlight');
+    add_highlight('ts_' + line, 'bc_results_highlight');
+    add_highlight('author_' + line, 'bc_results_highlight');
     add_highlight('subject_' + line, 'bc_results_highlight');
 }
 
 function unhighlight_line(line) {
-    remove_highlight('ts_'      + line, 'bc_results_highlight');
-    remove_highlight('author_'  + line, 'bc_results_highlight');
+    remove_highlight('ts_' + line, 'bc_results_highlight');
+    remove_highlight('author_' + line, 'bc_results_highlight');
     remove_highlight('subject_' + line, 'bc_results_highlight');
 }
 
 jQuery('.bc_emails_timestamp').hover(function (e) {
     highlight_line(e.target.id.substring(3));
-}, 
-function (e) {
-    unhighlight_line(e.target.id.substring(3));
-});
+},
+    function (e) {
+        unhighlight_line(e.target.id.substring(3));
+    });
 
 jQuery('.bc_emails_author').hover(function (e) {
     highlight_line(e.target.id.substring(7));
-}, 
-function (e) {
-    unhighlight_line(e.target.id.substring(7));
-});
+},
+    function (e) {
+        unhighlight_line(e.target.id.substring(7));
+    });
 
 jQuery('.bc_emails_subject').hover(function (e) {
     highlight_line(e.target.id.substring(8));
-}, 
-function (e) {
-    unhighlight_line(e.target.id.substring(8));
-});
+},
+    function (e) {
+        unhighlight_line(e.target.id.substring(8));
+    });
 
 // Edit mode functionality
 
 function get_selected(source) {
     let list = [];
-    jQuery('#' + source + ' option:selected').each(function() {
+    jQuery('#' + source + ' option:selected').each(function () {
         list.push(this.value);
     });
     return list.join(',');
 }
 
 function move_ids(source, source_list, dest_list) {
-    let from      = jQuery('#' + source_list);
-    let to        = jQuery('#' + dest_list);
+    let from = jQuery('#' + source_list);
+    let to = jQuery('#' + dest_list);
     let from_list = from.val().split(',');
-    let to_list   = to.val().split(',');
-    jQuery('#' + source + ' option:selected').each(function() {
+    let to_list = to.val().split(',');
+    jQuery('#' + source + ' option:selected').each(function () {
         from_list.splice(from_list.indexOf(this.value), 1);
         to_list.push(this.value);
     });
@@ -215,7 +224,7 @@ function move_selected(source, dest) {
     let result = iterator.next();
     for (let item of merge) {
         while (!result.done && (result.value.text.toUpperCase().localeCompare(
-                item.text.toUpperCase()) < 0)) {
+            item.text.toUpperCase()) < 0)) {
             result = iterator.next();
         }
         if (result.done) {
@@ -234,42 +243,46 @@ function set_modified() {
     jQuery('#button_clear').attr('disabled', '');
 }
 
-jQuery('#author').on('input', function(e) {
+jQuery('#author').on('input', function (e) {
     if ('edit' === jQuery('#mode').val()) {
         set_modified();
         jQuery.ajax({
             type: "post",
-            url:  bookclub_ajax_object.ajax_url,
+            url: bookclub_ajax_object.ajax_url,
             data: {
                 'action': 'bc_emails_lookup_author',
-                'nonce':  jQuery('#nonce').val(),
+                'nonce': jQuery('#nonce').val(),
                 'author': jQuery('#author').val()
             }
         })
-        .done(function(data) {
-            if (data) {
-                let json = jQuery.parseJSON(data);
+            .done(function (data) {
+                let json;
+                try {
+                    json = jQuery.parseJSON(data);
+                } catch (e) {
+                    console.log(`bc_emails_lookup_author exception ${e.message}`);
+                    return;
+                }
                 let author_id = jQuery('#authorid');
                 if (json['error']) {
                     author_id.attr('value', '');
                 } else {
                     author_id.attr('value', json['authorid']);
                 }
-            }
-        })
-        .fail(function(jqXHR, text, error) {
-            console.log(error);
-        });
+            })
+            .fail(function (jqXHR, text, error) {
+                console.log(`bc_emails_lookup_author ${text} ${error}`);
+            });
     }
 });
 
-jQuery('#subject').on('input', function(e) {
+jQuery('#subject').on('input', function (e) {
     if ('edit' === jQuery('#mode').val()) {
         set_modified();
     }
 });
 
-jQuery('#body').on('input', function(e) {
+jQuery('#body').on('input', function (e) {
     if ('edit' === jQuery('#mode').val()) {
         set_modified();
     }
@@ -277,118 +290,122 @@ jQuery('#body').on('input', function(e) {
 
 // Actions
 
-jQuery('#button_reset').on('click', function(e) {
+jQuery('#button_reset').on('click', function (e) {
     e.preventDefault();
     window.location = jQuery('#referer').val();
 });
 
-jQuery('#button_delete').on('click', function(e) {
+jQuery('#button_delete').on('click', function (e) {
     e.preventDefault();
     if (confirm(jQuery('#delete_text').val())) {
         jQuery.ajax({
             type: "post",
-            url:  bookclub_ajax_object.ajax_url,
+            url: bookclub_ajax_object.ajax_url,
             data: {
-                'action':  'bc_emails_delete',
-                'nonce':   jQuery('#nonce').val(),
+                'action': 'bc_emails_delete',
+                'nonce': jQuery('#nonce').val(),
                 'created': jQuery('#created').val()
             }
         })
-        .done(function(data) {
-            if (data) {
-                let json = jQuery.parseJSON(data);
+            .done(function (data) {
+                let json;
+                try {
+                    json = jQuery.parseJSON(data);
+                } catch (e) {
+                    console.log(`bc_emails_delete exception ${e.message}`);
+                    return;
+                }
                 if (json['error']) {
                     handle_result(json['error'], json['message']);
                 } else {
                     handle_result(json['error'], json['message'],
                         window.location = jQuery('#referer').val());
                 }
-            }
-        })
-        .fail(function(jqXHR, text, error) {
-            console.log(error);
-            handle_result(true, error);
-        });
+            })
+            .fail(function (jqXHR, text, error) {
+                console.log(`bc_emails_delete ${text} ${error}`);
+                handle_result(true, error);
+            });
     }
 });
 
-jQuery('#button_save').on('click', function(e) {
+jQuery('#button_save').on('click', function (e) {
     e.preventDefault();
     jQuery.ajax({
         type: "post",
-        url:  bookclub_ajax_object.ajax_url,
+        url: bookclub_ajax_object.ajax_url,
         data: {
-            'action':  'bc_emails_save',
-            'nonce':   jQuery('#nonce').val(),
+            'action': 'bc_emails_save',
+            'nonce': jQuery('#nonce').val(),
             'referer': jQuery('#referer').val(),
             'created': jQuery('#created').val(),
-            'author':  jQuery('#author').val(),
+            'author': jQuery('#author').val(),
             'subject': jQuery('#subject').val(),
-            'body':    jQuery('#body').val(),
-            'yes':     jQuery('#yes_data').val(),
-            'no':      jQuery('#no_data').val()
+            'body': jQuery('#body').val(),
+            'yes': jQuery('#yes_data').val(),
+            'no': jQuery('#no_data').val()
         }
     })
-    .done(function(data) {
-        jQuery('#button_save').attr('disabled', '');
-        refresh_views(get_active_view());
-    })
-    .fail(function(jqXHR, text, error) {
-        console.log(error);
-        handle_result(true, error);
-    });
+        .done(function (data) {
+            jQuery('#button_save').attr('disabled', '');
+            refresh_views(get_active_view());
+        })
+        .fail(function (jqXHR, text, error) {
+            console.log(`bc_emails_save ${text} ${error}`);
+            handle_result(true, error);
+        });
 });
 
 function do_send(list) {
     jQuery.ajax({
         type: "post",
-        url:  bookclub_ajax_object.ajax_url,
+        url: bookclub_ajax_object.ajax_url,
         data: {
-            'action':  'bc_emails_send_job',
-            'nonce':   jQuery('#nonce').val(),
+            'action': 'bc_emails_send_job',
+            'nonce': jQuery('#nonce').val(),
             'created': jQuery('#created').val(),
-            'list':    list
+            'list': list
         }
     })
-    .done(function(data) {
-        refresh_views('log_view');
-    })
-    .fail(function(jqXHR, text, error) {
-        console.log(error);
-        handle_result(true, error);
-    });
+        .done(function (data) {
+            refresh_views('log_view');
+        })
+        .fail(function (jqXHR, text, error) {
+            console.log(`bc_emails_send_job ${text} ${error}`);
+            handle_result(true, error);
+        });
 }
 
-jQuery('#button_send').on('click', function(e) {
+jQuery('#button_send').on('click', function (e) {
     e.preventDefault();
     do_send('all');
 });
 
-jQuery('#button_clear').on('click', function(e) {
+jQuery('#button_clear').on('click', function (e) {
     e.preventDefault();
     if (confirm(jQuery('#clear_text').val())) {
         jQuery.ajax({
             type: "post",
-            url:  bookclub_ajax_object.ajax_url,
+            url: bookclub_ajax_object.ajax_url,
             data: {
-                'action':  'bc_emails_clear',
-                'nonce':   jQuery('#nonce').val(),
+                'action': 'bc_emails_clear',
+                'nonce': jQuery('#nonce').val(),
                 'created': jQuery('#created').val()
             }
         })
-        .done(function(data) {
-            refresh_views(get_active_view());
-        })
-        .fail(function(jqXHR, text, error) {
-            console.log(error);
-            handle_result(true, error);
-        });
+            .done(function (data) {
+                refresh_views(get_active_view());
+            })
+            .fail(function (jqXHR, text, error) {
+                console.log(`bc_emails_clear ${text} ${error}`);
+                handle_result(true, error);
+            });
     }
 });
 
 // Selection
 
-jQuery('#non_recipients').on('change', function(e) {
+jQuery('#non_recipients').on('change', function (e) {
     e.preventDefault();
     if (jQuery('#non_recipients option:selected').length > 0) {
         jQuery('#add_recipient').removeAttr('disabled');
@@ -397,7 +414,7 @@ jQuery('#non_recipients').on('change', function(e) {
     }
 });
 
-jQuery('#oui_recipients').on('change', function(e) {
+jQuery('#oui_recipients').on('change', function (e) {
     e.preventDefault();
     if (jQuery('#oui_recipients option:selected').length > 0) {
         jQuery('#remove_recipient').removeAttr('disabled');
@@ -410,21 +427,21 @@ jQuery('#oui_recipients').on('change', function(e) {
     }
 });
 
-jQuery('#add_recipient').on('click', function(e) {
+jQuery('#add_recipient').on('click', function (e) {
     e.preventDefault();
     move_ids('non_recipients', 'no_data', 'yes_data');
     move_selected('non_recipients', 'oui_recipients');
     set_modified();
 });
 
-jQuery('#remove_recipient').on('click', function(e) {
+jQuery('#remove_recipient').on('click', function (e) {
     e.preventDefault();
     move_ids('oui_recipients', 'yes_data', 'no_data');
     move_selected('oui_recipients', 'non_recipients');
     set_modified();
 });
 
-jQuery('#send_recipient').on('click', function(e) {
+jQuery('#send_recipient').on('click', function (e) {
     e.preventDefault();
     do_send(get_selected('oui_recipients'));
     jQuery('#remove_recipient').attr('disabled', '');
@@ -432,28 +449,28 @@ jQuery('#send_recipient').on('click', function(e) {
     jQuery('#clear_recipient').attr('disabled', '');
 });
 
-jQuery('#clear_recipient').on('click', function(e) {
+jQuery('#clear_recipient').on('click', function (e) {
     e.preventDefault();
     jQuery.ajax({
         type: "post",
-        url:  bookclub_ajax_object.ajax_url,
+        url: bookclub_ajax_object.ajax_url,
         data: {
-            'action':  'bc_events_clear_recipients',
-            'nonce':   jQuery('#nonce').val(),
+            'action': 'bc_events_clear_recipients',
+            'nonce': jQuery('#nonce').val(),
             'created': jQuery('#created').val(),
-            'list':    get_selected('oui_recipients')
+            'list': get_selected('oui_recipients')
         }
     })
-    .done(function(data) {
-        refresh_views(get_active_view());
-        jQuery('#remove_recipient').attr('disabled', '');
-        jQuery('#send_recipient').attr('disabled', '');
-        jQuery('#clear_recipient').attr('disabled', '');
-    })
-    .fail(function(jqXHR, text, error) {
-        console.log(error);
-        handle_result(true, error);
-    });
+        .done(function (data) {
+            refresh_views(get_active_view());
+            jQuery('#remove_recipient').attr('disabled', '');
+            jQuery('#send_recipient').attr('disabled', '');
+            jQuery('#clear_recipient').attr('disabled', '');
+        })
+        .fail(function (jqXHR, text, error) {
+            console.log(`bc_events_clear_recipients ${text} ${error}`);
+            handle_result(true, error);
+        });
 });
 
 function group_is_selected(id) {
@@ -489,7 +506,7 @@ function toggle_group(e) {
     }
 }
 
-jQuery('#group').on('change', function(e) {
+jQuery('#group').on('change', function (e) {
     e.preventDefault();
     let group = jQuery('#group').val();
     let exclude = jQuery('#exclude');
@@ -516,42 +533,46 @@ function get_state(id) {
 function fetch_select(id) {
     jQuery.ajax({
         type: "post",
-        url:  bookclub_ajax_object.ajax_url,
+        url: bookclub_ajax_object.ajax_url,
         data: {
-            'action':  'bc_emails_select',
-            'nonce':   jQuery('#nonce').val(),
+            'action': 'bc_emails_select',
+            'nonce': jQuery('#nonce').val(),
             'referer': jQuery('#referer').val(),
             'created': jQuery('#created').val(),
-            'group':   jQuery('#group').val(),
+            'group': jQuery('#group').val(),
             'exclude': group_is_selected('exclude'),
-            'active':  get_state('active')
+            'active': get_state('active')
         }
     })
-    .done(function(data) {
-        if (data) {
-            let json    = jQuery.parseJSON(data);
-            let error   = json['error'];
+        .done(function (data) {
+            let json;
+            try {
+                json = jQuery.parseJSON(data);
+            } catch (e) {
+                console.log(`bc_emails_select exception ${e.message}`);
+                return;
+            }
+            let error = json['error'];
             if (error) {
                 handle_result(error, json['message']);
             } else {
                 jQuery('#' + id).val(json['select']).
-                        attr('selected', true);
+                    attr('selected', true);
                 jQuery('#' + id).change();
             }
-        }
-    })
-    .fail(function(jqXHR, text, error) {
-        console.log(error);
-        handle_result(true, error);
-    });
+        })
+        .fail(function (jqXHR, text, error) {
+            console.log(`bc_emails_select ${text} ${error}`);
+            handle_result(true, error);
+        });
 }
 
-jQuery('#left').on('click', function(e) {
+jQuery('#left').on('click', function (e) {
     e.preventDefault();
     fetch_select('non_recipients');
 });
 
-jQuery('#right').on('click', function(e) {
+jQuery('#right').on('click', function (e) {
     e.preventDefault();
     fetch_select('oui_recipients');
 });
@@ -577,7 +598,7 @@ function get_active_view() {
     return 'log_view';
 }
 
-jQuery(document).ready(function() {
+jQuery(document).ready(function () {
     if ('edit' === jQuery('#mode').val()) {
         refresh_views('raw_view');
     }
@@ -593,68 +614,73 @@ function refresh_views(view) {
     }
     if ('raw_view' === view) {
         data = {
-            'action':  'bc_emails_status',
-            'nonce':   jQuery('#nonce').val(),
+            'action': 'bc_emails_status',
+            'nonce': jQuery('#nonce').val(),
             'created': jQuery('#created').val(),
-            'view':    'raw'
+            'view': 'raw'
         };
     } else if ('html_view' === view) {
         jQuery('#get_iframe').submit();
         data = {
-            'action':  'bc_emails_status',
-            'nonce':   jQuery('#nonce').val(),
+            'action': 'bc_emails_status',
+            'nonce': jQuery('#nonce').val(),
             'created': jQuery('#created').val(),
-            'view':    'html'
+            'view': 'html'
         };
     } else if ('text_view' === view) {
         data = {
-            'action':  'bc_emails_status',
-            'nonce':   jQuery('#nonce').val(),
+            'action': 'bc_emails_status',
+            'nonce': jQuery('#nonce').val(),
             'created': jQuery('#created').val(),
             'referer': jQuery('#referer').val(),
-            'body':    jQuery('#body').val(),
-            'view':    'text'
+            'body': jQuery('#body').val(),
+            'view': 'text'
         };
     } else if ('recipients_view' === view) {
         data = {
-            'action':  'bc_emails_status',
-            'nonce':   jQuery('#nonce').val(),
+            'action': 'bc_emails_status',
+            'nonce': jQuery('#nonce').val(),
             'referer': jQuery('#referer').val(),
             'created': jQuery('#created').val(),
-            'yes':     jQuery('#yes_data').val(),
-            'no':      jQuery('#no_data').val(),
-            'view':    'recipients'
+            'yes': jQuery('#yes_data').val(),
+            'no': jQuery('#no_data').val(),
+            'view': 'recipients'
         };
     } else {    // view_is_active('log_view')
         data = {
-            'action':  'bc_emails_status',
-            'nonce':   jQuery('#nonce').val(),
+            'action': 'bc_emails_status',
+            'nonce': jQuery('#nonce').val(),
             'referer': jQuery('#referer').val(),
             'created': jQuery('#created').val(),
-            'view':    'log'
+            'view': 'log'
         };
     }
     jQuery.ajax({
         type: "post",
-        url:  bookclub_ajax_object.ajax_url,
+        url: bookclub_ajax_object.ajax_url,
         data: data
     })
-    .done(function(data) {
-        if (data) {
-            let json = jQuery.parseJSON(data);
+        .done(function (data) {
+            let json;
+            try {
+                json = jQuery.parseJSON(data);
+            } catch (e) {
+                console.log(`bc_emails_status exception ${e.message}`);
+                return;
+            }
             let running = json['running'];
-            let sent    = json['sent'];
-            let unsent  = json['unsent'];
-            let error   = json['error'];
+            let sent = json['sent'];
+            let unsent = json['unsent'];
+            let error = json['error'];
             if (error) {
                 handle_result(error, json['message']);
             }
             if (running) {
                 jQuery('#button_send').attr('disabled', '');
                 jQuery('#button_clear').attr('disabled', '');
-                let jobid = setTimeout(function() {
+                let jobid = setTimeout(function () {
                     refresh_views(get_active_view());
-                    }, 1000);
+                }, 1000);
                 jQuery('#jobid').val(jobid);
             } else if (!jQuery('#button_save').attr('disabled')) {
                 jQuery('#button_send').attr('disabled', '');
@@ -702,12 +728,11 @@ function refresh_views(view) {
                 }
             }
             jQuery('#oui_recipients').change();
-        }
-    })
-    .fail(function(jqXHR, text, error) {
-        console.log(error);
-        handle_result(true, error);
-    });
+        })
+        .fail(function (jqXHR, text, error) {
+            console.log(`bc_emails_status ${text} ${error}`);
+            handle_result(true, error);
+        });
 }
 
 function select_view(view) {
@@ -731,27 +756,27 @@ function select_view(view) {
     add_highlight(view, 'bc_emails_view_selected');
 }
 
-jQuery('#raw_view').on('click', function(e) {
+jQuery('#raw_view').on('click', function (e) {
     e.preventDefault();
     refresh_views(e.target.id);
 });
 
-jQuery('#html_view').on('click', function(e) {
+jQuery('#html_view').on('click', function (e) {
     e.preventDefault();
     refresh_views(e.target.id);
 });
 
-jQuery('#text_view').on('click', function(e) {
+jQuery('#text_view').on('click', function (e) {
     e.preventDefault();
     refresh_views(e.target.id);
 });
 
-jQuery('#recipients_view').on('click', function(e) {
+jQuery('#recipients_view').on('click', function (e) {
     e.preventDefault();
     refresh_views(e.target.id);
 });
 
-jQuery('#log_view').on('click', function(e) {
+jQuery('#log_view').on('click', function (e) {
     e.preventDefault();
     refresh_views(e.target.id);
 });

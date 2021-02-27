@@ -12,9 +12,9 @@
 //    jQuery("#datepicker").datepicker();
 //});
 
-jQuery(document).ready(function() {
+jQuery(document).ready(function () {
     console.log('Test page loaded');
-    jQuery(document).ready(function() {
+    jQuery(document).ready(function () {
         jQuery("#datepicker").datepicker();
     });
 });

@@ -16,39 +16,44 @@ function handle_result(flag, message, redirect) {
         notice.attr('class', 'bc_notice notice notice-success');
     }
     notice.css("visibility", "visible");
-    setTimeout(function() {
+    setTimeout(function () {
         notice.css("visibility", "hidden");
         if (redirect) {
             window.location = redirect;
-        }}, 3000);
+        }
+    }, 3000);
 }
 
-jQuery('#close_help').on('click', function(e) {
+jQuery('#close_help').on('click', function (e) {
     e.preventDefault();
     jQuery(".bc_help").hide();
 });
 
-jQuery('#button_help').on('click', function(e) {
+jQuery('#button_help').on('click', function (e) {
     e.preventDefault();
     jQuery.ajax({
         type: "post",
-        url:  bookclub_ajax_object.ajax_url,
+        url: bookclub_ajax_object.ajax_url,
         data: {
-            'action':  'bc_members_help',
-            'nonce':   jQuery('#nonce').val()
+            'action': 'bc_members_help',
+            'nonce': jQuery('#nonce').val()
         }
     })
-    .done(function(data) {
-        if (data) {
-            let json = jQuery.parseJSON(data);
+        .done(function (data) {
+            let json;
+            try {
+                json = jQuery.parseJSON(data);
+            } catch (e) {
+                console.log(`bc_members_help exception ${e.message}`);
+                return;
+            }
             jQuery('#htmlhelp').html(json['html']);
             jQuery(".bc_help").show();
-        }
-    })
-    .fail(function(jqXHR, text, error) {
-        console.log(error);
-        handle_result(true, error);
-    });
+        })
+        .fail(function (jqXHR, text, error) {
+            console.log(`bc_members_help ${text} ${error}`);
+            handle_result(true, error);
+        });
 });
 
 function add_highlight(name, style) {
@@ -109,7 +114,7 @@ function toggle_group(e) {
     }
 }
 
-jQuery('#group').on('change', function(e) {
+jQuery('#group').on('change', function (e) {
     e.preventDefault();
     let group = jQuery('#group').val();
     let exclude = jQuery('#exclude');
@@ -123,9 +128,9 @@ jQuery('#group').on('change', function(e) {
 jQuery('#exclude').on('click', toggle_group);
 jQuery('#active').on('click', throggle_group);
 
-jQuery('#button_search').on('click', function(e) {
+jQuery('#button_search').on('click', function (e) {
     e.preventDefault();
-    let parms = { action:'search' };
+    let parms = { action: 'search' };
     parms.group = jQuery('#group').val();
     let memberid = jQuery('#memberid').val();
     if ('' !== memberid) {
@@ -172,42 +177,46 @@ jQuery('#button_search').on('click', function(e) {
     window.location = searchurl;
 });
 
-jQuery('#button_reset').on('click', function(e) {
+jQuery('#button_reset').on('click', function (e) {
     e.preventDefault();
     window.location = jQuery('#referer').val();
 });
 
-jQuery('#button_delete').on('click', function(e) {
+jQuery('#button_delete').on('click', function (e) {
     e.preventDefault();
     if (confirm(jQuery('#delete_text').val())) {
         jQuery.ajax({
             type: "post",
-            url:  bookclub_ajax_object.ajax_url,
+            url: bookclub_ajax_object.ajax_url,
             data: {
                 'action': 'bc_members_delete',
-                'nonce':  jQuery('#nonce').val(),
-                'id':     jQuery('#memberid').val()
+                'nonce': jQuery('#nonce').val(),
+                'id': jQuery('#memberid').val()
             }
         })
-        .done(function(data) {
-            if (data) {
-                let json = jQuery.parseJSON(data);
+            .done(function (data) {
+                let json;
+                try {
+                    json = jQuery.parseJSON(data);
+                } catch (e) {
+                    console.log(`bc_members_delete exception ${e.message}`);
+                    return;
+                }
                 if (json['error']) {
                     handle_result(json['error'], json['message']);
                 } else {
                     handle_result(json['error'], json['message'],
                         window.location = jQuery('#referer').val());
                 }
-            }
-        })
-        .fail(function(jqXHR, text, error) {
-            console.log(error);
-            handle_result(true, error);
-        });
+            })
+            .fail(function (jqXHR, text, error) {
+                console.log(`bc_members_delete ${text} ${error}`);
+                handle_result(true, error);
+            });
     }
 });
 
-jQuery('#copy_url').on('click', function(e) {
+jQuery('#copy_url').on('click', function (e) {
     e.preventDefault();
     let signup = document.getElementById("signup");
     signup.select();
@@ -217,220 +226,238 @@ jQuery('#copy_url').on('click', function(e) {
     handle_result(false, 'URL copied to clipboard: ' + signup.value);
 });
 
-jQuery('#sendemail').on('click', function(e) {
+jQuery('#sendemail').on('click', function (e) {
     e.preventDefault();
     jQuery.ajax({
         type: "post",
-        url:  bookclub_ajax_object.ajax_url,
+        url: bookclub_ajax_object.ajax_url,
         data: {
-            'action':  'bc_members_email',
-            'nonce':   jQuery('#nonce').val(),
-            'id':      jQuery('#memberid').val()
+            'action': 'bc_members_email',
+            'nonce': jQuery('#nonce').val(),
+            'id': jQuery('#memberid').val()
         }
     })
-    .done(function(data) {
-        if (data) {
-            let json = jQuery.parseJSON(data);
+        .done(function (data) {
+            let json;
+            try {
+                json = jQuery.parseJSON(data);
+            } catch (e) {
+                console.log(`bc_members_email exception ${e.message}`);
+                return;
+            }
             handle_result(json['error'], json['message']);
             jQuery('#sent_text').html(json['text']);
-        }
-    })
-    .fail(function(jqXHR, text, error) {
-        console.log(error);
-    });
+        })
+        .fail(function (jqXHR, text, error) {
+            console.log(`bc_members_email ${text} ${error}`);
+        });
 });
 
-jQuery('#button_save').on('click', function(e) {
+jQuery('#button_save').on('click', function (e) {
     e.preventDefault();
     let data = {
-        'action':       'bc_members_save',
-        'nonce':        jQuery('#nonce').val(),
-        'referer':      jQuery('#referer').val(),
-        'id':           jQuery('#memberid').val(),
-        'name':         jQuery('#name').val(),
-        'email':        jQuery('#email').val(),
-        'pkey':         jQuery('#pkey').val(),
-        'active':       jQuery('[name="active"]:checked').val(),
-        'noemail':      jQuery('[name="noemail"]:checked').val(),
-        'format':       jQuery('[name="format"]:checked').val(),
-        'ical':         jQuery('[name="ics"]:checked').val(),
+        'action': 'bc_members_save',
+        'nonce': jQuery('#nonce').val(),
+        'referer': jQuery('#referer').val(),
+        'id': jQuery('#memberid').val(),
+        'name': jQuery('#name').val(),
+        'email': jQuery('#email').val(),
+        'pkey': jQuery('#pkey').val(),
+        'active': jQuery('[name="active"]:checked').val(),
+        'noemail': jQuery('[name="noemail"]:checked').val(),
+        'format': jQuery('[name="format"]:checked').val(),
+        'ical': jQuery('[name="ics"]:checked').val(),
         'public_email': jQuery('[name="public_email"]:checked').val(),
-        'receive':      jQuery('[name="receive"]:checked').val()
+        'receive': jQuery('[name="receive"]:checked').val()
     };
-    jQuery('.groupbox').each(function() {
+    jQuery('.groupbox').each(function () {
         data[this.id] = jQuery(this).prop("checked");
     });
     jQuery.ajax({
         type: "post",
-        url:  bookclub_ajax_object.ajax_url,
+        url: bookclub_ajax_object.ajax_url,
         data: data
     })
-    .done(function(data) {
-        if (data) {
-            let json = jQuery.parseJSON(data);
+        .done(function (data) {
+            let json;
+            try {
+                json = jQuery.parseJSON(data);
+            } catch (e) {
+                console.log(`bc_members_save exception ${e.message}`);
+                return;
+            }
             handle_result(json['error'], json['message']);
-        }
-    })
-    .fail(function(jqXHR, text, error) {
-        console.log(error);
-    });
+        })
+        .fail(function (jqXHR, text, error) {
+            console.log(`bc_members_save ${text} ${error}`);
+        });
 });
 
-jQuery('#button_add').on('click', function(e) {
+jQuery('#button_add').on('click', function (e) {
     e.preventDefault();
     jQuery.ajax({
         type: "post",
-        url:  bookclub_ajax_object.ajax_url,
+        url: bookclub_ajax_object.ajax_url,
         data: {
-            'action':  'bc_members_add',
-            'nonce':   jQuery('#nonce').val(),
+            'action': 'bc_members_add',
+            'nonce': jQuery('#nonce').val(),
             'referer': jQuery('#referer').val(),
-            'name':    jQuery('#name').val(),
-            'email':   jQuery('#email').val(),
-            'group':   jQuery('#group').val()
+            'name': jQuery('#name').val(),
+            'email': jQuery('#email').val(),
+            'group': jQuery('#group').val()
         }
     })
-    .done(function(data) {
-        if (data) {
-            let json = jQuery.parseJSON(data);
-            let error   = json['error'];
+        .done(function (data) {
+            let json;
+            try {
+                json = jQuery.parseJSON(data);
+            } catch (e) {
+                console.log(`bc_members_add exception ${e.message}`);
+                return;
+            }
+            let error = json['error'];
             let editurl = '';
             if (!error) {
-                let parms = {action:'edit'};
+                let parms = { action: 'edit' };
                 parms.id = json['id'];
                 editurl = jQuery('#referer').val() + '&' + jQuery.param(parms);
             }
             handle_result(json['error'], json['message'], editurl);
-        }
-    })
-    .fail(function(jqXHR, text, error) {
-        console.log(error);
-    });
+        })
+        .fail(function (jqXHR, text, error) {
+            console.log(`bc_members_add ${text} ${error}`);
+        });
 });
 
 function edit_members(memberid) {
-    let parms = {action:'edit'};
+    let parms = { action: 'edit' };
     parms.id = memberid;
     editurl = jQuery('#referer').val() + '&' + jQuery.param(parms);
     window.location = editurl;
 }
 
-jQuery('.bc_members_id').on('click', function(e) {
+jQuery('.bc_members_id').on('click', function (e) {
     edit_members(e.target.id.substring(3));
 });
 
-jQuery('.bc_members_pkey').on('click', function(e) {
+jQuery('.bc_members_pkey').on('click', function (e) {
     edit_members(e.target.id.substring(5));
 });
 
-jQuery('.bc_members_wpid').on('click', function(e) {
+jQuery('.bc_members_wpid').on('click', function (e) {
     edit_members(e.target.id.substring(5));
 });
 
-jQuery('.bc_members_login').on('click', function(e) {
+jQuery('.bc_members_login').on('click', function (e) {
     edit_members(e.target.id.substring(6));
 });
 
-jQuery('.bc_members_name').on('click', function(e) {
+jQuery('.bc_members_name').on('click', function (e) {
     edit_members(e.target.id.substring(5));
 });
 
-jQuery('.bc_members_email').on('click', function(e) {
+jQuery('.bc_members_email').on('click', function (e) {
     edit_members(e.target.id.substring(6));
 });
 
-jQuery('.bc_members_hittime').on('click', function(e) {
+jQuery('.bc_members_hittime').on('click', function (e) {
     edit_members(e.target.id.substring(3));
 });
 
 function highlight_line(memberid) {
-    add_highlight('id_'     + memberid, 'bc_results_highlight');
-    add_highlight('pkey_'   + memberid, 'bc_results_highlight');
-    add_highlight('wpid_'   + memberid, 'bc_results_highlight');
-    add_highlight('login_'  + memberid, 'bc_results_highlight');
-    add_highlight('name_'   + memberid, 'bc_results_highlight');
-    add_highlight('email_'  + memberid, 'bc_results_highlight');
-    add_highlight('ht_'     + memberid, 'bc_results_highlight');
+    add_highlight('id_' + memberid, 'bc_results_highlight');
+    add_highlight('pkey_' + memberid, 'bc_results_highlight');
+    add_highlight('wpid_' + memberid, 'bc_results_highlight');
+    add_highlight('login_' + memberid, 'bc_results_highlight');
+    add_highlight('name_' + memberid, 'bc_results_highlight');
+    add_highlight('email_' + memberid, 'bc_results_highlight');
+    add_highlight('ht_' + memberid, 'bc_results_highlight');
 }
 
 function unhighlight_line(memberid) {
-    remove_highlight('id_'     + memberid, 'bc_results_highlight');
-    remove_highlight('pkey_'   + memberid, 'bc_results_highlight');
-    remove_highlight('wpid_'   + memberid, 'bc_results_highlight');
-    remove_highlight('login_'  + memberid, 'bc_results_highlight');
-    remove_highlight('name_'   + memberid, 'bc_results_highlight');
-    remove_highlight('email_'  + memberid, 'bc_results_highlight');
-    remove_highlight('ht_'     + memberid, 'bc_results_highlight');
+    remove_highlight('id_' + memberid, 'bc_results_highlight');
+    remove_highlight('pkey_' + memberid, 'bc_results_highlight');
+    remove_highlight('wpid_' + memberid, 'bc_results_highlight');
+    remove_highlight('login_' + memberid, 'bc_results_highlight');
+    remove_highlight('name_' + memberid, 'bc_results_highlight');
+    remove_highlight('email_' + memberid, 'bc_results_highlight');
+    remove_highlight('ht_' + memberid, 'bc_results_highlight');
 }
 
 jQuery('.bc_members_id').hover(function (e) {
     highlight_line(e.target.id.substring(3));
-}, 
-function (e) {
-    unhighlight_line(e.target.id.substring(3));
-});
+},
+    function (e) {
+        unhighlight_line(e.target.id.substring(3));
+    });
 
 jQuery('.bc_members_pkey').hover(function (e) {
     highlight_line(e.target.id.substring(5));
-}, 
-function (e) {
-    unhighlight_line(e.target.id.substring(5));
-});
+},
+    function (e) {
+        unhighlight_line(e.target.id.substring(5));
+    });
 
 jQuery('.bc_members_wpid').hover(function (e) {
     highlight_line(e.target.id.substring(5));
-}, 
-function (e) {
-    unhighlight_line(e.target.id.substring(5));
-});
+},
+    function (e) {
+        unhighlight_line(e.target.id.substring(5));
+    });
 
 jQuery('.bc_members_login').hover(function (e) {
     highlight_line(e.target.id.substring(6));
-}, 
-function (e) {
-    unhighlight_line(e.target.id.substring(6));
-});
+},
+    function (e) {
+        unhighlight_line(e.target.id.substring(6));
+    });
 
 jQuery('.bc_members_name').hover(function (e) {
     highlight_line(e.target.id.substring(5));
-}, 
-function (e) {
-    unhighlight_line(e.target.id.substring(5));
-});
+},
+    function (e) {
+        unhighlight_line(e.target.id.substring(5));
+    });
 
 jQuery('.bc_members_email').hover(function (e) {
     highlight_line(e.target.id.substring(6));
-}, 
-function (e) {
-    unhighlight_line(e.target.id.substring(6));
-});
+},
+    function (e) {
+        unhighlight_line(e.target.id.substring(6));
+    });
 
 jQuery('.bc_members_hittime').hover(function (e) {
     highlight_line(e.target.id.substring(3));
-}, 
-function (e) {
-    unhighlight_line(e.target.id.substring(3));
-});
+},
+    function (e) {
+        unhighlight_line(e.target.id.substring(3));
+    });
 
-jQuery('#button_newkey').on('click', function(e) {
+jQuery('#button_newkey').on('click', function (e) {
     e.preventDefault();
     if (confirm(jQuery('#reset_text').val())) {
         jQuery.ajax({
             type: "post",
-            url:  bookclub_ajax_object.ajax_url,
+            url: bookclub_ajax_object.ajax_url,
             data: {
-                'action':   'bc_members_key',
-                'nonce':    jQuery('#nonce').val()
+                'action': 'bc_members_key',
+                'nonce': jQuery('#nonce').val()
             }
         })
-        .done(function(data) {
-            let json = jQuery.parseJSON(data);
-            handle_result(json['error'], json['message']);
-            jQuery('#pkey').val(json['newkey']);
-        })
-        .fail(function(jqXHR, text, error) {
-            console.log(error);
-            handle_result(true, error);
-        });
+            .done(function (data) {
+                let json;
+                try {
+                    json = jQuery.parseJSON(data);
+                } catch (e) {
+                    console.log(`bc_members_key exception ${e.message}`);
+                    return;
+                }
+                handle_result(json['error'], json['message']);
+                jQuery('#pkey').val(json['newkey']);
+            })
+            .fail(function (jqXHR, text, error) {
+                console.log(`bc_members_key ${text} ${error}`);
+                handle_result(true, error);
+            });
     }
 });

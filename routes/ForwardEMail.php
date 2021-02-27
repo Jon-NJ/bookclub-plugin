@@ -89,7 +89,7 @@ class ForwardEMail extends Path
         $info = imap_headerinfo($ch, $msgno);
         $uid  = imap_uid($ch, $msgno);
         if ((false === $info) || (false == $uid)) {
-            $this->error();
+            $this->error('register');
             return;
         }
         $message_id = $info->message_id;
@@ -161,7 +161,7 @@ class ForwardEMail extends Path
         $msgno = imap_msgno($ch, $imap->uid);
         if (false === $msgno) {
             $this->log_debug("Fetch UID");
-            $this->error($imap);
+            $this->error('fetch uid', $imap);
             return $result;
         }
 
@@ -171,7 +171,7 @@ class ForwardEMail extends Path
         $info = imap_headerinfo($ch, $msgno);
         if (false === $info) {
             $this->log_debug("Fetch info");
-            $this->error($imap);
+            $this->error('fetch info', $imap);
             return $result;
         }
 
@@ -181,7 +181,7 @@ class ForwardEMail extends Path
             $this->log_debug('Original ' . $info->message_id);
             $list = imap_search($ch, "TEXT \"" . $imap->message_id . "\"");
             if (false === $list) {
-                $this->error($imap);
+                $this->error('imap search', $imap);
                 return $result;
             }
             // get new message number, UID and header info
@@ -190,7 +190,7 @@ class ForwardEMail extends Path
             $info = imap_headerinfo($ch, $msgno);
             if (false === $info) {
                 $this->log_debug("Fetch info");
-                $this->error($imap);
+                $this->error('refetch info', $imap);
                 return $result;
             }
         }
@@ -199,7 +199,7 @@ class ForwardEMail extends Path
         $header = imap_fetchheader($ch, $msgno);
         if (false === $header) {
             $this->log_debug("Fetch header");
-            $this->error($imap);
+            $this->error('fetch header', $imap);
             return $result;
         }
 
@@ -207,7 +207,7 @@ class ForwardEMail extends Path
         $body = imap_body($ch, $msgno);
         if (false === $body) {
             $this->log_debug("Fetch body");
-            $this->error($imap);
+            $this->error('fetch body', $imap);
             return $result;
         }
 
@@ -328,7 +328,7 @@ class ForwardEMail extends Path
         // in the future there may be an exception for admins
         if (!\get_user_meta($imap->wordpress_id, 'bc_receive_others', true)) {
             $this->bounce_error($ch, $imap,
-                    "The forwarder may only be used if you activate 'Receive email from others' on your bookclub profile page.");
+                    "The forwarder may only be used if you activate 'Participate in group email' on your bookclub profile page.");
             return;
         }
 
@@ -461,16 +461,17 @@ class ForwardEMail extends Path
 
     /**
      * Record an imap error.
+     * @param string $tag an identifying string
      * @param \bookclub\TableIMap $imap optional record to set as processed
      */
-    private function error(TableIMap $imap = null): void
+    private function error(string $tag, TableIMap $imap = null): void
     {
         if ($imap) {
             $this->log_info("Error processing " . $imap->uid . ", " . $imap->timestamp);
             $imap->status    = BC_IMAP_ERROR;
             $imap->processed = 1;
         }
-        $this->log_error(imap_last_error());
+        $this->log_error($tag . ' ' . imap_last_error());
     }
 
     /**
@@ -549,16 +550,18 @@ class ForwardEMail extends Path
         $lockkey = 'elist_forward';
         if (!create_lock($lockkey)) {
             $this->log_error("Error locking job $lockkey");
-            die();
+            $json   = [ status => 'locking error' ];
+            exit(twig_render('path_forwarder', $json));
         }
         claim_lock($lockkey);
         $macros   = twig_macro_fields([]);
         $mailbox  = macro_replace($imap, $macros);
         $username = macro_replace(getOption('forward_user'), $macros);
         $password = macro_replace(getOption('forward_password'), $macros);
+        imap_timeout(IMAP_OPENTIMEOUT, 20);
         $ch = imap_open($mailbox, $username, $password);
         if (false === $ch) {
-            $this->error();
+            $this->error('initial open');
         } else {
             $this->handle_register($ch, $username);
             $this->handle_prepare($ch);
@@ -566,7 +569,7 @@ class ForwardEMail extends Path
             imap_close($ch);
         }
         free_lock($lockkey);
-        $json   = twig_macro_fields([]);
+        $json   = [ status => 'complete' ];
         exit(twig_render('path_forwarder', $json));
     }
 }

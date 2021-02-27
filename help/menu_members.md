@@ -42,7 +42,7 @@ The page uses three states - **Start**, **Search** and **Edit**. When one first 
 
 - **Privacy** - *Only visible in **Edit** mode.* Privacy configuration.
   - **EMail Address** - Private/Public. If your email address is public, other book club members may see it on an RSVP.
-  - **Receive EMail from others** - No/Yes - If activated other users may be able to send you emails using a web interface, or perhaps this will be used for inclusion in a list-server. *(Not used yet.)*
+  - **Participate in group email** - No/Yes - This indicates that the user is to be included in group emails from list-server. Their email address is kept private.
 
 - **Last Visit** - (Not available in edit mode.) Filter search results for members that have not been on the web page for the given number of months. The search can be "more than" or "less than".
 
