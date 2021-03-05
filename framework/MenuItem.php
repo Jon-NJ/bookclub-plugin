@@ -78,4 +78,19 @@ abstract class MenuItem extends Page
      * Abstract function renders the HTML for the page.
      */
     abstract public function render(): string;
+
+    /**
+     * Checks if REQUEST is correct for this page. Overrides parent function to
+     * supply a redirected page if none provided by the parent.
+     * @param string $error additional string for error message
+     * @param string $redir optional redirection if request not validated
+     * @return array JSON response or empty array if no error
+     */
+    protected function check_request(string $error, string $redir = ''): array
+    {
+        if (!$redir) {
+            $redir = url_menu($this->getSlug());
+        }
+        return parent::check_request($error, $redir);
+    }
 }

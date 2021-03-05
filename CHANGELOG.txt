@@ -1,3 +1,16 @@
+2021-03-05  3.3.5
+- Not a change, but discovered there can be problems with some themes because
+  jQuery is not loaded on pages. This may also be a problem in future WordPress.
+- Cancel button available for sending invitations/email.
+- Event/EMail logs now comes from logs table with a bit more information.
+- RSVP log now comes from log tables, timezone is now correct. The existing
+  rsvps table may be removed in a future release.
+- Fix RSVP click on icon of button was always treated as "maybe".
+- New function ajax_call as part of JS improvement.
+- Changes to JS for search.
+- Success/Error message handling changed and potential redirects.
+- Remove or alter some nonce checking and response handling.
+
 2021-02-27  3.2.27
 - JavaScript try/catch for ajax.
 - Twenty second timeout for imap open.

@@ -175,19 +175,16 @@ class MenuAuthors extends MenuItem
      */
     public function authors_book_count(): void
     {
-        $response = $this->check_request('Get book count for author');
-        if (!$response) {
-            $authorid = input_request('authorid');
-            $count    = TableBooks::getCountForAuthor($authorid);
-            $response = $this->get_response(false, '');
-            $response['count'] = $count;
-            if (0 == $count) {
-                $response['message'] = 'Do you really want to delete?';
-            } else {
-                $response['error']   = true;
-                $response['message'] = "Cannot delete author of $count book(s). " .
-                    'Please delete or reassign the book(s) first.';
-            }
+        $authorid = input_request('authorid');
+        $count    = TableBooks::getCountForAuthor($authorid);
+        $response = $this->get_response(false, '');
+        $response['count'] = $count;
+        if (0 === $count) {
+            $response['message'] = 'Do you really want to delete?';
+        } else {
+            $response['error']   = true;
+            $response['message'] = "Cannot delete author of $count book(s). " .
+                'Please delete or reassign the book(s) first.';
         }
         exit(json_encode($response));
     }

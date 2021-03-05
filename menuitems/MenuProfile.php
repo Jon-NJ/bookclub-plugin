@@ -47,9 +47,6 @@ class MenuProfile extends MenuItem
                     ],[
                         'key' => 'wp_ajax_bc_profile_delete',
                         'function' => 'profile_delete'
-                    ],[
-                        'key' => 'wp_ajax_bc_profile_heartbeat',
-                        'function' => 'profile_heartbeat'
                     ]],
                 'filters'   => [[
                         'name'     => 'user_profile_update_errors',
@@ -260,6 +257,29 @@ class MenuProfile extends MenuItem
     /** Actions */
 
     /**
+     * Checks if REQUEST is correct for this page. Overrides parent function to
+     * only check that the user is logged in.
+     * @param string $error additional string for error message
+     * @param string $redir optional redirection if request not validated
+     * @return array JSON response or empty array if no error
+     */
+    protected function check_request(string $error, string $redir = ''): array
+    {
+        $response = [];
+        if (!$redir) {
+            $redir = url_profile();
+        }
+        if (!is_request()) {
+            $this->log_error("Not a reqest - $error (" . input_referer() . ")");
+            $response = $this->get_response(true, 'Bad request');
+        } else if (0 == \get_current_user_id()) {
+            $this->log_error("User not logged in.");
+            $response = $this->get_response(true, 'Not logged in', $redir);
+        }
+        return $response;
+    }
+
+    /**
      * Handle POST for profile save button. Generate a redirect/refresh.
      * @global string $_REQUEST['group'*] 1 if included in given group
      */
@@ -467,28 +487,6 @@ class MenuProfile extends MenuItem
                 $response = $this->get_response(true,
                         'There was some problem with the action. The account was not found');
             }
-        }
-        exit(json_encode($response));
-    }
-
-    /**
-     * Update the nonce while on the profile page.
-     */
-    public function profile_heartbeat(): void
-    {
-        $response = $this->check_request('Profile heartbeat');
-        if (!$response) {
-            $this->log_debug("Profile heartbeat refresh");
-            $wpid     = \get_current_user_id();
-            $nonce    = $this->create_nonce();
-            $message  = '';
-            if ($nonce != input_request('nonce')) {
-                $this->log_info("Update nonce " . input_request('nonce') .
-                        " => $nonce");
-                $message = 'Nonce updated';
-            }
-            $response          = $this->get_response(false, $message);
-            $response['nonce'] = $nonce;
         }
         exit(json_encode($response));
     }

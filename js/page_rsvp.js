@@ -7,21 +7,37 @@
 /* global bookclub_ajax_object, epid */
 
 function handle_result(flag, message, redirect) {
-    let msg = jQuery('#bc_message');
+    jQuery('#bc_message').text(message);
     let notice = jQuery('#bc_notice');
-    msg.text(message);
-    if (flag) {
-        notice.attr('class', 'bc_notice notice notice-error');
-    } else {
-        notice.attr('class', 'bc_notice notice notice-success');
-    }
-    notice.css("visibility", "visible");
+    let status = flag ? 'notice-error' : 'notice-success';
+    notice.addClass(status);
+    notice.removeClass('hide');
     setTimeout(function () {
-        notice.css("visibility", "hidden");
+        notice.addClass('hide');
+        notice.removeClass(status);
         if (redirect) {
             window.location = redirect;
         }
     }, 3000);
+}
+
+function ajax_call(action, data, success) {
+    data.action = action;
+    jQuery.ajax({ type: 'post', url: bookclub_ajax_object.ajax_url, data })
+        .done(data => {
+            {
+                try {
+                    let json = jQuery.parseJSON(data);
+                    success(json);
+                } catch (e) {
+                    console.log(`${action} exception ${e.message}`);
+                }
+            }
+        })
+        .fail(((jqXHR, text, error) => {
+            console.log(`bc_authors_book_count ${text} ${error}`);
+            handle_result(true, error);
+        }));
 }
 
 jQuery('#close_help').on('click', function (e) {
@@ -31,98 +47,53 @@ jQuery('#close_help').on('click', function (e) {
 
 jQuery('#button_help').on('click', function (e) {
     e.preventDefault();
-    jQuery.ajax({
-        type: "post",
-        url: bookclub_ajax_object.ajax_url,
-        data: {
-            'action': 'bc_rsvp_help',
-            'nonce': jQuery('#nonce').val()
-        }
-    })
-        .done(function (data) {
-            let json;
-            try {
-                json = jQuery.parseJSON(data);
-            } catch (e) {
-                console.log(`bc_rsvp_help exception ${e.message}`);
-                return;
-            }
-            jQuery('#htmlhelp').html(json['html']);
-            jQuery(".bc_help").show();
-        })
-        .fail(function (jqXHR, text, error) {
-            console.log(`bc_rsvp_help ${text} ${error}`);
-            handle_result(true, error);
-        });
+    ajax_call('bc_rsvp_help', {
+        'nonce': jQuery('#nonce').val()
+    }, json => {
+        jQuery('#htmlhelp').html(json['html']);
+        jQuery(".bc_help").show();
+    });
 });
 
 jQuery('#button_send').on('click', function (e) {
     e.preventDefault();
-    jQuery.ajax({
-        type: "post",
-        url: bookclub_ajax_object.ajax_url,
-        data: {
-            'action': 'bc_rsvp_resend',
-            'eid': jQuery('#eid').val(),
-            'personid': jQuery('#personid').val(),
-            'webkey': jQuery('#webkey').val(),
-            'nonce': jQuery('#nonce').val(),
-            'referer': jQuery('#referer').val()
-        }
-    })
-        .done(function (data) {
-            let json;
-            try {
-                json = jQuery.parseJSON(data);
-            } catch (e) {
-                console.log(`bc_rsvp_resend exception ${e.message}`);
-                return;
-            }
-            handle_result(json['error'], json['message']);
-        })
-        .fail(function (jqXHR, text, error) {
-            console.log(`bc_rsvp_resend ${text} ${error}`);
-        });
+    ajax_call('bc_rsvp_resend', {
+        'eid': jQuery('#eid').val(),
+        'personid': jQuery('#personid').val(),
+        'webkey': jQuery('#webkey').val(),
+        'nonce': jQuery('#nonce').val(),
+        'referer': jQuery('#referer').val()
+    }, json => {
+        handle_result(json['error'], json['message'], json['redirect']);
+    });
 });
 
 function bc_rsvp(e) {
     e.preventDefault();
+    t = e.target;
+    if ('img' === t.localName) {
+        t = t.parentElement;
+    }
     let status;
-    let name = e.target.id;
+    let name = t.id;
     if ('button_yes' === name) {
         status = 'yes';
     } else if ('button_no' === name) {
         status = 'no';
-    } else {
+    } else if ('button_maybe' === name) {
         status = 'maybe';
     }
-    jQuery.ajax({
-        type: "post",
-        url: bookclub_ajax_object.ajax_url,
-        data: {
-            'action': 'bc_rsvp_update',
-            'eid': jQuery('#eid').val(),
-            'personid': jQuery('#personid').val(),
-            'webkey': jQuery('#webkey').val(),
-            'comment': jQuery('#comment').val(),
-            'nonce': jQuery('#nonce').val(),
-            'status': status,
-            'referer': jQuery('#referer').val()
-        }
-    })
-        .done(function (data) {
-            let json;
-            try {
-                json = jQuery.parseJSON(data);
-            } catch (e) {
-                console.log(`bc_rsvp_update exception ${e.message}`);
-                return;
-            }
-            handle_result(json['error'], json['message'], json['redirect']);
-        })
-        .fail(function (jqXHR, text, error) {
-            console.log(`bc_rsvp_update ${text} ${error}`);
-        });
+    ajax_call('bc_rsvp_update', {
+        'eid': jQuery('#eid').val(),
+        'personid': jQuery('#personid').val(),
+        'webkey': jQuery('#webkey').val(),
+        'comment': jQuery('#comment').val(),
+        'nonce': jQuery('#nonce').val(),
+        'status': status,
+        'referer': jQuery('#referer').val()
+    }, json => {
+        handle_result(json['error'], json['message'], json['redirect']);
+    });
 }
 
 jQuery('#button_no').on('click', bc_rsvp);
@@ -131,7 +102,11 @@ jQuery('#button_maybe').on('click', bc_rsvp);
 
 jQuery('#button_ical').on('click', function (e) {
     e.preventDefault();
-    let url = e.target.getAttribute('href');
+    t = e.target;
+    if ('img' === t.localName) {
+        t = t.parentElement;
+    }
+    let url = t.getAttribute('href');
     window.location = url;
 });
 
@@ -159,37 +134,20 @@ if (window.addEventListener) {
 }
 
 jQuery(document).ready(function () {
-    console.log('get iframe');
     jQuery('#get_iframe').submit();
 });
 
 function refreshRSVP() {
-    jQuery.ajax({
-        type: "post",
-        url: bookclub_ajax_object.ajax_url,
-        data: {
-            'action': 'bc_rsvp_heartbeat',
-            'nonce': jQuery('#nonce').val(),
-            'eid': jQuery('#eid').val(),
-            'personid': jQuery('#personid').val(),
-            'webkey': jQuery('#webkey').val()
-        }
-    })
-        .done(function (data) {
-            let json;
-            try {
-                json = jQuery.parseJSON(data);
-            } catch (e) {
-                console.log(`bc_rsvp_heartbeat exception ${e.message}`);
-                return;
-            }
-            handle_result(json['error'], json['message']);
-            jQuery('#who').html(json['html']);
-            jQuery('#nonce').val(json['nonce']);
-        })
-        .fail(function (jqXHR, text, error) {
-            console.log(`bc_rsvp_heartbeat ${text} ${error}`);
-        });
+    ajax_call('bc_rsvp_heartbeat', {
+        'nonce': jQuery('#nonce').val(),
+        'eid': jQuery('#eid').val(),
+        'personid': jQuery('#personid').val(),
+        'webkey': jQuery('#webkey').val()
+    }, json => {
+        handle_result(json['error'], json['message'], json['redirect']);
+        jQuery('#who').html(json['html']);
+        jQuery('#nonce').val(json['nonce']);
+    });
 }
 
 setInterval(refreshRSVP, 60000);

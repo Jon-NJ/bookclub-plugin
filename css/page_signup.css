@@ -38,7 +38,6 @@
     background: white;
     border-left: 4px solid white;
     box-shadow: 0 1px 1px 0 rgba(0,0,0,.1);
-    visibility: hidden;
 }
 
 .bc_help {

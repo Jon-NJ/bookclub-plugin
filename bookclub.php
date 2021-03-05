@@ -3,7 +3,7 @@
  * Plugin Name: Connect Bookclub Plugin
  * Plugin URI: http://connectberlin.de
  * Description: A wordpress plugin for use with our bookclub.
- * Version: 3.2.18
+ * Version: 3.3.5
  * Requires PHP: 7.3
  * Author: Jon Wolfe jonnj@connectberlin.de
  * Copyright: 2018-2021 Jonathan Wolfe

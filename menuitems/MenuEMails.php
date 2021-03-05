@@ -54,6 +54,9 @@ class MenuEMails extends MenuItem
                         'key'      => 'wp_ajax_bc_emails_send_job',
                         'function' => 'send_job'
                     ],[
+                        'key'      => 'wp_ajax_bc_emails_cancel_job',
+                        'function' => 'cancel_job'
+                    ],[
                         'key'      => 'wp_ajax_bc_emails_clear',
                         'function' => 'clear_all_recipients'
                     ],[
@@ -224,17 +227,14 @@ class MenuEMails extends MenuItem
      */
     public function emails_lookup_author(): void
     {
-        $response = $this->check_request('Lookup email author');
-        if (!$response) {
-            $name   = input_request('author');
-            $member = JoinMembersUsers::findByName($name);
-            if ($member) {
-                $response = $this->get_response(false, '');
-                $response['authorid'] = $member->member_id;
-            } else {
-                $response = $this->get_response(true,
-                        "EMail author not found $name");
-            }
+        $name   = input_request('author');
+        $member = JoinMembersUsers::findByName($name);
+        if ($member) {
+            $response = $this->get_response(false, '');
+            $response['authorid'] = $member->member_id;
+        } else {
+            $response = $this->get_response(true,
+                    "EMail author not found $name");
         }
         exit(json_encode($response));
     }
@@ -402,14 +402,18 @@ class MenuEMails extends MenuItem
     {
         $lockkey    = $this->get_lock_key($created);
         $recipients = [];
-        $join       = new JoinMembersUsersRecipients();
-        $join->loopSent($created);
+        $join = new JoinLogsMembersUsers();
+        $join->loopBySelectors(['EMAIL', null, null, $created]);
         while ($join->fetch()) {
-            $recipients[] = [
-                'name'  => $join->fullname,
-                'email' => $join->user_email ?: $join->email,
-                'sent'  => $join->email_sent
-            ];
+            if (!is_null($join->member_id)) {
+                $recipients[] = [
+                    'name'    => $join->fullname,
+                    'email'   => $join->user_email ?: $join->email,
+                    'sent'    => $join->timestamp,
+                    'status'  => $join->param1,
+                    'message' => $join->message
+                ];
+            }
         }
         $json = [
             'recipients' => $recipients,
@@ -592,6 +596,23 @@ class MenuEMails extends MenuItem
                     $this->log_error("Error scheduling job $created");
                 }
             }
+        }
+        exit(json_encode($response));
+    }
+
+    /**
+     * Clear the lock stopping the current send job. Generate a JSON response.
+     * @global string $_REQUEST['created'] datetime the email was created
+     */
+    public function cancel_job(): void
+    {
+        $response = $this->check_request('Stop sending emails');
+        if (!$response) {
+            $created  = input_request('created');
+            $lockkey = $this->get_lock_key($created);
+            free_lock($lockkey);
+            $this->log_info("Cancel send job $eventid");
+            $response = $this->get_response(false, 'Send job canceled');
         }
         exit(json_encode($response));
     }

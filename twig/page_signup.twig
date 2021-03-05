@@ -9,11 +9,11 @@
   After this you can link your account from the dashboard.<br/>
  </b>
  <br/>
- <form class="wordpress-ajax-form signup_form" name='signup_form' id='signup_form' action='{{ ajax_url }}'>
+ <input type="hidden" id="delete_text" name="delete_text" value="Do you wish to delete all your data? (Please note that for existing members without a WordPress account, this will also delete your bookclub membership.)" />
+ <form class="signup_form" name='signup_form' id='signup_form'>
   <input type="hidden" id="nonce" name="nonce" value="{{ nonce }}" />
   <input type="hidden" name="referer" value="{{ referer }}" />
   <input type='hidden' name='pkey' id='pkey' value='{{ key }}'/>
-  <input type="hidden" id="delete_text" name="delete_text" value="Do you wish to delete all your data? (Please note that for existing members without a WordPress account, this will also delete your bookclub membership.)" />
   Wordpress account name (cannot be changed after created):
   <input type='text' name='user_login' id='user_login' size='40' value=''/>
   First name:
@@ -33,7 +33,8 @@
      <button id='button_help'>
       <img src='{{ images }}help.png'/> Help
      </button>
-    <button type='submit' id="create" name='create' value='Submit'>
+    <button id="button_create">
+     <img src='{{ images }}plus.png'/>
      Create Account
     </button>
     <button id="button_delete">
@@ -42,7 +43,7 @@
     </button>
    </div>
    <div class='bc_signup_right'>
-    <div id='bc_notice' class='bc_notice notice'>
+    <div id='bc_notice' class='bc_notice notice hide'>
      <p id='bc_message' class='bc_message'>***</p>
     </div>
    </div>
@@ -51,18 +52,18 @@
  {% elseif wpid %}
  Click here to link your existing WordPress account with your
  existing Book Club account. (Name: <b>{{ name }})</b><br>
- <form class="wordpress-ajax-form signup_link" name='signup_link' id='signup_link' action='{{ ajax_url }}'>
+ <form class="signup_link" name='signup_link' id='signup_link'>
   <input type="hidden" id="nonce" name="nonce" value="{{ nonce }}" />
   <input type='hidden' name='uid' id='uid' value='{{ id }}'/>
   <input type='hidden' name='wpid' id='wpid' value='{{ wpid }}'/>
   <input type='hidden' name='redirect' id='redirect' value='{{ redirect }}'/>
   <div class='bc_signup_left'>
-   <button type="submit" id="link_account" name="link_account" value="Submit">
+   <button id="link_account" name="link_account">
     Link Account
    </button>
   </div>
   <div class='bc_signup_right'>
-   <div id='bc_notice' class='bc_notice notice'>
+   <div id='bc_notice' class='bc_notice notice hide'>
     <p id='bc_message' class='bc_message'>***</p>
    </div>
   </div>

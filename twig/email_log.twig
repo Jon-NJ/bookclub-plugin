@@ -6,7 +6,12 @@
  </h4>
 {% else %}
  {% for recipient in recipients %}
-  {{ recipient.sent|date('Y-m-d H:i:s') }} {{ recipient.name }} &lt;{{ recipient.email }}&gt;<br/>
+  {{ recipient.sent|date('Y-m-d H:i:s') }} {{ recipient.name }} &lt;{{ recipient.email }}&gt;
+  {% if recipient.status == 'ERR' %}
+   <b style='color:red'>{{ recipient.message }}</b><br/>
+  {% else %}
+   {{ recipient.message }}<br/>
+  {% endif %}
  {% endfor %}
  {% if done %}
  <hr>

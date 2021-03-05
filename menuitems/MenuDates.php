@@ -439,17 +439,14 @@ class MenuDates extends MenuItem
      */
     public function dates_lookup_author(): void
     {
-        $response = $this->check_request('Lookup author');
-        if (!$response) {
-            $name   = input_request('author');
-            $author = TableAuthors::findByName($name);
-            if ($author) {
-                $response = $this->get_response(false, '');
-                $response['author_id'] = $author->author_id;
-            } else {
-                $response = $this->get_response(true,
-                        "Author not found $author");
-            }
+        $name   = input_request('author');
+        $author = TableAuthors::findByName($name);
+        if ($author) {
+            $response = $this->get_response(false, '');
+            $response['author_id'] = $author->author_id;
+        } else {
+            $response = $this->get_response(true,
+                    "Author not found $author");
         }
         exit(json_encode($response));
     }
@@ -461,19 +458,16 @@ class MenuDates extends MenuItem
      */
     public function dates_lookup_book(): void
     {
-        $response = $this->check_request('Lookup book');
-        if (!$response) {
-            $title   = input_request('book');
-            $book = JoinBooksAuthors::findBookByTitle($title);
-            if ($book) {
-                $response = $this->get_response(false, '');
-                $response['book_id'] = $book->book_id;
-                $response['author_id'] = $book->author_id;
-                $response['author'] = $book->name;
-            } else {
-                $response = $this->get_response(true,
-                        "Book not found $title");
-            }
+        $title   = input_request('book');
+        $book = JoinBooksAuthors::findBookByTitle($title);
+        if ($book) {
+            $response = $this->get_response(false, '');
+            $response['book_id'] = $book->book_id;
+            $response['author_id'] = $book->author_id;
+            $response['author'] = $book->name;
+        } else {
+            $response = $this->get_response(true,
+                    "Book not found $title");
         }
         exit(json_encode($response));
     }
@@ -485,21 +479,18 @@ class MenuDates extends MenuItem
      */
     public function dates_lookup_place(): void
     {
-        $response = $this->check_request('Lookup place');
-        if (!$response) {
-            $name   = input_request('place');
-            if (!$name) {
+        $name   = input_request('place');
+        if (!$name) {
+            $response = $this->get_response(false, '');
+            $response['place_id'] = 0;
+        } else {
+            $place = TablePlaces::findByPlace($name);
+            if ($place) {
                 $response = $this->get_response(false, '');
-                $response['place_id'] = 0;
+                $response['place_id'] = $place->place_id;
             } else {
-                $place = TablePlaces::findByPlace($name);
-                if ($place) {
-                    $response = $this->get_response(false, '');
-                    $response['place_id'] = $place->place_id;
-                } else {
-                    $response = $this->get_response(true,
-                            "Place not found $name");
-                }
+                $response = $this->get_response(true,
+                        "Place not found $name");
             }
         }
         exit(json_encode($response));

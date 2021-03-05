@@ -235,17 +235,14 @@ class MenuBooks extends MenuItem
      */
     public function books_lookup_author(): void
     {
-        $response = $this->check_request('Lookup author');
-        if (!$response) {
-            $name   = input_request('author');
-            $author = TableAuthors::findByName($name);
-            if ($author) {
-                $response = $this->get_response(false, '');
-                $response['author_id'] = $author->author_id;
-            } else {
-                $response = $this->get_response(true,
-                        "Author not found $author");
-            }
+        $name   = input_request('author');
+        $author = TableAuthors::findByName($name);
+        if ($author) {
+            $response = $this->get_response(false, '');
+            $response['author_id'] = $author->author_id;
+        } else {
+            $response = $this->get_response(true,
+                    "Author not found $author");
         }
         exit(json_encode($response));
     }

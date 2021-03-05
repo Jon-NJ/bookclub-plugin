@@ -61,18 +61,16 @@ class PageRSVP extends ShortCode
     /**
      * Generate an HTML/JS script for redirecting to the RSVP page without the
      * status flag (and possibly different or no web key).
-     * @param \bookclub\TableEvents $event event object
-     * @param string $pkey web key for user that is not logged in (or empty)
+     * @param string $url redirection target URL
      * @return string HTML snippet
      */
-    private function redirect(TableEvents $event, string $pkey): string
+    private function redirect(string $url): string
     {
         return
             "\n" .
             "<script type='text/javascript'>\n" .
             "  window.onload = function() {\n" .
-            "    window.location.href = '" .
-                    url_rsvp($event, $pkey) . "';\n" .
+            "    window.location.href = '$url';\n" .
             "  }\n" .
             "</script>\n";
     }
@@ -136,7 +134,7 @@ class PageRSVP extends ShortCode
 
         // we need a new URL if the web key does not match or if there was a status change
         if ($status || ($pkey && $pkey != $member->web_key)) {
-            return $this->redirect($event, $wpid ? '' : $pkey);
+            return $this->redirect(url_rsvp($event, $wpid ? '' : $pkey));
         }
 
         // register member participation
@@ -232,30 +230,24 @@ class PageRSVP extends ShortCode
      * Checks if REQUEST is correct for this page. Overrides parent function to
      * use the webkey instead of the nonce for validation.
      * @param string $error additional string for error message
+     * @param string $redir optional redirection if request not validated
      * @return array JSON response or empty array if no error
      */
-    protected function check_request(string $error): array
+    protected function check_request(string $error, string $redir = ''): array
     {
         $response = [];
+        if (!$redir) {
+            $redir = url_site();
+        }
         if (!is_request()) {
             $this->log_error("Not a reqest - $error (" . input_referer() . ")");
             $response = $this->get_response(true, 'Bad request');
         } else {
-            $nonce  = get_nonce();
-            $result = \wp_verify_nonce($nonce, $this->data['nonce']);
-            if (!$result) {
-                $webkey = input_request('webkey');
-                $member = TableMembers::findByKey($webkey);
-                if (!$member) {
-//                    $response = $this->get_response(true,
-//                            'Bad member key');
-                    $eid   = input_request('eid');
-                    $event = TableEvents::findByID($eid);
-                    $this->log_info("Redirecting - $eid $webkey");
-                    return $this->redirect($event, $webkey);
-                } else {
-                    $this->log_info("Nonce expired ($nonce), validated with web key $webkey");
-                }
+            $webkey = input_request('webkey');
+            $member = TableMembers::findByKey($webkey);
+            if (!$member) {
+                $this->log_info("Redirecting");
+                $response = $this->get_response(true, 'Member not found', $redir);
             }
         }
         return $response;
@@ -348,7 +340,7 @@ class PageRSVP extends ShortCode
         die();
     }
 
-    /**
+/**
      * Update the "who" portion of the RSVP and possibly the nonce.
      * @global string $_REQUEST['personid'] unique member identifier
      * @global string $_REQUEST['eid'] unique event identifier

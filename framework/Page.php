@@ -97,7 +97,7 @@ class Page
         $nonce  = get_nonce();
         $result = \wp_verify_nonce($nonce, $this->data['nonce']);
         if (!$result) {
-            $this->log_info("Bad nonce - $error ($nonce)");
+            $this->log_error("Bad nonce - $error ($nonce)");
         }
         return $result;
     }
@@ -105,9 +105,10 @@ class Page
     /**
      * Checks if REQUEST and if the 'nonce' value is correct for this page.
      * @param string $error additional string for error message
+     * @param string $redir optional redirection if request not validated
      * @return array JSON response or empty array if no error
      */
-    protected function check_request(string $error): array
+    protected function check_request(string $error, string $redir = ''): array
     {
         $response = [];
         if (!is_request()) {
@@ -115,7 +116,7 @@ class Page
             $response = $this->get_response(true, 'Bad request');
         } elseif (!$this->check_nonce()) {
             $response = $this->get_response(true,
-                    'Bad nonce - refreshing the page may fix this');
+                    'Bad nonce - refreshing the page may fix this', $redir);
         }
         return $response;
     }

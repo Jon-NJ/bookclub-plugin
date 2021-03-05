@@ -12,7 +12,7 @@ The **Participants** view shows members (potential participants) on the left and
 
 Be sure to click **Save** whenever there is any change, including changing who the participants are. It is not possible to click **Send** if there are unsaved changes. Participants that have not yet received the invitation show an envelope with a red slash. Those who have received the invitation show a normal envelope. The **Clear** button will reset everyone to unsent.
 
-Please make sure everything is correct before you click **Send**. Once the job starts, it is no longer possible to cancel it. The job runs at the server and should only quit once all emails are sent. The display in your browser should keep refreshing until the job is completed.
+Please make sure everything is correct before you click **Send**. The job runs at the server and will quit once all emails are sent or the cancel button is pressed. The display in your browser should keep refreshing until the job is completed.
 
 When the job starts, it sets a "running" flag so that two identical jobs won't be running at the same time. There is the possibility that the job fails to complete before it can clear the "running" flag. If this happens, there is also a time-out (currently five minutes) to allow the job to be restarted.
 
@@ -30,7 +30,8 @@ The page uses three states - **Start**, **Search** and **Edit**. When one first 
 - **Restart** - *Only visible in **Edit** mode.* Changes are discarded, return to **Start** mode.
 - **Save** - *Only enabled in **Edit** mode.* Changes will be saved. If the button is disabled in edit mode, it indicates that some field is invalid or that saving is not necessary (e.g. nothing has changed).
 - **Delete** - *Only enabled in **Edit** mode.* The item will be removed from the database.
-- **Send** - *Only visible in **Edit** mode.* *Only active when changes are saved, the send job is not already running and there are unsent invitation emails.* Send unsent invitations.
+- **Send** - *Only visible in **Edit** mode while not sending.* *Only active when changes are saved, the send job is not already running and there are unsent invitation emails.* Send unsent invitations.
+- **Cancel** - *Only visible in **Edit** mode while sending.* Stop sending invitations.
 - **Clear** - *Only visible in **Edit** mode.* *Only active when changes are saved and some invitations have already been sent.* The "sent" flag is cleared from all users so invitations can be sent again.
 
 ## Search/Edit fields

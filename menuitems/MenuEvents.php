@@ -54,6 +54,9 @@ class MenuEvents extends MenuItem
                         'key'      => 'wp_ajax_bc_events_send_job',
                         'function' => 'send_job'
                     ],[
+                        'key'      => 'wp_ajax_bc_events_cancel_job',
+                        'function' => 'cancel_job'
+                    ],[
                         'key'      => 'wp_ajax_bc_events_clear',
                         'function' => 'clear_all_participants'
                     ],[
@@ -304,16 +307,20 @@ class MenuEvents extends MenuItem
      */
     private function get_log(string $eventid, int $sent, int $unsent): string
     {
-        $lockkey    = $this->get_lock_key($eventid);
+        $lockkey = $this->get_lock_key($eventid);
         $participants = [];
-        $join       = new JoinMembersUsersParticipants();
-        $join->loopSent($eventid);
+        $join = new JoinLogsMembersUsers();
+        $join->loopBySelectors(['INVITE', null, null, $eventid]);
         while ($join->fetch()) {
-            $participants[] = [
-                'name'  => $join->fullname,
-                'email' => $join->user_email ?: $join->email,
-                'sent'  => $join->email_sent
-            ];
+            if (!is_null($join->member_id)) {
+                $participants[] = [
+                    'name'    => $join->fullname,
+                    'email'   => $join->user_email ?: $join->email,
+                    'sent'    => $join->timestamp,
+                    'status'  => $join->param1,
+                    'message' => $join->message
+                ];
+            }
         }
         $json = [
             'participants' => $participants,
@@ -331,15 +338,18 @@ class MenuEvents extends MenuItem
      */
     private function get_history(string $eventid): string
     {
-        $join = new JoinRSVPsMembersUsers();
-        $join->loopRecentOptionalEvent($eventid);
+        $join = new JoinLogsMembersUsers(3);
+        $join->loopBySelectors(['RSVP', null, $eventid]);
         $participants = [];
         while ($join->fetch()) {
-            $participants[] = [
-                'name'  => $join->fullname,
-                'time'  => $join->modtime,
-                'rsvp'  => $join->rsvp
-            ];
+            if (!is_null($join->member_id)) {
+                $participants[] = [
+                    'name'    => $join->fullname,
+                    'time'    => $join->timestamp,
+                    'rsvp'    => $join->param1,
+                    'message' => $join->message
+                ];
+            }
         }
         return twig_render('event_history', [
             'participants' => $participants,
@@ -851,6 +861,23 @@ class MenuEvents extends MenuItem
                     $this->log_error("Error scheduling job $eventid");
                 }
             }
+        }
+        exit(json_encode($response));
+    }
+
+    /**
+     * Clear the lock stopping the current send job. Generate a JSON response.
+     * @global string $_REQUEST['eventid'] unique event identifier
+     */
+    public function cancel_job(): void
+    {
+        $response = $this->check_request('Stop sending emails');
+        if (!$response) {
+            $eventid  = input_request('eventid');
+            $lockkey = $this->get_lock_key($eventid);
+            free_lock($lockkey);
+            $this->log_info("Cancel send job $eventid");
+            $response = $this->get_response(false, 'Send job canceled');
         }
         exit(json_encode($response));
     }

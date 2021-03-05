@@ -7,21 +7,37 @@
 /* global bookclub_ajax_object */
 
 function handle_result(flag, message, redirect) {
-    let msg = jQuery('#bc_message');
+    jQuery('#bc_message').text(message);
     let notice = jQuery('#bc_notice');
-    msg.text(message);
-    if (flag) {
-        notice.attr('class', 'bc_notice notice notice-error');
-    } else {
-        notice.attr('class', 'bc_notice notice notice-success');
-    }
-    notice.css("visibility", "visible");
+    let status = flag ? 'notice-error' : 'notice-success';
+    notice.addClass(status);
+    notice.removeClass('hide');
     setTimeout(function () {
-        notice.css("visibility", "hidden");
+        notice.addClass('hide');
+        notice.removeClass(status);
         if (redirect) {
             window.location = redirect;
         }
     }, 3000);
+}
+
+function ajax_call(action, data, success) {
+    data.action = action;
+    jQuery.ajax({ type: 'post', url: bookclub_ajax_object.ajax_url, data })
+        .done(data => {
+            {
+                try {
+                    let json = jQuery.parseJSON(data);
+                    success(json);
+                } catch (e) {
+                    console.log(`${action} exception ${e.message}`);
+                }
+            }
+        })
+        .fail(((jqXHR, text, error) => {
+            console.log(`bc_authors_book_count ${text} ${error}`);
+            handle_result(true, error);
+        }));
 }
 
 function add_highlight(name, style) {
@@ -53,30 +69,23 @@ jQuery('#close_help').on('click', function (e) {
 
 jQuery('#button_help').on('click', function (e) {
     e.preventDefault();
-    jQuery.ajax({
-        type: "post",
-        url: bookclub_ajax_object.ajax_url,
-        data: {
-            'action': 'bc_covers_help',
-            'nonce': jQuery('#nonce').val()
-        }
-    })
-        .done(function (data) {
-            let json;
-            try {
-                json = jQuery.parseJSON(data);
-            } catch (e) {
-                console.log(`bc_covers_help exception ${e.message}`);
-                return;
-            }
-            jQuery('#htmlhelp').html(json['html']);
-            jQuery(".bc_help").show();
-        })
-        .fail(function (jqXHR, text, error) {
-            console.log(`bc_covers_help ${text} ${error}`);
-            handle_result(true, error);
-        });
+    ajax_call('bc_covers_help', {
+        'nonce': jQuery('#nonce').val()
+    }, json => {
+        jQuery('#htmlhelp').html(json['html']);
+        jQuery(".bc_help").show();
+    });
 });
+
+function create_url(base, args) {
+    let parms = {};
+    for (let key in args) {
+        if (args[key]) {
+            parms[key] = args[key];
+        }
+    }
+    return base + '&' + jQuery.param(parms)
+}
 
 var stuck = '';
 
@@ -84,37 +93,21 @@ jQuery('#button_rename').on('click', function (e) {
     e.preventDefault();
     let newname = jQuery('#cover').val();
     let original = jQuery('#filename').val();
-    jQuery.ajax({
-        type: "post",
-        url: bookclub_ajax_object.ajax_url,
-        data: {
-            'action': 'bc_covers_rename',
-            'nonce': jQuery('#nonce').val(),
-            'referer': jQuery('#referer').val(),
-            'original': original,
-            'newname': newname
+    ajax_call('bc_covers_rename', {
+        'nonce': jQuery('#nonce').val(),
+        'referer': jQuery('#referer').val(),
+        'original': original,
+        'newname': newname
+    }, json => {
+        if (json['error']) {
+            handle_result(json['error'], json['message'], json['redirect']);
+        } else {
+            let parms = { action: 'edit' };
+            parms.cover = newname;
+            editurl = jQuery('#referer').val() + '&' + jQuery.param(parms);
+            handle_result(json['error'], json['message'], editurl);
         }
-    })
-        .done(function (data) {
-            let json;
-            try {
-                json = jQuery.parseJSON(data);
-            } catch (e) {
-                console.log(`bc_covers_rename exception ${e.message}`);
-                return;
-            }
-            if (json['error']) {
-                handle_result(json['error'], json['message']);
-            } else {
-                let parms = { action: 'edit' };
-                parms.cover = newname;
-                editurl = jQuery('#referer').val() + '&' + jQuery.param(parms);
-                handle_result(json['error'], json['message'], editurl);
-            }
-        })
-        .fail(function (jqXHR, text, error) {
-            console.log(`bc_covers_rename ${text} ${error}`);
-        });
+    });
 });
 
 function rename_validate() {
@@ -144,29 +137,16 @@ jQuery('#undo_name').on('click', function (e) {
 
 jQuery('#button_search').on('click', function (e) {
     e.preventDefault();
-    let parms = { action: 'search' };
-    let cover = jQuery('#cover').val();
-    let older = jQuery('#older').val();
-    let younger = jQuery('#younger').val();
     let ounit = jQuery('[name="old_unit"]:checked').val();
     let yunit = jQuery('[name="young_unit"]:checked').val();
-    if ('' !== cover) {
-        parms.cover = cover;
-    }
-    if ('' !== older) {
-        parms.older = older;
-    }
-    if ('days' !== ounit) {
-        parms.ounit = ounit;
-    }
-    if ('' !== younger) {
-        parms.younger = younger;
-    }
-    if ('days' !== yunit) {
-        parms.yunit = yunit;
-    }
-    searchurl = jQuery('#referer').val() + '&' + jQuery.param(parms);
-    window.location = searchurl;
+    window.location = create_url(jQuery('#referer').val(), {
+        action: 'search',
+        cover: jQuery('#cover').val(),
+        older: jQuery('#older').val(),
+        ounit: ('days' !== ounit) ? ounit : '',
+        younger: jQuery('#younger').val(),
+        yunit: ('days' !== yunit) ? yunit : ''
+    });
 });
 
 jQuery('#button_reset').on('click', function (e) {
@@ -190,34 +170,17 @@ jQuery('#button_add').on('click', function (e) {
 jQuery('#button_delete').on('click', function (e) {
     e.preventDefault();
     if (confirm(jQuery('#delete_text').val())) {
-        jQuery.ajax({
-            type: "post",
-            url: bookclub_ajax_object.ajax_url,
-            data: {
-                'action': 'bc_covers_delete',
-                'nonce': jQuery('#nonce').val(),
-                'cover': jQuery('#filename').val()
+        ajax_call('bc_covers_delete', {
+            'nonce': jQuery('#nonce').val(),
+            'cover': jQuery('#filename').val()
+        }, json => {
+            if (json['error']) {
+                handle_result(json['error'], json['message'], json['redirect']);
+            } else {
+                handle_result(json['error'], json['message'],
+                    window.location = jQuery('#referer').val());
             }
-        })
-            .done(function (data) {
-                let json;
-                try {
-                    json = jQuery.parseJSON(data);
-                } catch (e) {
-                    console.log(`bc_covers_delete exception ${e.message}`);
-                    return;
-                }
-                if (json['error']) {
-                    handle_result(json['error'], json['message']);
-                } else {
-                    handle_result(json['error'], json['message'],
-                        window.location = jQuery('#referer').val());
-                }
-            })
-            .fail(function (jqXHR, text, error) {
-                console.log(`bc_covers_delete ${text} ${error}`);
-                handle_result(true, error);
-            });
+        });
     }
 });
 
@@ -282,7 +245,7 @@ function uploadCovers(formdata) {
                 return;
             }
             if (json['error']) {
-                handle_result(json['error'], json['message']);
+                handle_result(json['error'], json['message'], json['redirect']);
             } else {
                 let parms = { action: 'edit' };
                 parms.cover = json['cover'];

@@ -7,21 +7,37 @@
 /* global bookclub_ajax_object */
 
 function handle_result(flag, message, redirect) {
-    let msg = jQuery('#bc_message');
+    jQuery('#bc_message').text(message);
     let notice = jQuery('#bc_notice');
-    msg.text(message);
-    if (flag) {
-        notice.attr('class', 'bc_notice notice notice-error');
-    } else {
-        notice.attr('class', 'bc_notice notice notice-success');
-    }
-    notice.css("visibility", "visible");
+    let status = flag ? 'notice-error' : 'notice-success';
+    notice.addClass(status);
+    notice.removeClass('hide');
     setTimeout(function () {
-        notice.css("visibility", "hidden");
+        notice.addClass('hide');
+        notice.removeClass(status);
         if (redirect) {
             window.location = redirect;
         }
     }, 3000);
+}
+
+function ajax_call(action, data, success) {
+    data.action = action;
+    jQuery.ajax({ type: 'post', url: bookclub_ajax_object.ajax_url, data })
+        .done(data => {
+            {
+                try {
+                    let json = jQuery.parseJSON(data);
+                    success(json);
+                } catch (e) {
+                    console.log(`${action} exception ${e.message}`);
+                }
+            }
+        })
+        .fail(((jqXHR, text, error) => {
+            console.log(`bc_authors_book_count ${text} ${error}`);
+            handle_result(true, error);
+        }));
 }
 
 jQuery('#close_help').on('click', function (e) {
@@ -31,30 +47,23 @@ jQuery('#close_help').on('click', function (e) {
 
 jQuery('#button_help').on('click', function (e) {
     e.preventDefault();
-    jQuery.ajax({
-        type: "post",
-        url: bookclub_ajax_object.ajax_url,
-        data: {
-            'action': 'bc_dates_help',
-            'nonce': jQuery('#nonce').val()
-        }
-    })
-        .done(function (data) {
-            let json;
-            try {
-                json = jQuery.parseJSON(data);
-            } catch (e) {
-                console.log(`bc_dates_help exception ${e.message}`);
-                return;
-            }
-            jQuery('#htmlhelp').html(json['html']);
-            jQuery(".bc_help").show();
-        })
-        .fail(function (jqXHR, text, error) {
-            console.log(`bc_dates_help ${text} ${error}`);
-            handle_result(true, error);
-        });
+    ajax_call('bc_dates_help', {
+        'nonce': jQuery('#nonce').val()
+    }, json => {
+        jQuery('#htmlhelp').html(json['html']);
+        jQuery(".bc_help").show();
+    });
 });
+
+function create_url(base, args) {
+    let parms = {};
+    for (let key in args) {
+        if (args[key]) {
+            parms[key] = args[key];
+        }
+    }
+    return base + '&' + jQuery.param(parms)
+}
 
 function add_highlight(name, style) {
     let elem = jQuery('#' + name);
@@ -126,102 +135,54 @@ function validate_form() {
 }
 
 function validate_author() {
-    jQuery.ajax({
-        type: "post",
-        url: bookclub_ajax_object.ajax_url,
-        data: {
-            'action': 'bc_dates_lookup_author',
-            'nonce': jQuery('#nonce').val(),
-            'author': jQuery('#author').val()
+    ajax_call('bc_dates_lookup_author', {
+        'nonce': jQuery('#nonce').val(),
+        'author': jQuery('#author').val()
+    }, json => {
+        let author_id = jQuery('#author_id');
+        if (json['error']) {
+            author_id.attr('value', '');
+        } else {
+            author_id.attr('value', json['author_id']);
         }
-    })
-        .done(function (data) {
-            let json;
-            try {
-                json = jQuery.parseJSON(data);
-            } catch (e) {
-                console.log(`bc_dates_lookup_author exception ${e.message}`);
-                return;
-            }
-            let author_id = jQuery('#author_id');
-            if (json['error']) {
-                author_id.attr('value', '');
-            } else {
-                author_id.attr('value', json['author_id']);
-            }
-            validate_form();
-        })
-        .fail(function (jqXHR, text, error) {
-            console.log(`bc_dates_lookup_author ${text} ${error}`);
-        });
+        validate_form();
+    });
 }
 
 function validate_book() {
-    jQuery.ajax({
-        type: "post",
-        url: bookclub_ajax_object.ajax_url,
-        data: {
-            'action': 'bc_dates_lookup_book',
-            'nonce': jQuery('#nonce').val(),
-            'book': jQuery('#book').val()
+    ajax_call('bc_dates_lookup_book', {
+        'nonce': jQuery('#nonce').val(),
+        'book': jQuery('#book').val()
+    }, json => {
+        let book_id = jQuery('#book_id');
+        let author_id = jQuery('#bookauthorid');
+        let author = jQuery('#author');
+        if (json['error']) {
+            book_id.attr('value', '');
+            author_id.attr('value', '');
+        } else {
+            book_id.attr('value', json['book_id']);
+            author_id.attr('value', json['author_id']);
+            author.attr('value', json['author']);
+            validate_author();
         }
-    })
-        .done(function (data) {
-            let json;
-            try {
-                json = jQuery.parseJSON(data);
-            } catch (e) {
-                console.log(`bc_dates_lookup_book exception ${e.message}`);
-                return;
-            }
-            let book_id = jQuery('#book_id');
-            let author_id = jQuery('#bookauthorid');
-            let author = jQuery('#author');
-            if (json['error']) {
-                book_id.attr('value', '');
-                author_id.attr('value', '');
-            } else {
-                book_id.attr('value', json['book_id']);
-                author_id.attr('value', json['author_id']);
-                author.attr('value', json['author']);
-                validate_author();
-            }
-            validate_form();
-        })
-        .fail(function (jqXHR, text, error) {
-            console.log(`bc_dates_lookup_book ${text} ${error}`);
-        });
+        validate_form();
+    });
 }
 
 function validate_place() {
-    jQuery.ajax({
-        type: "post",
-        url: bookclub_ajax_object.ajax_url,
-        data: {
-            'action': 'bc_dates_lookup_place',
-            'nonce': jQuery('#nonce').val(),
-            'place': jQuery('#place').val()
+    ajax_call('bc_dates_lookup_place', {
+        'nonce': jQuery('#nonce').val(),
+        'place': jQuery('#place').val()
+    }, json => {
+        let place_id = jQuery('#place_id');
+        if (json['error']) {
+            place_id.attr('value', '');
+        } else {
+            place_id.attr('value', json['place_id']);
         }
-    })
-        .done(function (data) {
-            let json;
-            try {
-                json = jQuery.parseJSON(data);
-            } catch (e) {
-                console.log(`bc_dates_lookup_place exception ${e.message}`);
-                return;
-            }
-            let place_id = jQuery('#place_id');
-            if (json['error']) {
-                place_id.attr('value', '');
-            } else {
-                place_id.attr('value', json['place_id']);
-            }
-            validate_form();
-        })
-        .fail(function (jqXHR, text, error) {
-            console.log(`bc_dates_lookup_place ${text} ${error}`);
-        });
+        validate_form();
+    });
 }
 
 jQuery('#author').on('input', function (e) {
@@ -279,35 +240,17 @@ jQuery(document).ready(function () {
 
 jQuery('#button_search').on('click', function (e) {
     e.preventDefault();
-    let parms = { action: 'search' };
     let groupid = jQuery('#groupid').val();
-    if (0 !== groupid) {
-        parms.groupid = groupid;
-    }
-    let date = jQuery('#date').val();
-    if ('' !== date) {
-        parms.date = date;
-    }
-    let age = jQuery('#age').val();
-    if ('' !== age) {
-        parms.age = age;
-    }
-    let book = jQuery('#book').val();
-    if ('' !== book) {
-        parms.book = book;
-    }
-    let author = jQuery('#author').val();
-    if ('' !== author) {
-        parms.author = author;
-    }
-    let place = jQuery('#place').val();
-    if ('' !== place) {
-        parms.place = place;
-    }
-    let calmonth = jQuery('#calmonth').val();
-    parms.calmonth = calmonth;
-    searchurl = jQuery('#referer').val() + '&' + jQuery.param(parms);
-    window.location = searchurl;
+    window.location = create_url(jQuery('#referer').val(), {
+        action: 'search',
+        groupid: (0 != groupid) ? groupid : '',
+        date: jQuery('#date').val(),
+        age: jQuery('#age').val(),
+        book: jQuery('#book').val(),
+        author: jQuery('#author').val(),
+        place: jQuery('#place').val(),
+        calmonth: jQuery('#calmonth').val()
+    });
 });
 
 jQuery('#button_reset').on('click', function (e) {
@@ -318,36 +261,19 @@ jQuery('#button_reset').on('click', function (e) {
 jQuery('#button_delete').on('click', function (e) {
     e.preventDefault();
     if (confirm(jQuery('#delete_text').val())) {
-        jQuery.ajax({
-            type: "post",
-            url: bookclub_ajax_object.ajax_url,
-            data: {
-                'action': 'bc_dates_delete',
-                'nonce': jQuery('#nonce').val(),
-                'groupid': jQuery('#original_groupid').val(),
-                'bookid': jQuery('#original_bookid').val(),
-                'date': jQuery('#original_date').val()
+        ajax_call('bc_dates_delete', {
+            'nonce': jQuery('#nonce').val(),
+            'groupid': jQuery('#original_groupid').val(),
+            'bookid': jQuery('#original_bookid').val(),
+            'date': jQuery('#original_date').val()
+        }, json => {
+            if (json['error']) {
+                handle_result(json['error'], json['message'], json['redirect']);
+            } else {
+                handle_result(json['error'], json['message'],
+                    window.location = jQuery('#referer').val());
             }
-        })
-            .done(function (data) {
-                let json;
-                try {
-                    json = jQuery.parseJSON(data);
-                } catch (e) {
-                    console.log(`bc_dates_delete exception ${e.message}`);
-                    return;
-                }
-                if (json['error']) {
-                    handle_result(json['error'], json['message']);
-                } else {
-                    handle_result(json['error'], json['message'],
-                        window.location = jQuery('#referer').val());
-                }
-            })
-            .fail(function (jqXHR, text, error) {
-                console.log(`bc_dates_delete ${text} ${error}`);
-                handle_result(true, error);
-            });
+        });
     }
 });
 
@@ -360,121 +286,70 @@ function set_modified() {
 
 jQuery('#button_save').on('click', function (e) {
     e.preventDefault();
-    jQuery.ajax({
-        type: "post",
-        url: bookclub_ajax_object.ajax_url,
-        data: {
-            'action': 'bc_dates_save',
-            'nonce': jQuery('#nonce').val(),
-            'referer': jQuery('#referer').val(),
-            'groupid': jQuery('#groupid').val(),
-            'original_groupid': jQuery('#original_groupid').val(),
-            'date': jQuery('#date').val(),
-            'original_date': jQuery('#original_date').val(),
-            'original_bookid': jQuery('#original_bookid').val(),
-            'bookid': jQuery('#book_id').val(),
-            'book': jQuery('#book').val(),
-            'placeid': jQuery('#place_id').val(),
-            'hideflag': jQuery('#hideflag').prop('checked') ? 1 : 0,
-            'private': jQuery('#private').prop('checked') ? 1 : 0,
-            'priority': jQuery('#priority').val()
+    ajax_call('bc_dates_save', {
+        'nonce': jQuery('#nonce').val(),
+        'referer': jQuery('#referer').val(),
+        'groupid': jQuery('#groupid').val(),
+        'original_groupid': jQuery('#original_groupid').val(),
+        'date': jQuery('#date').val(),
+        'original_date': jQuery('#original_date').val(),
+        'original_bookid': jQuery('#original_bookid').val(),
+        'bookid': jQuery('#book_id').val(),
+        'book': jQuery('#book').val(),
+        'placeid': jQuery('#place_id').val(),
+        'hideflag': jQuery('#hideflag').prop('checked') ? 1 : 0,
+        'private': jQuery('#private').prop('checked') ? 1 : 0,
+        'priority': jQuery('#priority').val()
+    }, json => {
+        let error = json['error'];
+        handle_result(error, json['message'], json['redirect']);
+        if (!error) {
+            let make = jQuery('#make_event');
+            if (make) {
+                make.removeAttr('disabled');
+            }
         }
-    })
-        .done(function (data) {
-            let json;
-            try {
-                json = jQuery.parseJSON(data);
-            } catch (e) {
-                console.log(`bc_dates_save exception ${e.message}`);
-                return;
-            }
-            let error = json['error'];
-            handle_result(error, json['message'], json['redirect']);
-            if (!error) {
-                let make = jQuery('#make_event');
-                if (make) {
-                    make.removeAttr('disabled');
-                }
-            }
-        })
-        .fail(function (jqXHR, text, error) {
-            console.log(`bc_dates_save ${text} ${error}`);
-            handle_result(true, error);
-        });
+    });
 });
 
 jQuery('#make_event').on('click', function (e) {
     e.preventDefault();
-    jQuery.ajax({
-        type: "post",
-        url: bookclub_ajax_object.ajax_url,
-        data: {
-            'action': 'bc_dates_event',
-            'nonce': jQuery('#nonce').val(),
-            'referer': jQuery('#referer').val(),
-            'bc_events': jQuery('#bc_events').val(),
-            'groupid': jQuery('#groupid').val(),
-            'date': jQuery('#date').val(),
-            'bookid': jQuery('#book_id').val()
-        }
-    })
-        .done(function (data) {
-            let json;
-            try {
-                json = jQuery.parseJSON(data);
-            } catch (e) {
-                console.log(`bc_dates_event exception ${e.message}`);
-                return;
-            }
-            handle_result(json['error'], json['message'], json['redirect']);
-        })
-        .fail(function (jqXHR, text, error) {
-            console.log(`bc_dates_event ${text} ${error}`);
-            handle_result(true, error);
-        });
+    ajax_call('bc_dates_event', {
+        'nonce': jQuery('#nonce').val(),
+        'referer': jQuery('#referer').val(),
+        'bc_events': jQuery('#bc_events').val(),
+        'groupid': jQuery('#groupid').val(),
+        'date': jQuery('#date').val(),
+        'bookid': jQuery('#book_id').val()
+    }, json => {
+        handle_result(json['error'], json['message'], json['redirect']);
+    });
 });
 
 jQuery('#button_add').on('click', function (e) {
     e.preventDefault();
-    jQuery.ajax({
-        type: "post",
-        url: bookclub_ajax_object.ajax_url,
-        data: {
-            'action': 'bc_dates_add',
-            'nonce': jQuery('#nonce').val(),
-            'referer': jQuery('#referer').val(),
-            'groupid': jQuery('#groupid').val(),
-            'date': jQuery('#date').val(),
-            'bookid': jQuery('#book_id').val(),
-            'placeid': jQuery('#place_id').val(),
-            'hideflag': 0,
-            'private': 0
+    ajax_call('bc_dates_add', {
+        'nonce': jQuery('#nonce').val(),
+        'referer': jQuery('#referer').val(),
+        'groupid': jQuery('#groupid').val(),
+        'date': jQuery('#date').val(),
+        'bookid': jQuery('#book_id').val(),
+        'placeid': jQuery('#place_id').val(),
+        'hideflag': 0,
+        'private': 0
+    }, json => {
+        let error = json['error'];
+        let editurl = '';
+        if (!error) {
+            let parms = { action: 'edit' };
+            parms.date = json['date'];
+            parms.group = json['group'];
+            parms.book = json['book'];
+            editurl = jQuery('#referer').val() + '&' +
+                jQuery.param(parms);
         }
-    })
-        .done(function (data) {
-            let json;
-            try {
-                json = jQuery.parseJSON(data);
-            } catch (e) {
-                console.log(`bc_dates_add exception ${e.message}`);
-                return;
-            }
-            let error = json['error'];
-            let editurl = '';
-            if (!error) {
-                let parms = { action: 'edit' };
-                parms.date = json['date'];
-                parms.group = json['group'];
-                parms.book = json['book'];
-                editurl = jQuery('#referer').val() + '&' +
-                    jQuery.param(parms);
-            }
-            handle_result(error, json['message'], editurl);
-        })
-        .fail(function (jqXHR, text, error) {
-            console.log(`bc_dates_add ${text} ${error}`);
-            handle_result(true, error);
-        });
+        handle_result(error, json['message'], editurl);
+    });
 });
 
 function edit_date(line) {

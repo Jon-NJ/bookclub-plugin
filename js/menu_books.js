@@ -7,21 +7,37 @@
 /* global bookclub_ajax_object */
 
 function handle_result(flag, message, redirect) {
-    let msg = jQuery('#bc_message');
+    jQuery('#bc_message').text(message);
     let notice = jQuery('#bc_notice');
-    msg.text(message);
-    if (flag) {
-        notice.attr('class', 'bc_notice notice notice-error');
-    } else {
-        notice.attr('class', 'bc_notice notice notice-success');
-    }
-    notice.css("visibility", "visible");
+    let status = flag ? 'notice-error' : 'notice-success';
+    notice.addClass(status);
+    notice.removeClass('hide');
     setTimeout(function () {
-        notice.css("visibility", "hidden");
+        notice.addClass('hide');
+        notice.removeClass(status);
         if (redirect) {
             window.location = redirect;
         }
     }, 3000);
+}
+
+function ajax_call(action, data, success) {
+    data.action = action;
+    jQuery.ajax({ type: 'post', url: bookclub_ajax_object.ajax_url, data })
+        .done(data => {
+            {
+                try {
+                    let json = jQuery.parseJSON(data);
+                    success(json);
+                } catch (e) {
+                    console.log(`${action} exception ${e.message}`);
+                }
+            }
+        })
+        .fail(((jqXHR, text, error) => {
+            console.log(`bc_authors_book_count ${text} ${error}`);
+            handle_result(true, error);
+        }));
 }
 
 jQuery('#close_help').on('click', function (e) {
@@ -31,30 +47,23 @@ jQuery('#close_help').on('click', function (e) {
 
 jQuery('#button_help').on('click', function (e) {
     e.preventDefault();
-    jQuery.ajax({
-        type: "post",
-        url: bookclub_ajax_object.ajax_url,
-        data: {
-            'action': 'bc_books_help',
-            'nonce': jQuery('#nonce').val()
-        }
-    })
-        .done(function (data) {
-            let json;
-            try {
-                json = jQuery.parseJSON(data);
-            } catch (e) {
-                console.log(`bc_books_help exception ${e.message}`);
-                return;
-            }
-            jQuery('#htmlhelp').html(json['html']);
-            jQuery(".bc_help").show();
-        })
-        .fail(function (jqXHR, text, error) {
-            console.log(`bc_books_help ${text} ${error}`);
-            handle_result(true, error);
-        });
+    ajax_call('bc_books_help', {
+        'nonce': jQuery('#nonce').val()
+    }, json => {
+        jQuery('#htmlhelp').html(json['html']);
+        jQuery(".bc_help").show();
+    });
 });
+
+function create_url(base, args) {
+    let parms = {};
+    for (let key in args) {
+        if (args[key]) {
+            parms[key] = args[key];
+        }
+    }
+    return base + '&' + jQuery.param(parms)
+}
 
 function add_highlight(name, style) {
     let elem = jQuery('#' + name);
@@ -79,48 +88,32 @@ function remove_hide(name) {
 }
 
 function validate_form() {
-    jQuery.ajax({
-        type: "post",
-        url: bookclub_ajax_object.ajax_url,
-        data: {
-            'action': 'bc_books_lookup_author',
-            'nonce': jQuery('#nonce').val(),
-            'author': jQuery('#author_name').val()
-        }
-    })
-        .done(function (data) {
-            let json;
-            try {
-                json = jQuery.parseJSON(data);
-            } catch (e) {
-                console.log(`bc_books_lookup_author exception ${e.message}`);
-                return;
-            }
-            let editmode = jQuery('#mode').val() === 'edit';
-            let author_id = jQuery('#author_id');
-            if (json['error']) {
-                author_id.attr('value', '');
-                if (editmode) {
-                    let save_button = jQuery('#button_save');
-                    save_button.attr('disabled', '');
-                } else {
-                    let add_button = jQuery('#button_add');
-                    add_button.attr('disabled', '');
-                }
+    ajax_call('bc_books_lookup_author', {
+        'nonce': jQuery('#nonce').val(),
+        'author': jQuery('#author_name').val()
+    }, json => {
+        let editmode = jQuery('#mode').val() === 'edit';
+        let author_id = jQuery('#author_id');
+        if (json['error']) {
+            author_id.attr('value', '');
+            if (editmode) {
+                let save_button = jQuery('#button_save');
+                save_button.attr('disabled', '');
             } else {
-                author_id.attr('value', json['author_id']);
-                if (editmode) {
-                    let save_button = jQuery('#button_save');
-                    save_button.removeAttr('disabled');
-                } else {
-                    let add_button = jQuery('#button_add');
-                    add_button.removeAttr('disabled');
-                }
+                let add_button = jQuery('#button_add');
+                add_button.attr('disabled', '');
             }
-        })
-        .fail(function (jqXHR, text, error) {
-            console.log(`bc_books_lookup_author ${text} ${error}`);
-        });
+        } else {
+            author_id.attr('value', json['author_id']);
+            if (editmode) {
+                let save_button = jQuery('#button_save');
+                save_button.removeAttr('disabled');
+            } else {
+                let add_button = jQuery('#button_add');
+                add_button.removeAttr('disabled');
+            }
+        }
+    });
 }
 
 jQuery('#author_name').on('input', function (e) {
@@ -133,29 +126,14 @@ jQuery(document).ready(function () {
 
 jQuery('#button_search').on('click', function (e) {
     e.preventDefault();
-    let parms = { action: 'search' };
-    let bookid = jQuery('#book_id').val();
-    if (('' !== bookid) && ('0' !== bookid)) {
-        parms.bookid = bookid;
-    }
-    let title = jQuery('#title').val();
-    if ('' !== title) {
-        parms.title = title;
-    }
-    let cover = jQuery('#cover_url').val();
-    if ('' !== cover) {
-        parms.cover = cover;
-    }
-    let authorname = jQuery('#author_name').val();
-    if ('' !== authorname) {
-        parms.authorname = authorname;
-    }
-    let summary = jQuery('#summary').val();
-    if ('' !== summary) {
-        parms.summary = summary;
-    }
-    searchurl = jQuery('#referer').val() + '&' + jQuery.param(parms);
-    window.location = searchurl;
+    window.location = create_url(jQuery('#referer').val(), {
+        action: 'search',
+        bookid: jQuery('#book_id').val(),
+        title: jQuery('#title').val(),
+        cover: jQuery('#cover_url').val(),
+        authorname: jQuery('#author_name').val(),
+        summary: jQuery('#summary').val()
+    });
 });
 
 jQuery('#button_reset').on('click', function (e) {
@@ -166,102 +144,52 @@ jQuery('#button_reset').on('click', function (e) {
 jQuery('#button_delete').on('click', function (e) {
     e.preventDefault();
     if (confirm(jQuery('#delete_text').val())) {
-        jQuery.ajax({
-            type: "post",
-            url: bookclub_ajax_object.ajax_url,
-            data: {
-                'action': 'bc_books_delete',
-                'nonce': jQuery('#nonce').val(),
-                'bookid': jQuery('#book_id').val()
+        ajax_call('bc_books_delete', {
+            'nonce': jQuery('#nonce').val(),
+            'bookid': jQuery('#book_id').val()
+        }, json => {
+            if (json['error']) {
+                handle_result(json['error'], json['message'], json['redirect']);
+            } else {
+                handle_result(json['error'], json['message'],
+                    window.location = jQuery('#referer').val());
             }
-        })
-            .done(function (data) {
-                let json;
-                try {
-                    json = jQuery.parseJSON(data);
-                } catch (e) {
-                    console.log(`bc_books_delete exception ${e.message}`);
-                    return;
-                }
-                json = jQuery.parseJSON(data);
-                if (json['error']) {
-                    handle_result(json['error'], json['message']);
-                } else {
-                    handle_result(json['error'], json['message'],
-                        window.location = jQuery('#referer').val());
-                }
-            })
-            .fail(function (jqXHR, text, error) {
-                console.log(`bc_books_delete ${text} ${error}`);
-                handle_result(true, error);
-            });
+        });
     }
 });
 
 jQuery('#button_save').on('click', function (e) {
     e.preventDefault();
-    jQuery.ajax({
-        type: "post",
-        url: bookclub_ajax_object.ajax_url,
-        data: {
-            'action': 'bc_books_save',
-            'nonce': jQuery('#nonce').val(),
-            'referer': jQuery('#referer').val(),
-            'bookid': jQuery('#book_id').val(),
-            'title': jQuery('#title').val(),
-            'cover': jQuery('#cover_url').val(),
-            'authorid': jQuery('#author_id').val(),
-            'author': jQuery('#author_name').val(),
-            'blurb': jQuery('#summary').val()
-        }
-    })
-        .done(function (data) {
-            let json;
-            try {
-                json = jQuery.parseJSON(data);
-            } catch (e) {
-                console.log(`bc_books_save exception ${e.message}`);
-                return;
-            }
-            handle_result(json['error'], json['message']);
-        })
-        .fail(function (jqXHR, text, error) {
-            console.log(`bc_books_save ${text} ${error}`);
-        });
+    ajax_call('bc_books_save', {
+        'nonce': jQuery('#nonce').val(),
+        'referer': jQuery('#referer').val(),
+        'bookid': jQuery('#book_id').val(),
+        'title': jQuery('#title').val(),
+        'cover': jQuery('#cover_url').val(),
+        'authorid': jQuery('#author_id').val(),
+        'author': jQuery('#author_name').val(),
+        'blurb': jQuery('#summary').val()
+    }, json => {
+        handle_result(json['error'], json['message'], json['redirect']);
+    });
 });
 
 jQuery('#button_add').on('click', function (e) {
     e.preventDefault();
-    jQuery.ajax({
-        type: "post",
-        url: bookclub_ajax_object.ajax_url,
-        data: {
-            'action': 'bc_books_add',
-            'nonce': jQuery('#nonce').val(),
-            'referer': jQuery('#referer').val(),
-            'title': jQuery('#title').val(),
-            'cover': jQuery('#cover_url').val(),
-            'authorid': jQuery('#author_id').val(),
-            'author': jQuery('#author_name').val(),
-            'blurb': jQuery('#summary').val()
-        }
-    })
-        .done(function (data) {
-            let json;
-            try {
-                json = jQuery.parseJSON(data);
-            } catch (e) {
-                console.log(`bc_books_add exception ${e.message}`);
-                return;
-            }
-            let parms = { action: 'edit' };
-            parms.bookid = json['book_id'];
-            editurl = jQuery('#referer').val() + '&' + jQuery.param(parms);
-            handle_result(json['error'], json['message'], editurl);
-        })
-        .fail(function (jqXHR, text, error) {
-            console.log(`bc_books_add ${text} ${error}`);
-        });
+    ajax_call('bc_books_add', {
+        'nonce': jQuery('#nonce').val(),
+        'referer': jQuery('#referer').val(),
+        'title': jQuery('#title').val(),
+        'cover': jQuery('#cover_url').val(),
+        'authorid': jQuery('#author_id').val(),
+        'author': jQuery('#author_name').val(),
+        'blurb': jQuery('#summary').val()
+    }, json => {
+        let parms = { action: 'edit' };
+        parms.bookid = json['book_id'];
+        editurl = jQuery('#referer').val() + '&' + jQuery.param(parms);
+        handle_result(json['error'], json['message'], editurl);
+    });
 });
 
 function edit_book(bookid) {
