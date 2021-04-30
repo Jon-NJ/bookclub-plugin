@@ -35,7 +35,8 @@
     padding-bottom: 20px;
 }
 
-.bc_book_byline span, .bc_book_byline a {
+.bc_book_byline span,
+.bc_book_byline a {
     font-weight: bold;
 }
 

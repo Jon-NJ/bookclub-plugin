@@ -5,7 +5,7 @@
  * Global instance at the end of the file.
  * @author     Jon Wolfe <jonnj@connectberlin.de>
  * @package    bookclub
- * @subpackage pages
+ * @subpackage routes
  * @license    https://opensource.org/licenses/MIT MIT
  */
 
@@ -13,7 +13,7 @@ class ICalDownload extends Path
 {
     /**
      * Initialize the object.
-     * @return \bookclub\PageRSVP
+     * @return \bookclub\ICalDownload
      */
     public function __construct()
     {

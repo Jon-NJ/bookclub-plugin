@@ -32,6 +32,12 @@ define('BC_IMAP_TARGET_NONE', 0);   // no target determined
 define('BC_IMAP_TARGET_USER', 1);   // target is a single user
 define('BC_IMAP_TARGET_GROUP', 2);  // target is a group    
 
+define('BC_CHAT_TARGET_DELETE', 0); // a given chat message is deleted
+define('BC_CHAT_TARGET_USER', 1);   // target is a single user
+define('BC_CHAT_TARGET_GROUP', 2);  // target is a group
+define('BC_CHAT_TARGET_BOOK', 3);   // target is a book
+define('BC_CHAT_TARGET_EVENT', 4);  // target is an event
+
 require_once(BOOKCLUBPATH.DS.'database/DatabaseTable.php');
 require_once_folder(BOOKCLUBPATH.DS.'database');
 
@@ -211,10 +217,10 @@ function addBookclubAdmin(string $base = 'editor'): void
             'edit_bc_groups', 'edit_bc_members', 'edit_bc_news',
             'edit_bc_places'];
         $clone_capabilities = [];
-        $editor = \get_role('editor');
-        $admin  = \get_role('administrator');
+        $role       = \get_role($base);
+        $admin      = \get_role('administrator');
 
-        foreach ($editor->capabilities as $key => $value) {
+        foreach ($role->capabilities as $key => $value) {
             $clone_capabilities[$key] = $value;
         }
         foreach ($admin_capabilities as $key) {
@@ -224,6 +230,8 @@ function addBookclubAdmin(string $base = 'editor'): void
         $bookclub_admin = add_role(
                 'bookclub_admin', 'Bookclub Admin', $clone_capabilities);
     }
+//    $subscriber = \get_role('subscriber');
+//    $subscriber->add_cap('upload_files', false);
 }
 
 /**

@@ -17,7 +17,7 @@
 }
 
 .hide {
-  display: none !important;
+    display: none !important;
 }
 
 .notice-error {
@@ -30,14 +30,14 @@
 
 .bc_notice p {
     font-weight: bold;
-    margin: 0px;
+    margin: 10px;
     padding: 0px;
 }
 
 .bc_notice {
     background: white;
     border-left: 0.25em solid white;
-    box-shadow: 0 1px 1px 0 rgba(0,0,0,.1);
+    box-shadow: 0 1px 1px 0 rgba(0, 0, 0, .1);
     margin-left: 8em;
 }
 
@@ -92,7 +92,7 @@
     display: grid;
     grid-template-columns: [label] 8em [data] 62em;
     grid-template-rows: auto;
-    grid-row-gap:0.63em;
+    grid-row-gap: 0.63em;
 }
 
 .bc_form_label {
@@ -220,8 +220,7 @@
     grid-column-start: timestamp;
 }
 
-#invited_divider {
-}
+#invited_divider {}
 
 #showhistory {
     overflow: auto;
@@ -291,7 +290,7 @@
     display: grid;
     grid-template-columns: [eventid] auto [private] auto [priority] auto [start] auto [subject] 1fr;
     grid-template-rows: auto;
-    grid-row-gap:2px;
+    grid-row-gap: 2px;
 }
 
 .bc_events_id {
@@ -326,14 +325,14 @@
 }
 
 .bc_option_included {
-    background-image: url( '../images/noemail.png' );
+    background-image: url('../images/noemail.png');
     background-size: 18px 18px;
     background-position: right;
     background-repeat: no-repeat;
 }
 
 .bc_option_sent {
-    background-image: url( '../images/email.png' );
+    background-image: url('../images/email.png');
     background-size: 18px 18px;
     background-position: right;
     background-repeat: no-repeat;
@@ -348,7 +347,8 @@
     margin-left: 3.9em;
 }
 
-#left:hover, #right:hover {
+#left:hover,
+#right:hover {
     background-color: blue;
     color: white;
     border: 3px solid red;
@@ -379,8 +379,7 @@
 }
 
 .bc_select_group_voided {
-    background: linear-gradient(to bottom, rgba(255,255,255,0.6) 255%,
-            rgba(255,255,255,0.6) 100%), url('../images/slash.svg');
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.6) 255%, rgba(255, 255, 255, 0.6) 100%), url('../images/slash.svg');
     background-repeat: no-repeat;
     background-position: center center;
     background-size: 100% 100%;
@@ -409,8 +408,8 @@ button:disabled {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     grid-template-rows: auto;
-    grid-row-gap:0.5em;
-    grid-column-gap:0.5em;
+    grid-row-gap: 0.5em;
+    grid-column-gap: 0.5em;
     margin-bottom: 1em;
 }
 
@@ -429,7 +428,8 @@ button:disabled {
     padding: 0.4em;
 }
 
-.bc_rsvp_tools h2, .bc_rsvp_tools h3 {
+.bc_rsvp_tools h2,
+.bc_rsvp_tools h3 {
     margin-top: 0px;
     margin-bottom: 5px;
 }

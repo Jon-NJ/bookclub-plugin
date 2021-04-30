@@ -48,12 +48,28 @@ class JoinEventsParticipants extends DatabaseTable
      * the member id will be empty.
      * @param int $member_id unique member id
      */
-    public function loopFutureForMember($member_id): void
+    public function loopFutureForMember(int $member_id): void
     {
         $this->select();
         $this->where(tableField('events', 'endtime') . ' >= %s');
         $this->orderBy(tableField('events', 'starttime'));
         $this->prepare([$member_id, date('Y-m-d H:i')]);
+        $this->iterate();
+    }
+
+    /**
+     * Start looping through recent and future events where the given member
+     * was included.
+     * @param type $member_id unique member id
+     * @param string $dt start time Y-m-d H:i format
+     */
+    public function loopRecentForMember(int $member_id, string $dt): void
+    {
+        $this->select();
+        $this->where(tableField('events', 'endtime') . ' >= %s')
+             ->and(tableField('participants', 'member_id') . " IS NOT NULL");
+        $this->orderBy(tableField('events', 'starttime'));
+        $this->prepare([$member_id, $dt]);
         $this->iterate();
     }
 }

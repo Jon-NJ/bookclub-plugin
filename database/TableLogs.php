@@ -111,6 +111,36 @@ class TableLogs extends DatabaseTable
     }
 
     /**
+     * The primary key of the given event is changed.
+     * @param string $oldid original event id
+     * @param string $newid new event id
+     */
+    public static function updateRsvpEventID($oldid, $newid): void
+    {
+        $recipient = new TableLogs();
+        $recipient->updateSet('param2 = %s');
+        $recipient->where("type = 'RSVP'")
+                  ->and('param2 = %s');
+        $recipient->prepare([$newid, $oldid]);
+        $recipient->execute();
+    }
+
+    /**
+     * The primary key of the given event is changed.
+     * @param string $oldid original event id
+     * @param string $newid new event id
+     */
+    public static function updateInviteEventID($oldid, $newid): void
+    {
+        $recipient = new TableLogs();
+        $recipient->updateSet('param3 = %s');
+        $recipient->where("type = 'INVITE'")
+                  ->and('param3 = %s');
+        $recipient->prepare([$newid, $oldid]);
+        $recipient->execute();
+    }
+
+    /**
      * Update to new type field based on selectors.
      * @param string $newtype new type name
      * @param array $selectors selectors, first should be old type name

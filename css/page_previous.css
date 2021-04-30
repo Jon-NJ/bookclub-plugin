@@ -25,7 +25,8 @@
     text-decoration: underline !important;
 }
 
-.bc_previous_menu_year, .bc_previous_menu_group {
+.bc_previous_menu_year,
+.bc_previous_menu_group {
     border-collapse: collapse;
     border-spacing: 0;
     background-color: var(--menu-blue);
@@ -85,7 +86,7 @@
     border: 0;
     width: 250px;
     vertical-align: top !important;
-    display:inline !important;
+    display: inline !important;
 }
 
 .bc_previous_date {

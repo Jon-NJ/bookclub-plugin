@@ -17,11 +17,10 @@
 }
 
 .hide {
-  display: none !important;
+    display: none !important;
 }
 
-.bc_test {
-}
+.bc_test {}
 
 .ui-datepicker-today {
     border: 1px solid var(--nice-blue);
@@ -51,14 +50,15 @@
 }
 
 .ui-datepicker-prev {
-    background-image: url( '../images/plus.png' );
+    background-image: url('../images/plus.png');
 }
 
 .ui-datepicker-next {
-    background-image: url( '../images/save.png' );
+    background-image: url('../images/save.png');
 }
 
-.ui-datepicker-prev, .ui-datepicker-next {
+.ui-datepicker-prev,
+.ui-datepicker-next {
     display: inline-block;
     width: 30px;
     height: 30px;

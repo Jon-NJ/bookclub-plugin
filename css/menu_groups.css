@@ -17,7 +17,7 @@
 }
 
 .hide {
-  display: none !important;
+    display: none !important;
 }
 
 .notice-error {
@@ -30,14 +30,14 @@
 
 .bc_notice p {
     font-weight: bold;
-    margin: 0px;
+    margin: 10px;
     padding: 0px;
 }
 
 .bc_notice {
     background: white;
     border-left: 0.25em solid white;
-    box-shadow: 0 1px 1px 0 rgba(0,0,0,.1);
+    box-shadow: 0 1px 1px 0 rgba(0, 0, 0, .1);
     margin-left: 8em;
 }
 
@@ -92,7 +92,7 @@
     display: grid;
     grid-template-columns: [label] 8em [data] 62em;
     grid-template-rows: auto;
-    grid-row-gap:0.63em;
+    grid-row-gap: 0.63em;
 }
 
 .bc_form_label {
@@ -174,7 +174,7 @@
     display: grid;
     grid-template-columns: [id] auto [type] auto [tag] auto [desc] 1fr;
     grid-template-rows: auto;
-    grid-row-gap:2px;
+    grid-row-gap: 2px;
 }
 
 .bc_groups_id {
@@ -213,7 +213,8 @@
     margin-left: 13em;
 }
 
-#left:hover, #right:hover {
+#left:hover,
+#right:hover {
     background-color: blue;
     color: white;
     border: 3px solid red;
@@ -235,8 +236,7 @@
 }
 
 .bc_select_group_voided {
-    background: linear-gradient(to bottom, rgba(255,255,255,0.6) 255%,
-            rgba(255,255,255,0.6) 100%), url('../images/slash.svg');
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.6) 255%, rgba(255, 255, 255, 0.6) 100%), url('../images/slash.svg');
     background-repeat: no-repeat;
     background-position: center center;
     background-size: 100% 100%;

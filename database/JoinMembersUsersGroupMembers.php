@@ -59,6 +59,19 @@ class JoinMembersUsersGroupMembers extends DatabaseTable
     }
 
     /**
+     * Start looping through all members of the given group that are active.
+     * @param int $group_id group identifier
+     */
+    public function loopForGroupActive(int $group_id): void
+    {
+        $this->select();
+        $this->where(tableField('groupmembers', 'group_id') . " = %s")
+             ->and(tableField('members', 'active') . " <> 0");
+        $this->prepare([$group_id, $group_id]);
+        $this->iterate();
+    }
+
+    /**
      * Start looping through all members to see if they are in the given group.
      * @param int $group_id group to check for inclusion
      */

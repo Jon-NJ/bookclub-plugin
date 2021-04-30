@@ -35,7 +35,7 @@ function ajax_call(action, data, success) {
             }
         })
         .fail(((jqXHR, text, error) => {
-            console.log(`bc_authors_book_count ${text} ${error}`);
+            console.log(`${action} ${text} ${error}`);
             handle_result(true, error);
         }));
 }

@@ -90,9 +90,10 @@ class Page
 
     /**
      * Test if the nonce REQUEST/GET parameter valid.
+     * @param string $error additional string for error message
      * @return bool true if nonce is valid
      */
-    protected function check_nonce(): bool
+    protected function check_nonce($error): bool
     {
         $nonce  = get_nonce();
         $result = \wp_verify_nonce($nonce, $this->data['nonce']);
@@ -114,7 +115,7 @@ class Page
         if (!is_request()) {
             $this->log_error("Not a reqest - $error (" . input_referer() . ")");
             $response = $this->get_response(true, 'Bad request');
-        } elseif (!$this->check_nonce()) {
+        } elseif (!$this->check_nonce($error)) {
             $response = $this->get_response(true,
                     'Bad nonce - refreshing the page may fix this', $redir);
         }

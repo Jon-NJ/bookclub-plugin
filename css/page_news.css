@@ -16,15 +16,13 @@
     --warning-yellow: #ffb900;
 }
 
-.bc_news {
-    
-}
+.bc_news {}
 
 .bc_news_lines {
     display: grid;
     grid-template-columns: [date] 3fr [poster] 2fr [news] 25fr;
     grid-template-rows: auto;
-    grid-row-gap:0.2em;
+    grid-row-gap: 0.2em;
 }
 
 .bc_news_date {

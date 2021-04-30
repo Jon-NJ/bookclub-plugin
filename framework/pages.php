@@ -13,18 +13,19 @@
 $GLOBALS['bcmanager'] = new Manager();
 
 define('RANK_PROFILE',  1);
-define('RANK_AUTHORS',  2);
-define('RANK_COVERS',   3);
-define('RANK_BOOKS',    4);
-define('RANK_PLACES',   5);
-define('RANK_DATES',    6);
-define('RANK_GROUPS',   7);
-define('RANK_NEWS',     8);
-define('RANK_MEMBERS',  9);
-define('RANK_EVENTS',   10);
-define('RANK_EMAILS',   11);
-define('RANK_SETTINGS', 12);
-define('RANK_TEST',     13);
+define('RANK_CHAT',     2);
+define('RANK_AUTHORS',  3);
+define('RANK_COVERS',   4);
+define('RANK_BOOKS',    5);
+define('RANK_PLACES',   6);
+define('RANK_DATES',    7);
+define('RANK_GROUPS',   8);
+define('RANK_NEWS',     9);
+define('RANK_MEMBERS',  10);
+define('RANK_EVENTS',   11);
+define('RANK_EMAILS',   12);
+define('RANK_SETTINGS', 13);
+define('RANK_TEST',     14);
 
 // include routes
 require_once_folder(BOOKCLUBPATH.DS.'routes');

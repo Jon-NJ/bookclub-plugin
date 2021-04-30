@@ -265,7 +265,7 @@ class MenuMembers extends MenuItem
             $json['login']          = $user->user_login;
             $json['name']           = "$first $last";
             $json['email']          = $user->user_email;
-            $json['profile_url']    = url_profile_user($member->wordpress_id);
+            $json['profile_url']    = url_wordpress_profile($member->wordpress_id);
             $json['role']           = $user->roles[0];
             $json['receive_others'] = \get_user_meta($member->wordpress_id,
                     'bc_receive_others', true);

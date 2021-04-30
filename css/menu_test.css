@@ -17,7 +17,7 @@
 }
 
 .hide {
-  display: none !important;
+    display: none !important;
 }
 
 .bc_toolbar {
@@ -28,7 +28,7 @@
     display: grid;
     grid-template-columns: [label] 8em [data] 1fr;
     grid-template-rows: auto;
-    grid-row-gap:0.63em;
+    grid-row-gap: 0.63em;
 }
 
 .bc_form_label {
@@ -68,41 +68,50 @@
     color: white;
     background-color: blue;
 }
+
 .bc_results {
     display: grid;
     grid-template-columns: [id] auto [key] auto [age] auto [name] auto [email] auto [comment] 1fr;
 }
+
 .line {
     color: var(--line-blue);
 }
+
 .line.line_key {
     font-family: monospace;
 }
+
 .line_id {
     text-align: center;
     padding: 0 0.3em 0 0;
     grid-column-start: id;
 }
+
 .line_key {
     text-align: center;
     padding: 0 0.3em 0 0.3em;
     grid-column-start: key;
 }
+
 .line_age {
     text-align: center;
     padding: 0 0.3em 0 0.3em;
     grid-column-start: age;
 }
+
 .line_name {
     text-align: left;
     padding: 0 0.3em 0 0.3em;
     grid-column-start: name;
 }
+
 .line_email {
     text-align: left;
     padding: 0 0.3em 0 0.3em;
     grid-column-start: email;
 }
+
 .line_comment {
     text-align: left;
     padding: 0 0 0 0.3em;

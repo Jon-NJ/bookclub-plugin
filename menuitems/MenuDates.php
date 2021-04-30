@@ -556,8 +556,8 @@ class MenuDates extends MenuItem
                 $groupid = $join->t_include;
                 if ($groupid) {
                     $include = [];
-                    $tobj = new TableGroupMembers();
-                    $tobj->loopForGroup($groupid);
+                    $tobj = new JoinMembersUsersGroupMembers();
+                    $tobj->loopForGroupActive($groupid);
                     while ($tobj->fetch()) {
                         $include[] = $tobj->member_id;
                     }

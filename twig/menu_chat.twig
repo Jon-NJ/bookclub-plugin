@@ -1,0 +1,149 @@
+<div class='bc_help'>
+ <div id='htmlhelp'></div>
+ <button id="close_help">X</button>
+</div>
+<div class="bc_chat">
+ <h1>{{ title }}</h1>
+ <form id='get_iframe' method='post' target='body_iframe' action='{{ admin_url }}'>
+  <input type="hidden" name="action" value="bc_event_body">
+  <input type='hidden' id='nonce' name='nonce' value='{{ nonce }}'/>
+  <input type='hidden' id='eid' name='eid' value='{{ target }}'/>
+  <input type='hidden' id='webkey' name='webkey' value='{{ webkey }}'/>
+ </form>
+ <input type="hidden" id="last" value="{{ last }}" />
+ <input type="hidden" id="timeout" value="{{ timeout }}" />
+ <input type="hidden" id="type" value="{{ type }}" />
+ <input type="hidden" id="target" value="{{ target }}" />
+ <div id="delete_message" class="hide"><i>deleted message</i></div>
+ <div class='bc_notice_area'>
+  <div id='bc_notice' class='bc_notice hide'>
+   <p id='bc_message' class='bc_message'>***</p>
+  </div>
+ </div>
+ {% if '0' == type %}{# main - no chat #}
+  <div class='bc_chat_user'>
+   <div class='bc_chat_avatar'>
+    <img src="{{ avatar }}" alt="{{ display_name }}"/>
+   </div>
+   <div style='margin-left: 0.4em;'>
+    <div class='bc_chat_user_info'>
+     {{ display_name }}<br><br>
+    </div>
+    <div>
+     <i>Avatar and display name can be changed in your <a href='{{ profile }}'>WordPress profile</a></i>
+    </div>
+    <div style='margin-top: 0.7em;'>
+     <button id='button_help'>
+      <img src='{{ images }}help.png'/> Help
+     </button>
+    </div>
+   </div>
+  </div>
+  <h2>Direct message another user</h2>
+  <input type='text' size='30' class='bc_chat_search' id='user_name' list='user_list' value=''/>
+  <datalist id='user_list'>
+   {% for user in users %}
+    <option value="{{ user.display_name }}" url="{{ user.url }}"/>
+   {% endfor %}
+  </datalist>
+  <h2>Discuss a book</h2>
+  <input type='text' size='30' class='bc_chat_search' id='book_title' list='book_list' value=''/>
+  <datalist id='book_list'>
+   {% for book in books %}
+    <option value="{{ book.title }}" url="{{ book.url }}"/>
+   {% endfor %}
+  </datalist>
+  {% if events %}
+   <h2>Group chats</h2>
+   <div class="bc_chat_group_list">
+    {% for group in groups %}
+     <div class="bc_chat_group_id">{{ group.id }}</div>
+     <div class="bc_chat_group_description">
+      <a href="{{ group.url }}">{{ group.description }}</a>
+     </div>
+    {% endfor %}
+   </div>
+  {% endif %}
+  {% if events %}
+   <h2>Talk about upcoming events</h2>
+   <div class="bc_chat_event_list">
+    {% for event in events %}
+     {% set older = event.past ? ' bc_chat_event_older' : '' %}
+     <div class="bc_chat_event_date{{ older }}">
+      {{ event.time|date('F d, H:i') }}
+     </div>
+     <div class="bc_chat_event_summary{{ older }}">
+      <a href="{{ event.url }}">{{ event.summary }}</a>
+     </div>
+    {% endfor %}
+   </div>
+  {% endif %}
+ {% else %}
+  <div class='bc_chat_body'>
+   <div class='bc_chat_header'>
+    {% if '1' == type %}{# BC_CHAT_TARGET_USER #}
+     <div class='bc_chat_user'>
+      <div class='bc_chat_avatar'>
+       <img src="{{ avatar }}" alt="{{ display_name }}"/>
+      </div>
+      <div class='bc_chat_user_info'>
+       {{ display_name }}
+      </div>
+     </div>
+    {% elseif '2' == type %}{# BC_CHAT_TARGET_GROUP #}
+     <div style='font-size:xx-large;padding:0.4em 0 0.4em 0;'>{{ groupid }} - {{ description }}</div>
+    {% elseif '3' == type %}{# BC_CHAT_TARGET_BOOK #}
+     <div class='bc_chat_book_cover'>
+      <img src="{{ book_cover }}" alt="{{ book_title }}"/><br/><br/>
+      {% if groups|length == 1 %}
+       {% for group in groups %}
+        <b>Book for {{ group.date|date('F Y') }} {{ group.tag }}</b><br/>
+       {% endfor %}
+      {% endif %}
+      {% if groups|length > 1 %}
+       <b>Book for:</b><br/>
+       {% for group in groups %}
+        <b>{{ group.date|date('F Y') }} {{ group.tag }}</b><br/>
+       {% endfor %}
+      {% endif %}
+     </div>
+     <div class='bc_chat_book_description'>
+      {{ book_summary|raw }}
+     </div>
+    {% else %}              {# '4' == type - BC_CHAT_TARGET_EVENT #}
+     <div class='bc_chat_event_heading'>{{ start|date("F d, Y, H:i") }}-{{ end|date("H:i") }} - {{ summary }}</div>
+     <div class='bc_chat_event_body' id='iframe_container'>
+      <iframe name='body_iframe' id='body_iframe' style='width: 100%; height: 100%; overflow: hidden;'>
+      </iframe>
+     </div>
+    {% endif %}
+   </div>
+   <div class='bc_chat_area'>
+    <div class='bc_chat_lines'>
+     {% for record in records %}
+      {% if record.deletable %}
+       <div class='bc_chat_delete delete_yes' id='delete_{{ record.id }}'>
+       </div>
+      {% else %}
+       <div class='bc_chat_delete delete_no'>
+       </div>
+      {% endif %}
+      <div class='bc_chat_date'>{{ record.datetime|date('H:i:s') }}</div>
+      <div class='bc_chat_poster'>{{ record.display }}</div>
+      <div id="msg_{{ record.id }}" class='bc_chat_message'>
+       {% if record.deleted %}
+        <i>deleted message</i>
+       {% else %}
+        {{ record.message|striptags|bbcodes_to_html|raw }}
+       {% endif %}
+      </div>
+     {% endfor %}
+     <div id='bc_chat_new'></div>
+    </div>
+    <div class='bc_chat_entry'>
+     <input id='chat' type='text' size='80' value='' placeholder='Type something nice here'>
+    </div>
+   </div>
+  </div>
+ {% endif %}
+</div>

@@ -61,4 +61,25 @@ class JoinUsers extends DatabaseTable
         $user->iterate();
         return $user->fetch() ? $user : null;
     }
+
+    /**
+     * Start looping through direct message counts.
+     * @param int $first the WordPress ID of the primary chat partner
+     * @param string $date optional start date for recent chats
+     */
+    public function loopCountRecentDirectMessages(int $first,
+            string $date = ''): void
+    {
+        $sql = TableChats::getSQLCountRecentDirectMessages($first, $date);
+        $this->select('',
+            "CONCAT(f.meta_value, ' ', l.meta_value) AS fullname, ".
+            "count_table.chat_count");
+        // manually add an additional joined table
+        $this->_sql .= " JOIN ($sql) AS count_table" .
+                       " ON count_table.partner_id = " .
+                            tableField('\users', 'ID');
+        $this->where("count_table.chat_count <> 0");
+        $this->orderBy(tableField('\users', 'display_name'));
+        $this->iterate();
+    }
 }

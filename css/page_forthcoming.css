@@ -91,8 +91,7 @@
     padding-top: 10px;
 }
 
-.bc_forthcoming_meeting {
-}
+.bc_forthcoming_meeting {}
 
 .bc_forthcoming_right {
     font-size: smaller;
@@ -110,7 +109,8 @@
     font-size: larger;
 }
 
-.bc_forthcoming_byline span, .bc_forthcoming_byline a {
+.bc_forthcoming_byline span,
+.bc_forthcoming_byline a {
     font-weight: bold;
 }
 

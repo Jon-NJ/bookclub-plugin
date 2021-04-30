@@ -35,7 +35,7 @@ function ajax_call(action, data, success) {
             }
         })
         .fail(((jqXHR, text, error) => {
-            console.log(`bc_authors_book_count ${text} ${error}`);
+            console.log(`${action} ${text} ${error}`);
             handle_result(true, error);
         }));
 }
@@ -110,11 +110,10 @@ jQuery('#button_ical').on('click', function (e) {
     window.location = url;
 });
 
-function setIframeHeightCO(id, ht) {
-    let ifrm = document.getElementById(id);
-    // some IE versions need a bit added or scrollbar appears
-    ifrm.style.height = ht + 4 + "px";
-}
+jQuery('#button_chat').on('click', function (e) {
+    e.preventDefault();
+    window.open(jQuery('#chat_url').val(), '_blank');
+});
 
 function handleDocHeightMsg(e) {
     let origin = location.protocol + '//' + window.location.hostname;

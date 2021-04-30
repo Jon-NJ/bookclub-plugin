@@ -409,7 +409,7 @@ class PageSignup extends ShortCode
             $this->log_info("Link $wpid");
             $response = $this->get_response(false,
                     'Account linked. Redirecting to profile page.',
-                    url_profile());
+                    url_bookclub_profile());
         }
         exit(json_encode($response));
     }

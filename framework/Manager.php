@@ -44,7 +44,7 @@ class RegisterObject
         $logger = \Logger::getLogger("manager");
         $logger->debug("Registering REST route $this->route");
         \register_rest_route('bc/v1', $this->route,
-                ['methods' => 'GET','callback' => $this->handler]);
+                ['methods' => ['GET', 'POST'],'callback' => $this->handler]);
     }
 }
 

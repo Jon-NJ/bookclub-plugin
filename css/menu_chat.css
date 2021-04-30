@@ -1,0 +1,258 @@
+/*
+ * Style sheet for chat page.
+ * @author     Jon Wolfe <jonnj@connectberlin.de>
+ * @package    bookclub
+ * @license    https://opensource.org/licenses/MIT MIT
+ */
+
+:root {
+    --nice-blue: #00bfff;
+    --nice-gray: #444;
+    --line-blue: #006fbf;
+    --menu-blue: #6495ed;
+    --hover-blue: #3080ff;
+    --error-red: #dc3232;
+    --success-green: #46b450;
+    --warning-yellow: #ffb900;
+}
+
+.hide {
+    display: none !important;
+}
+
+.notice-error {
+    border-left-color: var(--error-red) !important;
+}
+
+.notice-success {
+    border-left-color: var(--success-green) !important;
+}
+
+.bc_notice p {
+    font-weight: bold;
+    margin: 0px;
+    padding: 0px;
+}
+
+.bc_notice {
+    background: white;
+    border-left: 0.25em solid white;
+    box-shadow: 0 1px 1px 0 rgba(0, 0, 0, .1);
+    margin-left: 8em;
+}
+
+.bc_notice_area {
+    height: 2em;
+    width: 85vw;
+}
+
+.bc_help {
+    display: none;
+    position: absolute;
+    overflow: auto;
+    top: 1em;
+    height: 95%;
+    width: 98%;
+    background: white;
+    border: 1px solid var(--nice-gray);
+    border-radius: 1em;
+    box-shadow: inset 0 0 0.63em black;
+    z-index: 1;
+}
+
+#close_help {
+    position: fixed;
+    font-weight: bold;
+    color: black;
+    top: 4.5em;
+    right: 4em;
+}
+
+#htmlhelp {
+    font-size: 140%;
+    margin: 2em;
+}
+
+#htmlhelp li {
+    font-size: 1.5rem;
+    margin-left: 1em;
+    line-height: 1.2;
+    list-style-type: disc;
+}
+
+#htmlhelp p {
+    font-size: 120%;
+}
+
+.bc_chat {}
+
+.bc_chat_search {
+    background: url('../images/search.png') no-repeat scroll 7px 7px;
+    text-indent: 1.3em;
+}
+
+.bc_chat_group_list {
+    display: grid;
+    grid-template-columns: [id] auto [desc] 1fr;
+    grid-template-rows: auto;
+    grid-row-gap: 2px;
+}
+
+.bc_chat_group_id {
+    padding: 0 0.3em 0 0;
+    grid-column-start: id;
+    font-weight: bold;
+}
+
+.bc_chat_group_description {
+    padding: 0 0.3em 0 0.3em;
+    grid-column-start: desc;
+}
+
+.bc_chat_event_list {
+    display: grid;
+    grid-template-columns: [date] auto [desc] 1fr;
+    grid-template-rows: auto;
+    grid-row-gap: 2px;
+}
+
+.bc_chat_event_date {
+    padding: 0 0.3em 0 0;
+    grid-column-start: date;
+}
+
+.bc_chat_event_summary {
+    padding: 0 0.3em 0 0.3em;
+    grid-column-start: desc;
+}
+
+.bc_chat_event_older,
+.bc_chat_event_older :link,
+.bc_chat_event_older :visited {
+    color: gray;
+}
+
+a:link {
+    text-decoration: none;
+}
+
+a:hover {
+    background-color: blue;
+    color: white !important;
+    font-weight: bold;
+}
+
+.bc_chat_body {
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 175px);
+}
+
+.bc_chat_event_body {
+    border: 1px solid var(--nice-blue);
+    width: 98.5%;
+}
+
+.bc_chat_event_heading {
+    color: blue;
+    font-weight: bold;
+    font-size: large;
+    padding-bottom: 0.5em;
+}
+
+.bc_chat_header {
+    overflow-y: auto;
+    max-height: 30vh;
+    flex-shrink: 0;
+}
+
+.bc_chat_area {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    height: 0;
+    justify-content: flex-end;
+    /*    position: sticky;
+    top: 0;*/
+}
+
+.bc_chat_book_cover img {
+    border: 0;
+    width: 120px;
+    padding: 0 1.2em 0 0;
+    vertical-align: top !important;
+    display: inline !important;
+}
+
+.bc_chat_book_cover {
+    padding-top: 10px;
+    float: left;
+}
+
+.bc_chat_avatar img {
+    border: 0;
+    width: 120px;
+    padding: 0 1.2em 0 0;
+    /*vertical-align: top !important;*/
+    /*display: inline !important;*/
+}
+
+.bc_chat_user {
+    display: flex;
+    flex-direction: row;
+    vertical-align: middle;
+}
+
+.bc_chat_avatar {}
+
+.bc_chat_user_info {
+    /*margin-left: 0.4em;*/
+    /*margin-top: 1.2em;*/
+    font-weight: bold;
+    font-size: xx-large;
+}
+
+.bc_chat_book_description {}
+
+.bc_chat_entry {}
+
+.bc_chat_lines {
+    overflow-y: auto;
+    display: grid;
+    grid-template-columns: [delete] auto [date] auto [poster] auto [message] 1fr;
+    grid-template-rows: auto;
+    grid-row-gap: 2px;
+}
+
+.bc_chat_delete {
+    grid-column-start: delete;
+}
+
+.delete_yes {
+    background: url('../images/drop.png') no-repeat scroll;
+    width: 1em;
+    padding: 2px;
+    border: 1px solid var(--nice-gray);
+    border-radius: 0.4em;
+}
+
+.delete_no {
+    background: url('../images/blank.png') no-repeat scroll;
+    width: 1em;
+    padding: 2px;
+}
+
+.bc_chat_date {
+    padding: 0 0.3em 0 0.3em;
+    grid-column-start: date;
+}
+
+.bc_chat_poster {
+    padding: 0 0.3em 0 0;
+    grid-column-start: poster;
+}
+
+.bc_chat_message {
+    padding: 0 0.3em 0 0;
+    grid-column-start: message;
+}

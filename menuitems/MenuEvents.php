@@ -598,6 +598,9 @@ class MenuEvents extends MenuItem
                     TableEvents::updateID($eventid, $newid);
                     TableParticipants::updateID($eventid, $newid);
                     TableRSVPs::updateID($eventid, $newid);
+                    TableLogs::updateRsvpEventID($eventid, $newid);
+                    TableLogs::updateInviteEventID($eventid, $newid);
+                    TableChats::updateEventID($eventid, $newid);
                 }
                 $endtime = input_request('endtime');
                 $event = TableEvents::findByID($newid);
@@ -656,6 +659,10 @@ class MenuEvents extends MenuItem
             TableEvents::deleteByID($eventid);
             TableParticipants::deleteByEvent($eventid);
             TableRSVPs::deleteByEvent($eventid);
+            TableLogs::changeTypeBySelectors('NORSVP',
+                    ['RSVP', null, $eventid]);
+            TableLogs::changeTypeBySelectors('NOINVITE',
+                    ['INVITE', null, $eventid]);
             $this->log_info("Delete event $eventid");
             $response = $this->get_response(false, 'Event deleted');
         }

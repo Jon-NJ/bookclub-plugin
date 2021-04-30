@@ -20,7 +20,7 @@ class PageNews extends ShortCode
 {
     /**
      * Initialize the object.
-     * @return \bookclub\PageBook
+     * @return \bookclub\PageNews
      */
     public function __construct()
     {

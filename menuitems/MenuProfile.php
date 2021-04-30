@@ -129,17 +129,38 @@ class MenuProfile extends MenuItem
         $tobj = new JoinDatesBooksAuthorsGroups();
         $tobj->loopFutureForGroups($cond);
         while ($tobj->fetch()) {
+            $recent = TableChats::countRecent(BC_CHAT_TARGET_BOOK, $tobj->book_id);
             $books[] = [
-                'date'    => $tobj->day,
-                'group'   => $tobj->group_id,
-                'tag'     => $tobj->tag,
-                'url'     => url_book($tobj->book_id),
-                'title'   => $tobj->title,
-                'author'  => $tobj->name,
-                'private' => $tobj->private
+                'date'       => $tobj->day,
+                'group'      => $tobj->group_id,
+                'tag'        => $tobj->tag,
+                'url'        => url_book($tobj->book_id),
+                'title'      => $tobj->title,
+                'author'     => $tobj->name,
+                'private'    => $tobj->private,
+                'chat_count' => $recent,
+                'chat_url'   => url_chat(BC_CHAT_TARGET_BOOK, $tobj->book_id)
             ];
         }
         return $books;
+    }
+
+    private function getDirectMessages(int $wpid): array
+    {
+        $records = [];
+        $tobj = new JoinUsers();
+        $tobj->loopCountRecentDirectMessages($wpid);
+        while ($tobj->fetch()) {
+            $records[] = [
+                'id'         => $tobj->ID,
+                'count'      => $tobj->chat_count,
+                'fullname'   => $tobj->fullname,
+                'display'    => $tobj->display_name,
+                'chat_count' => $tobj->chat_count,
+                'chat_url'   => url_chat(BC_CHAT_TARGET_USER, $tobj->ID)
+            ];
+        }
+        return $records;
     }
 
     /**
@@ -161,13 +182,16 @@ class MenuProfile extends MenuItem
             if ($tobj->inGroup()) {
                 $list[$tobj->group_id] = $tobj->group_id;
             }
+            $recent = TableChats::countRecent(BC_CHAT_TARGET_GROUP, $tobj->group_id);
             $groups[] = [
                 'id'          => $tobj->group_id,
                 'tag'         => $tobj->tag,
                 'description' => $tobj->description,
                 'flag'        => $tobj->inGroup(),
                 'url'         => $tobj->url,
-                'type'        => $tobj->type
+                'type'        => $tobj->type,
+                'chat_count'  => $recent,
+                'chat_url'    => url_chat(BC_CHAT_TARGET_GROUP, $tobj->group_id)
             ];
         }
         // wordpress and announcment groups
@@ -192,6 +216,7 @@ class MenuProfile extends MenuItem
         $tobj = new JoinEventsParticipants();
         $tobj->loopFutureForMember($member->member_id);
         while ($tobj->fetch()) {
+            $recent = TableChats::countRecent(BC_CHAT_TARGET_EVENT, $tobj->event_id);
             $private = false;
             if ($tobj->priority) {
                 $ahead = new \DateTime($tobj->starttime);
@@ -202,19 +227,23 @@ class MenuProfile extends MenuItem
             }
             if ($tobj->member_id) {
                 $myevents[] = [
-                    'time'    => $tobj->starttime,
-                    'url'     => url_rsvp($tobj),
-                    'eventid' => $tobj->event_id,
-                    'summary' => $tobj->summary,
-                    'rsvp'    => $tobj->rsvp,
-                    'waiting' => $tobj->waiting
+                    'time'       => $tobj->starttime,
+                    'url'        => url_rsvp($tobj),
+                    'eventid'    => $tobj->event_id,
+                    'summary'    => $tobj->summary,
+                    'rsvp'       => $tobj->rsvp,
+                    'waiting'    => $tobj->waiting,
+                    'chat_count' => $recent,
+                    'chat_url'   => url_chat(BC_CHAT_TARGET_EVENT, $tobj->event_id)
                 ];
             } elseif (!$private) {
                 $otherevents[] = [
-                    'time'    => $tobj->starttime,
-                    'url'     => url_rsvp($tobj),
-                    'summary' => $tobj->summary,
-                    'eventid' => $tobj->event_id
+                    'time'       => $tobj->starttime,
+                    'url'        => url_rsvp($tobj),
+                    'summary'    => $tobj->summary,
+                    'eventid'    => $tobj->event_id,
+                    'chat_count' => $recent,
+                    'chat_url'   => url_chat(BC_CHAT_TARGET_EVENT, $tobj->event_id)
                 ];
             }
         }
@@ -247,7 +276,8 @@ class MenuProfile extends MenuItem
             'extra'          => $extra_groups,
             'books'          => $this->getBooks($all, $list),
             'events'         => $myevents,
-            'others'         => $otherevents
+            'others'         => $otherevents,
+            'direct'         => $this->getDirectMessages($wpid)
         ];
 
         $member->hit();
@@ -267,7 +297,7 @@ class MenuProfile extends MenuItem
     {
         $response = [];
         if (!$redir) {
-            $redir = url_profile();
+            $redir = url_bookclub_profile();
         }
         if (!is_request()) {
             $this->log_error("Not a reqest - $error (" . input_referer() . ")");
@@ -382,7 +412,8 @@ class MenuProfile extends MenuItem
             $response = $this->get_response(false, 'Profile updated');
             if ($group_mod) {
                 $response['upcoming'] = twig_render('upcoming_books',
-                        ['books' => $this->getBooks($all, $list)]);
+                        ['books'  => $this->getBooks($all, $list),
+                         'images' => url_images()]);
             }
             $this->log_info("Profile updated");
         }
@@ -479,6 +510,7 @@ class MenuProfile extends MenuItem
                 TableMembers::deleteByID($memberid);
                 TableLogs::changeTypeBySelectors('NOSIGNUP',
                         ['SIGNUP', null, $memberid]);
+                TableChats::markDeletedByUser($wpid);
                 \wp_delete_user($wpid);
                 $response = $this->get_response(false, 'WordPress account removed',
                         url_site());

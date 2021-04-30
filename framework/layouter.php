@@ -87,6 +87,25 @@ $twig_env_html->addFilter(new \Twig\TwigFilter('chunk_split',
         '\\' . __NAMESPACE__ . '\twig_chunk_split'));
 
 /**
+ * Twig filter 'bbcodes_to_html' converts BBCodes to HTML
+ * @param string $string string to filter
+ * @return string filter results
+ */
+function twig_bbcodes_to_html(string $string): string
+{
+    $string = str_replace('[b]', '<b>', $string);
+    $string = str_replace('[/b]', '</b>', $string);
+    $string = str_replace('[i]', '<i>', $string);
+    $string = str_replace('[/i]', '</i>', $string);
+    //$string = str_replace('[quote]', '<blockquote>', $string);
+    //$string = str_replace('[/quote]', '</blockquote>', $string);
+    return $string;
+}
+
+$twig_env_html->addFilter(new \Twig\TwigFilter('bbcodes_to_html',
+        '\\' . __NAMESPACE__ . '\\twig_bbcodes_to_html'));
+
+/**
  * Twig filter 'html_to_ical_text' takes HTML, strips out markup and adjust
  * for ICAL format.
  * @param string $string string to filter
@@ -304,7 +323,7 @@ function twig_macro_fields(array $donors): array
     if ($event && $member) {
         $macros['rsvplink'] = url_rsvp($event, $member->web_key);
     }
-    $macros['profile']  = url_profile();
+    $macros['profile']  = url_bookclub_profile();
     $macros['host']     = input_server('HTTP_HOST');
     $macros['timezone'] = \get_option('timezone_string');
     $macros['timeinfo'] = getOption('timezone_info');

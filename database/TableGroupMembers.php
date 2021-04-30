@@ -88,17 +88,6 @@ class TableGroupMembers extends DatabaseTable
     }
 
     /**
-     * Start looping through all members of the given group.
-     * @param int $group_id group identifier
-     */
-    public function loopForGroup(int $group_id): void
-    {
-        $this->select();
-        $this->where("group_id = $group_id");
-        $this->iterate();
-    }
-
-    /**
      * Delete the records for the given group.
      * @param int $group_id unique identifier for the group
      */

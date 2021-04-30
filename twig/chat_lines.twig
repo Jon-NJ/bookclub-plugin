@@ -1,0 +1,19 @@
+{% for record in records %}
+ {% if record.deletable %}
+  <div class='bc_chat_delete delete_yes' id='delete_{{ record.id }}'>
+  </div>
+ {% else %}
+  <div class='bc_chat_delete delete_no'>
+  </div>
+ {% endif %}
+ <div class='bc_chat_date'>{{ record.datetime|date('H:i:s') }}</div>
+ <div class='bc_chat_poster'>{{ record.display }}</div>
+ <div id="msg_{{ record.id }}" class='bc_chat_message'>
+  {% if record.deleted %}
+   <i>deleted message</i>
+  {% else %}
+   {{ record.message|striptags|bbcodes_to_html|raw }}
+  {% endif %}
+ </div>
+{% endfor %}
+<div id='bc_chat_new'/>

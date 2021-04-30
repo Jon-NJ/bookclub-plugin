@@ -139,6 +139,13 @@
         {{ group.id }}
        {% endif %}
       </div>
+      <div class='bc_profile_groups_chats'>
+       <a href='{{ group.chat_url }}' target='_blank' title='{{ group.chat_count ? (group.chat_count ~ ' recent messages') : 'Join the chat' }}'>
+        <img src='{{ images }}chat.png'></a>
+       {% if group.chat_count %}
+        <span class='chat_count'>{{ group.chat_count }}</span>
+       {% endif %}
+      </div>
       <div class='bc_profile_groups_boxes'>
        <input class="pref groupbox" type="checkbox" name="group{{ group.id }}" id="group{{ group.id }}" value="1"
        {% if "1" == group.flag %} checked="checked" {% endif %}/>
@@ -182,6 +189,11 @@
     {% for event in events %}
      <div class='bc_event_time'>{{ event.time|date('F d, H:i') }}</div>
      <div class='bc_event_data'>
+      <a href='{{ event.chat_url }}' target='_blank' title='{{ event.chat_count ? (event.chat_count ~ ' recent messages') : 'Join the chat' }}'>
+       <img src='{{ images }}chat.png'></a>
+      {% if event.chat_count %}
+       <span class='chat_count'>{{ event.chat_count }}</span>
+      {% endif %}
       <a href='{{ event.url }}' target='_blank'>
        <b>{{ event.summary|raw }}</b>
       </a>
@@ -208,6 +220,11 @@
     {% for event in others %}
      <div class='bc_event_time'>{{ event.time|date('F d, H:i') }}</div>
      <div class='bc_event_data'>
+      <a href='{{ event.chat_url }}' target='_blank' title='{{ event.chat_count ? (event.chat_count ~ ' recent messages') : 'Join the chat' }}'>
+       <img src='{{ images }}chat.png'></a>
+      {% if event.chat_count %}
+       <span class='chat_count'>{{ event.chat_count }}</span>
+      {% endif %}
       <a href='{{ event.url }}' target='_blank'>
        <b>{{ event.summary|raw }}</b>
       </a>
@@ -221,6 +238,24 @@
    <div style='font-size:140%;font-weight:bold;'>Upcoming books:</div>
    <section id='upcoming_books' class='bc_book_container'>
     {% include 'upcoming_books.twig' %}
+   </section>
+   <br/>
+  {% endif %}
+
+  {% if direct|length %}
+   <div style='font-size:140%;font-weight:bold;'>Recent Direct Messages:</div>
+   <section class='bc_chat_container'>
+    {% for user in direct %}
+     <div class='bc_chat_user'>
+      <a href='{{ user.chat_url }}' target='_blank'>
+       <img src='{{ images }}chat.png'>
+       {{ user.display }}
+      </a>
+     </div>
+     <div class='bc_chat_notice'>
+      {{ user.chat_count }} recent messages
+     </div>
+    {% endfor %}
    </section>
   {% endif %}
 

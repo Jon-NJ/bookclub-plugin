@@ -1,11 +1,11 @@
 <?php namespace bookclub;
 
 /*
- * Class wraps code used to generate the type='book' page.
+ * Class wraps code used to handle the REST request for the log.
  * Global instance at the end of the file.
  * @author     Jon Wolfe <jonnj@connectberlin.de>
  * @package    bookclub
- * @subpackage pages
+ * @subpackage routes
  * @license    https://opensource.org/licenses/MIT MIT
  */
 

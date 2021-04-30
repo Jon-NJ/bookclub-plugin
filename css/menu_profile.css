@@ -17,7 +17,7 @@
 }
 
 .hide {
-  display: none !important;
+    display: none !important;
 }
 
 .notice-error {
@@ -38,7 +38,7 @@
 .bc_notice {
     background: white;
     border-left: 4px solid white;
-    box-shadow: 0 1px 1px 0 rgba(0,0,0,.1);
+    box-shadow: 0 1px 1px 0 rgba(0, 0, 0, .1);
     display: inline;
     margin-left: 0px;
 }
@@ -48,9 +48,9 @@
     position: absolute;
     overflow: auto;
     top: 1em;
-    height:95%;
+    height: 95%;
     width: 98%;
-    background:white;
+    background: white;
     border: 1px solid var(--nice-gray);
     border-radius: 1em;
     box-shadow: inset 0 0 0.63em black;
@@ -85,9 +85,7 @@
     font-size: large;
 }
 
-.bc_profile {
-    
-}
+.bc_profile {}
 
 .bc_profile button img {
     vertical-align: middle;
@@ -97,7 +95,7 @@
     display: grid;
     grid-template-columns: [label] 12.5em [data] 1fr;
     grid-template-rows: auto;
-    grid-row-gap:10px;
+    grid-row-gap: 10px;
 }
 
 .bc_profile_label {
@@ -110,15 +108,31 @@
     grid-column-start: data;
 }
 
+.chat_count {
+    display: inline-block;
+    vertical-align: top;
+    padding: 0 2px 3px 4px;
+    min-width: 9px;
+    height: 15px;
+    background-color: var(--error-red);
+    color: white;
+    border-radius: 10px;
+    font-size: 0.8em;
+}
+
 .bc_profile_groups {
     display: grid;
-    grid-template-columns: [id] auto [boxes] 1fr;
+    grid-template-columns: [id] auto [chats] auto [boxes] 1fr;
 }
 
 .bc_profile_groups_id {
     text-align: right;
-    padding-right: 1em;
     grid-column-start: id;
+}
+
+.bc_profile_groups_chats {
+    grid-column-start: chats;
+    padding: 0 0.5em 0 0.5em;
 }
 
 .bc_profile_groups_boxes {
@@ -162,4 +176,22 @@
 .bc_book_link {
     padding: 1px 1px 1px 1px;
     grid-column-start: book;
+}
+
+.bc_chat_container {
+    display: grid;
+    grid-template-columns: [chat_user] auto [notice] 1fr;
+    grid-template-rows: auto;
+    grid-row-gap: .3em;
+}
+
+.bc_chat_user {
+    padding: 1px 1px 1px 1px;
+    grid-column-start: chat_user;
+}
+
+.bc_chat_notice {
+    padding: 1px 1px 1px 1px;
+    margin-left: 1em;
+    grid-column-start: notice;
 }

@@ -219,7 +219,8 @@ class PageRSVP extends ShortCode
             'name'          => $member->fullname,
             'rsvp'          => $rsvp->rsvp,
             'comment'       => $rsvp->comment,
-            'signup'        => url_signup($member)
+            'signup'        => url_signup($member),
+            'chat_url'      => url_chat(BC_CHAT_TARGET_EVENT, $eid)
         ];
         return $json;
     }

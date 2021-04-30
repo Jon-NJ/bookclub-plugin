@@ -17,7 +17,7 @@
 }
 
 .hide {
-  display: none !important;
+    display: none !important;
 }
 
 .notice-error {
@@ -30,14 +30,14 @@
 
 .bc_notice p {
     font-weight: bold;
-    margin-left: 20px;
+    margin: 10px;
     padding: 0px;
 }
 
 .bc_notice {
     background: white;
     border-left: 4px solid white;
-    box-shadow: 0 1px 1px 0 rgba(0,0,0,.1);
+    box-shadow: 0 1px 1px 0 rgba(0, 0, 0, .1);
 }
 
 .bc_help {

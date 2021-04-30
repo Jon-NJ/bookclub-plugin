@@ -1,3 +1,9 @@
+2021-04-30  3.4.30
+- Chat feature.
+- REST database backup. POST now also recognized, GET is deprecated.
+- Fix bug creating event from date where inactive users were being added.
+- Some CSS refinement.
+
 2021-03-05  3.3.5
 - Not a change, but discovered there can be problems with some themes because
   jQuery is not loaded on pages. This may also be a problem in future WordPress.

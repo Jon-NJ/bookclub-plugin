@@ -51,6 +51,6 @@ class MenuTest extends MenuItem
         ];
         return twig_render('menu_test', $json);
     }
-}
+        }
 
 new MenuTest();

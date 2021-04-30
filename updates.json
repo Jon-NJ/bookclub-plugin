@@ -1,5 +1,12 @@
 {
-    "version" : "030227",
+    "version" : "030430",
+    "030227": {
+        "next": "030430",
+        "comment": "New chats table",
+        "steps": [
+            "table chats"
+        ]
+    },
     "030218": {
         "next": "030227",
         "comment": "Widen group description column",

@@ -2,6 +2,11 @@
  <div class='bc_book_date'>{{ book.date|date('F j') }}</div>
  <div class='bc_book_group'>{{ book.tag }}</div>
  <div class='bc_book_link'>
+      <a href='{{ book.chat_url }}' target='_blank' title='{{ book.chat_count ? (book.chat_count ~ ' recent messages') : 'Join the chat' }}'>
+       <img src='{{ images }}chat.png'></a>
+      {% if book.chat_count %}
+       <span class='chat_count'>{{ book.chat_count }}</span>
+      {% endif %}
   <i><b>
    <a href='{{ book.url }}' target="_blank">{{ book.title }}</a>
   </b></i>

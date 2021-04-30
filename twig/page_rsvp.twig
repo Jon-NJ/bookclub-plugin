@@ -3,6 +3,7 @@
  <button id="close_help">X</button>
 </div>
 <div class='bc_rsvp'>
+ <input type="hidden" id='chat_url' value="{{ chat_url }}" />
  <span class='bc_rsvp_title'>Register for an event</span>
  - <b>{{ name }}</b> will attend?<br/>
  Comment:
@@ -12,7 +13,11 @@
  <button id='button_maybe'><img src='{{ images }}maybe.png'/> Maybe</button> {# BC_RSVP_MAYBE #}
  <button id='button_help'><img src='{{ images }}help.png'/> Help</button>
  <button id='button_ical' href='{{ ical_url }}'><img src='{{ images }}download.png'/> Download iCalendar</button>
- <button id='button_send'><img src='{{ images }}email.png'/> Resend invitation</button><br/>
+ <button id='button_send'><img src='{{ images }}email.png'/> Resend invitation</button>
+ {% if wpid %}
+  <button id='button_chat'><img src='{{ images }}chat.png'/> Join the chat</button>
+ {% endif %}
+ <br/>
  <div class='bc_notice_area'>
   <div id='bc_notice' class='bc_notice hide'>
    <p id='bc_message' class='bc_message'>***</p>

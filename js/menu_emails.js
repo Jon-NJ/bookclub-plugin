@@ -35,7 +35,7 @@ function ajax_call(action, data, success) {
             }
         })
         .fail(((jqXHR, text, error) => {
-            console.log(`bc_authors_book_count ${text} ${error}`);
+            console.log(`${action} ${text} ${error}`);
             handle_result(true, error);
         }));
 }
@@ -288,8 +288,15 @@ jQuery('#button_save').on('click', function (e) {
         'yes': jQuery('#yes_data').val(),
         'no': jQuery('#no_data').val()
     }, json => {
-        jQuery('#button_save').attr('disabled', '');
-        refresh_views(get_active_view());
+        let error = json['error'];
+        let url = json['redirect'];
+        if (!error) {
+            jQuery('#button_save').attr('disabled', '');
+        }
+        handle_result(error, json['message'], url);
+        if (!url) {
+            refresh_views(get_active_view());
+        }
     });
 });
 

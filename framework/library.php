@@ -310,6 +310,28 @@ function url_book(int $bid): string
 }
 
 /**
+ * Construct a URL for chatting with the given target.
+ * @param int $type type of chat: 1-BC_CHAT_TARGET_USER, 2-BC_CHAT_TARGET_GROUP,
+ * 3-BC_CHAT_TARGET_BOOK or 4-BC_CHAT_TARGET_EVENT
+ * @param string $target an identifier for the target of the given type
+ * @return string URL for the given chat
+ */
+function url_chat(int $type, string $target): string
+{
+    $param = '';
+    if (BC_CHAT_TARGET_USER == $type) {
+        $param = "dm=$target";
+    } elseif (BC_CHAT_TARGET_GROUP == $type) {
+        $param = "gid=$target";
+    } elseif (BC_CHAT_TARGET_BOOK == $type) {
+        $param = "bid=$target";
+    } elseif (BC_CHAT_TARGET_EVENT == $type) {
+        $param = "eid=$target";
+    }
+    return \admin_url("admin.php?page=bc_chat&$param");
+}
+
+/**
  * Fetch the URL for an IMG with a book cover.
  * @param string $url filename for the book cover
  * @return string URL for a book cover
@@ -408,22 +430,24 @@ function url_previous(?int $year, ?int $gid): string
 }
 
 /**
- * Fetch a URL for a web page with the dashboard profile.
- * @return string URL for the users profile page
+ * Fetch a URL for a web page with the bookclub profile.
+ * @return string URL for the bookclub profile page
  */
-function url_profile(): string
+function url_bookclub_profile(): string
 {
     return \admin_url('admin.php?page=bc_menu');
 }
 
 /**
  * Fetch a URL for the profile page of the given WordPress user.
- * @param int $wordpress_id WordPress user id
+ * @param int $wordpress_id WordPress user id or empty/0 for current user
  * @return string URL to WordPress profile for the given user
  */
-function url_profile_user(int $wordpress_id): string
+function url_wordpress_profile(int $wordpress_id = 0): string
 {
-    return \admin_url("user-edit.php?user_id=$wordpress_id");
+    return $wordpress_id ?
+            \admin_url("user-edit.php?user_id=$wordpress_id") :
+            \get_edit_profile_url();
 }
 
 /**
