@@ -1,3 +1,10 @@
+2021-08-13  3.8.13
+- Fix JSON result in CRON email processing.
+- Widen date field in Dates menu.
+- Dates menu JS - .getDate => .getUTCDate to avoid problems when west of GMT.
+- Fix some "let"s that should be "var"s in Dates menu.
+- Fix uninitialized month value in Dates menu.
+
 2021-04-30  3.4.30
 - Chat feature.
 - REST database backup. POST now also recognized, GET is deprecated.
