@@ -8,11 +8,14 @@
 :root {
     --nice-blue: #00bfff;
     --nice-gray: #444;
+    --hover-gray: #eee;
+    --unselected-gray: #ddd;
     --line-blue: #006fbf;
     --menu-blue: #6495ed;
     --hover-blue: #3080ff;
     --error-red: #dc3232;
     --success-green: #46b450;
+    --old-paper: #ffec9e;
     --warning-yellow: #ffb900;
 }
 

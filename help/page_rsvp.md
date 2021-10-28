@@ -5,7 +5,7 @@ The software is still in development. Please report any problems to your [site a
 
 ## Register for an event
 
-**Comment** - Occasionally it is useful to add a comment to your RSVP. Perhaps you select *Maybe* and wish to add an explanation or perhaps people are being asked what they will bring to a potluck. This field is saved when you choose your RSVP and it will be shown after your name in the participant list.
+**Comment** - *"Add a comment here."* Occasionally it is useful to add a comment to your RSVP. Perhaps you select *Maybe* and wish to add an explanation or perhaps people are being asked what they will bring to a potluck. This field is saved when you choose your RSVP and it will be shown after your name in the participant list.
 
 ### Responses - These reserve a seat (*Yes* or *Maybe*) or free a seat (*No*).
 

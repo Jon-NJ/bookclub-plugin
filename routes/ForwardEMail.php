@@ -569,7 +569,7 @@ class ForwardEMail extends Path
             imap_close($ch);
         }
         free_lock($lockkey);
-        $json   = [ 'status' => 'complete' ];
+        $json   = [ status => 'complete' ];
         exit(twig_render('path_forwarder', $json));
     }
 }

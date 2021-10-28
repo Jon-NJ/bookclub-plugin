@@ -5,9 +5,12 @@
 <div class='bc_rsvp'>
  <input type="hidden" id='chat_url' value="{{ chat_url }}" />
  <span class='bc_rsvp_title'>Register for an event</span>
- - <b>{{ name }}</b> will attend?<br/>
- Comment:
- <input type='text' id='comment' name='comment' size='50' value='{{ comment }}'/><br/><br/>
+ - <b>{{ name }}</b> will attend?
+ <div class='bc_notice_area'>
+  <div id='bc_notice' class='bc_notice hide'>
+   <p id='bc_message' class='bc_message'>***</p>
+  </div>
+ </div>
  <button id='button_yes'><img src='{{ images }}yes.png'/> Yes</button> {# BC_RSVP_ATTENDING #}
  <button id='button_no'><img src='{{ images }}no.png'/> No</button> {# BC_RSVP_NOTATTENDING #}
  <button id='button_maybe'><img src='{{ images }}maybe.png'/> Maybe</button> {# BC_RSVP_MAYBE #}
@@ -17,12 +20,8 @@
  {% if wpid %}
   <button id='button_chat'><img src='{{ images }}chat.png'/> Join the chat</button>
  {% endif %}
- <br/>
- <div class='bc_notice_area'>
-  <div id='bc_notice' class='bc_notice hide'>
-   <p id='bc_message' class='bc_message'>***</p>
-  </div>
- </div>
+ <br/><br/>
+ <input type='text' id='comment' name='comment' size='50'  placeholder='Add a comment here.' value='{{ comment }}'/><br/><br/>
  <section class='bc_rsvp_container'>
   <div class='bc_rsvp_label_what'>What:</div>
   <div class='bc_rsvp_label_where'>Where:</div>
