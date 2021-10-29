@@ -284,29 +284,6 @@ jQuery('#button_search').on('click', function (e) {
     });
 });
 
-function edit_group(groupid) {
-    let parms = { action: 'edit' };
-    parms.groupid = groupid;
-    editurl = jQuery('#referer').val() + '&' + jQuery.param(parms);
-    window.location = editurl;
-}
-
-jQuery('.bc_groups_id').on('click', function (e) {
-    edit_group(e.target.id.substring(3));
-});
-
-jQuery('.bc_groups_type').on('click', function (e) {
-    edit_group(e.target.id.substring(5));
-});
-
-jQuery('.bc_groups_tag').on('click', function (e) {
-    edit_group(e.target.id.substring(4));
-});
-
-jQuery('.bc_groups_desc').on('click', function (e) {
-    edit_group(e.target.id.substring(5));
-});
-
 jQuery('#button_add').on('click', function (e) {
     e.preventDefault();
     let type;

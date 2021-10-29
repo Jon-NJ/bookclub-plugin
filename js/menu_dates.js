@@ -352,58 +352,6 @@ jQuery('#button_add').on('click', function (e) {
     });
 });
 
-function edit_date(line) {
-    let parms = { action: 'edit' };
-    let date = jQuery('#date_' + line).text();
-    let group = jQuery('#group_' + line).text();
-    let book = jQuery('#bookid_' + line).text();
-    parms.date = date;
-    parms.group = group;
-    parms.book = book;
-    editurl = jQuery('#referer').val() + '&' + jQuery.param(parms);
-    window.location = editurl;
-}
-
-jQuery('.bc_dates_hidden').on('click', function (e) {
-    t = e.target;
-    if ('img' === t.localName) {
-        t = t.parentElement;
-    }
-    edit_date(t.id.substring(7));
-});
-
-jQuery('.bc_dates_private').on('click', function (e) {
-    t = e.target;
-    if ('img' === t.localName) {
-        t = t.parentElement;
-    }
-    edit_date(t.id.substring(8));
-});
-
-jQuery('.bc_dates_priority').on('click', function (e) {
-    edit_date(e.target.id.substring(9));
-});
-
-jQuery('.bc_dates_day').on('click', function (e) {
-    edit_date(e.target.id.substring(5));
-});
-
-jQuery('.bc_dates_group_id').on('click', function (e) {
-    edit_date(e.target.id.substring(6));
-});
-
-jQuery('.bc_dates_place').on('click', function (e) {
-    edit_date(e.target.id.substring(6));
-});
-
-jQuery('.bc_dates_book').on('click', function (e) {
-    edit_date(e.target.id.substring(5));
-});
-
-jQuery('.bc_dates_author').on('click', function (e) {
-    edit_date(e.target.id.substring(7));
-});
-
 function highlight_line(line) {
     add_highlight('hidden_' + line, 'bc_results_highlight');
     add_highlight('private_' + line, 'bc_results_highlight');
@@ -510,7 +458,7 @@ function generate_calendar() {
     let sow = Number(jQuery('#start_of_week').val());
     let dt = new Date(calmonth);
     let year = dt.getFullYear();
-    let month = dt.getMonth();
+    let month = dt.getUTCMonth();
     let pad = (7 + dt.getDay() - sow) % 7;
     let days = new Date(year, month + 1, 0).getDate();
     let today = new Date();
@@ -562,8 +510,8 @@ function generate_calendar() {
 function fetch_date(day, madj, yadj) {
     let calmonth = jQuery('#calmonth').val();
     let dt = new Date(calmonth);
-    let year = dt.getFullYear() + yadj;
-    let month = dt.getMonth() + 1 + madj;
+    var year = dt.getFullYear() + yadj;
+    var month = dt.getUTCMonth() + 1 + madj;
     if (0 === month) {
         --year;
         month = 12;
@@ -616,7 +564,8 @@ jQuery('#calendar_month').on('click', function (e) {
     e.preventDefault();
     let today = new Date();
     let year = today.getFullYear();
-    let month = ('0' + (today.getMonth() + 1)).slice(month.length - 2);
+    var month = '0' + (today.getUTCMonth() + 1);
+    month = month.slice(month.length - 2);
     day = '0' + today.getDate();
     day = day.slice(day.length - 2);
     jQuery('#calmonth').val(year + '-' + month + '-' + day);

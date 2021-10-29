@@ -164,21 +164,6 @@ jQuery('#button_add').on('click', function (e) {
     });
 });
 
-function edit_author(authorid) {
-    let parms = { action: 'edit' };
-    parms.authorid = authorid;
-    editurl = jQuery('#referer').val() + '&' + jQuery.param(parms);
-    window.location = editurl;
-}
-
-jQuery('.bc_authors_id').on('click', function (e) {
-    edit_author(e.target.id.substring(3));
-});
-
-jQuery('.bc_authors_author').on('click', function (e) {
-    edit_author(e.target.id.substring(7));
-});
-
 function highlight_line(authorid) {
     add_highlight('id_' + authorid, 'bc_results_highlight');
     add_highlight('author_' + authorid, 'bc_results_highlight');

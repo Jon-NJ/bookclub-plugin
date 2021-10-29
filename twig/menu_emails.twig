@@ -167,9 +167,16 @@
      <div class='bc_head bc_emails_author'>Author</div>
      <div class='bc_head bc_emails_subject'>Subject</div>
      {% for find in found %}
-      <div class='bc_line bc_emails_timestamp' id='ts_{{ find.line }}'>{{ find.created|date('Y-m-d H:i:s') }}</div>
-      <div class='bc_line bc_emails_author' id='author_{{ find.line }}'>{{ find.author }}</div>
-      <div class='bc_line bc_emails_subject' id='subject_{{ find.line }}'>{{ find.subject }}</div>
+      {% set href = referer ~ '&action=edit&created=' ~ find.created|date('Y-m-d H:i:s') %}
+      <a class='bc_line bc_emails_timestamp' id='ts_{{ find.line }}' href='{{ href }}'>
+       {{ find.created|date('Y-m-d H:i:s') }}
+      </a>
+      <a class='bc_line bc_emails_author' id='author_{{ find.line }}' href='{{ href }}'>
+       {{ find.author }}
+      </a>
+      <a class='bc_line bc_emails_subject' id='subject_{{ find.line }}' href='{{ href }}'>
+       {{ find.subject }}
+      </a>
      {% endfor %}
     </section>
    {% endif %}

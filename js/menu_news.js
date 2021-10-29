@@ -153,25 +153,6 @@ jQuery('#button_add').on('click', function (e) {
     });
 });
 
-function edit_news(line) {
-    let parms = { action: 'edit' };
-    parms.datetime = jQuery('#dt_' + line).text();
-    editurl = jQuery('#referer').val() + '&' + jQuery.param(parms);
-    window.location = editurl;
-}
-
-jQuery('.bc_news_date').on('click', function (e) {
-    edit_news(e.target.id.substring(5));
-});
-
-jQuery('.bc_news_poster').on('click', function (e) {
-    edit_news(e.target.id.substring(7));
-});
-
-jQuery('.bc_news_news').on('click', function (e) {
-    edit_news(e.target.id.substring(5));
-});
-
 function highlight_line(placeid) {
     add_highlight('date_' + placeid, 'bc_results_highlight');
     add_highlight('poster_' + placeid, 'bc_results_highlight');

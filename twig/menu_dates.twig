@@ -91,7 +91,7 @@
     </div>
     <div class='bc_form_label'>Date:</div>
     <div class='bc_form_data'>
-     <input type='text' size='5' id='date' name='date' value='{{ date }}'/>
+     <input type='text' size='7.5' id='date' name='date' value='{{ date }}'/>
      <i>YYYY-MM-DD format</i>
     </div>
     {% if "edit" != mode %}
@@ -167,27 +167,40 @@
      <div class='bc_head bc_dates_author'>Author</div>
      {% for find in found %}
       {% set older = find.past ? ' bc_dates_older' : '' %}
-      <div class='bc_line bc_dates_hidden{{ older }}' id='hidden_{{ find.line }}'>
+      {% set href = referer ~ '&action=edit&date=' ~ find.date ~ '&group=' ~ find.group_id ~ '&book=' ~ find.book_id %}
+      <a class='bc_line bc_dates_hidden{{ older }}' id='hidden_{{ find.line }}' href='{{ href }}'>
        {% if find.hide %}&#10004;{% endif %}
-      </div>
-      <div class='bc_line bc_dates_private{{ older }}' id='private_{{ find.line }}'>
+      </a>
+      <a class='bc_line bc_dates_private{{ older }}' id='private_{{ find.line }}' href='{{ href }}'>
        {% if find.private and not find.priority %}&#10004;{% endif %}
-      </div>
-      <div class='bc_line bc_dates_priority{{ older }}' id='priority_{{ find.line }}'>
+      </a>
+      <a class='bc_line bc_dates_priority{{ older }}' id='priority_{{ find.line }}' href='{{ href }}'>
        {{ find.priority ? find.priority : '' }}
-      </div>
-      <div class='bc_line bc_dates_day{{ older }}' id='date_{{ find.line }}'>{{ find.date }}</div>
-      <div class='bc_line bc_dates_group_id{{ older }}' id='group_{{ find.line }}'>{{ find.group_id }}</div>
+      </a>
+      <a class='bc_line bc_dates_day{{ older }}' id='date_{{ find.line }}' href='{{ href }}'>
+       {{ find.date }}
+      </a>
+      <a class='bc_line bc_dates_group_id{{ older }}' id='group_{{ find.line }}' href='{{ href }}'>
+       {{ find.group_id }}
+      </a>
       {% if find.place_id %}
-       <div class='bc_line bc_dates_place{{ older }}' id='place_{{ find.line }}'>
+       <a class='bc_line bc_dates_place{{ older }}' id='place_{{ find.line }}' href='{{ href }}'>
         {{ find.place }}
-       </div>
+       </a>
       {% else %}
-       <div class='bc_line bc_dates_place{{ older }}' id='place_{{ find.line }}'></div>
+       <a class='bc_line bc_dates_place{{ older }}' id='place_{{ find.line }}' href='{{ href }}'>
+        &nbsp;
+       </a>
       {% endif %}
-      <div class='bc_line bc_dates_book_id' id='bookid_{{ find.line }}'>{{ find.book_id }}</div>
-      <div class='bc_line bc_dates_book{{ older }}' id='book_{{ find.line }}'>{{ find.book }}</div>
-      <div class='bc_line bc_dates_author{{ older }}' id='author_{{ find.line }}'>{{ find.author }}</div>
+      <a class='bc_line bc_dates_book_id' id='bookid_{{ find.line }}' href='{{ href }}'>
+       {{ find.book_id }}
+      </a>
+      <a class='bc_line bc_dates_book{{ older }}' id='book_{{ find.line }}' href='{{ href }}'>
+       {{ find.book }}
+      </a>
+      <a class='bc_line bc_dates_author{{ older }}' id='author_{{ find.line }}' href='{{ href }}'>
+       {{ find.author }}
+      </a>
      {% endfor %}
     </section>
    {% endif %}

@@ -160,6 +160,10 @@
     color: var(--line-blue);
 }
 
+.bc_news_results a {
+    text-decoration: none !important;
+}
+
 .bc_news_results {
     display: grid;
     grid-template-columns: [date] auto [poster] auto [news] 1fr;

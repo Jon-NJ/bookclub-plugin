@@ -289,6 +289,10 @@
     color: var(--line-blue);
 }
 
+.bc_events_results a {
+    text-decoration: none !important;
+}
+
 .bc_events_results {
     display: grid;
     grid-template-columns: [eventid] auto [private] auto [priority] auto [start] auto [subject] 1fr;

@@ -104,10 +104,19 @@
      <div class='bc_head bc_news_poster'>Who</div>
      <div class='bc_head bc_news_news'>Post</div>
      {% for find in found %}
-      <div class='bc_line bc_news_date' id='date_{{ find.line }}'>{{ find.datetime|date('Y-m-d') }}</div>
-      <div class='bc_line bc_news_datetime' id='dt_{{ find.line }}'>{{ find.datetime|date('Y-m-d H:i:s') }}</div>
-      <div class='bc_line bc_news_poster' id='poster_{{ find.line }}'>{{ find.poster }}</div>
-      <div class='bc_line bc_news_news' id='news_{{ find.line }}'>{{ find.news }}</div>
+      {% set href = referer ~ '&action=edit&datetime=' ~ find.datetime|date('Y-m-d H:i:s') %}
+      <a class='bc_line bc_news_date' id='date_{{ find.line }}' href='{{ href }}'>
+       {{ find.datetime|date('Y-m-d') }}
+      </a>
+      <a class='bc_line bc_news_datetime' id='dt_{{ find.line }}' href='{{ href }}'>
+       {{ find.datetime|date('Y-m-d H:i:s') }}
+      </a>
+      <a class='bc_line bc_news_poster' id='poster_{{ find.line }}' href='{{ href }}'>
+       {{ find.poster }}
+      </a>
+      <a class='bc_line bc_news_news' id='news_{{ find.line }}' href='{{ href }}'>
+       {{ find.news }}
+      </a>
      {% endfor %}
     </section>
    {% endif %}

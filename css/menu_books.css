@@ -172,6 +172,10 @@
     color: var(--line-blue);
 }
 
+.bc_books_results a {
+    text-decoration: none !important;
+}
+
 .bc_books_bookid {
     padding: 0 0.3em 0 0;
     text-align: center;

@@ -179,10 +179,19 @@
      <div class='bc_head bc_groups_tag'>Tag</div>
      <div class='bc_head bc_groups_desc'>Description</div>
      {% for find in found %}
-      <div class='bc_line bc_groups_id' id='id_{{ find.group_id }}'>{{ find.group_id }}</div>
-      <div class='bc_line bc_groups_type' id='type_{{ find.group_id }}'>{{ (1 == find.type) ? 'Book club' : 'EMail list' }}</div>
-      <div class='bc_line bc_groups_tag' id='tag_{{ find.group_id }}'>{{ find.tag }}</div>
-      <div class='bc_line bc_groups_desc' id='desc_{{ find.group_id }}'>{{ find.description }}</div>
+      {% set href = referer ~ '&action=edit&groupid=' ~ find.group_id %}
+      <a class='bc_line bc_groups_id' id='id_{{ find.group_id }}' href='{{ href }}'>
+       {{ find.group_id }}
+      </a>
+      <a class='bc_line bc_groups_type' id='type_{{ find.group_id }}' href='{{ href }}'>
+       {{ (1 == find.type) ? 'Book club' : 'EMail list' }}
+      </a>
+      <a class='bc_line bc_groups_tag' id='tag_{{ find.group_id }}' href='{{ href }}'>
+       {{ find.tag }}
+      </a>
+      <a class='bc_line bc_groups_desc' id='desc_{{ find.group_id }}' href='{{ href }}'>
+       {{ find.description }}
+      </a>
      {% endfor %}
     </section>
    {% endif %}

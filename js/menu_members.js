@@ -244,41 +244,6 @@ jQuery('#button_add').on('click', function (e) {
     });
 });
 
-function edit_members(memberid) {
-    let parms = { action: 'edit' };
-    parms.id = memberid;
-    editurl = jQuery('#referer').val() + '&' + jQuery.param(parms);
-    window.location = editurl;
-}
-
-jQuery('.bc_members_id').on('click', function (e) {
-    edit_members(e.target.id.substring(3));
-});
-
-jQuery('.bc_members_pkey').on('click', function (e) {
-    edit_members(e.target.id.substring(5));
-});
-
-jQuery('.bc_members_wpid').on('click', function (e) {
-    edit_members(e.target.id.substring(5));
-});
-
-jQuery('.bc_members_login').on('click', function (e) {
-    edit_members(e.target.id.substring(6));
-});
-
-jQuery('.bc_members_name').on('click', function (e) {
-    edit_members(e.target.id.substring(5));
-});
-
-jQuery('.bc_members_email').on('click', function (e) {
-    edit_members(e.target.id.substring(6));
-});
-
-jQuery('.bc_members_hittime').on('click', function (e) {
-    edit_members(e.target.id.substring(3));
-});
-
 function highlight_line(memberid) {
     add_highlight('id_' + memberid, 'bc_results_highlight');
     add_highlight('pkey_' + memberid, 'bc_results_highlight');

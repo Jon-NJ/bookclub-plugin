@@ -103,38 +103,6 @@ jQuery('#button_search').on('click', function (e) {
     });
 });
 
-function edit_event(eventid) {
-    let parms = { action: 'edit' };
-    let id = jQuery('#id_' + eventid).text();
-    parms.eventid = id;
-    editurl = jQuery('#referer').val() + '&' + jQuery.param(parms);
-    window.location = editurl;
-}
-
-jQuery('.bc_events_id').on('click', function (e) {
-    edit_event(e.target.id.substring(3));
-});
-
-jQuery('.bc_events_private').on('click', function (e) {
-    t = e.target;
-    if ('img' === t.localName) {
-        t = t.parentElement;
-    }
-    edit_event(t.id.substring(8));
-});
-
-jQuery('.bc_events_priority').on('click', function (e) {
-    edit_event(e.target.id.substring(9));
-});
-
-jQuery('.bc_events_start').on('click', function (e) {
-    edit_event(e.target.id.substring(6));
-});
-
-jQuery('.bc_events_subject').on('click', function (e) {
-    edit_event(e.target.id.substring(8));
-});
-
 jQuery('#button_add').on('click', function (e) {
     e.preventDefault();
     ajax_call('bc_events_add', {

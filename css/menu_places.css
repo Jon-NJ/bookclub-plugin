@@ -160,6 +160,10 @@
     color: var(--line-blue);
 }
 
+.bc_places_results a {
+    text-decoration: none !important;
+}
+
 .bc_places_results {
     display: grid;
     grid-template-columns: [placeid] auto [place] auto [address] 1fr;

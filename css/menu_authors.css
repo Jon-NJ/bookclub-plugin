@@ -160,6 +160,10 @@
     color: var(--line-blue);
 }
 
+.bc_authors_results a {
+    text-decoration: none !important;
+}
+
 .bc_authors_results {
     display: grid;
     grid-template-columns: [authorid] auto [author] 15fr;

@@ -104,9 +104,16 @@
      <div class='bc_head bc_books_title'>Title</div>
      <div class='bc_head bc_books_author'>Author</div>
      {% for find in found %}
-      <div class='bc_line bc_books_bookid' id='bid_{{ find.book_id }}'>{{ find.book_id }}</div>
-      <div class='bc_line bc_books_title' id='title_{{ find.book_id }}'>{{ find.booktitle }}</div>
-      <div class='bc_line bc_books_author' id='author_{{ find.book_id }}'>{{ find.author }}</div>
+      {% set href = referer ~ '&action=edit&bookid=' ~ find.book_id %}
+      <a class='bc_line bc_books_bookid' id='bid_{{ find.book_id }}' href='{{ href }}'>
+       {{ find.book_id }}
+      </a>
+      <a class='bc_line bc_books_title' id='title_{{ find.book_id }}' href='{{ href }}'>
+       {{ find.booktitle }}
+      </a>
+      <a class='bc_line bc_books_author' id='author_{{ find.book_id }}' href='{{ href }}'>
+       {{ find.author }}
+      </a>
      {% endfor %}
     </section>
    {% endif %}

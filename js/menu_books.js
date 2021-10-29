@@ -192,25 +192,6 @@ jQuery('#button_add').on('click', function (e) {
     });
 });
 
-function edit_book(bookid) {
-    let parms = { action: 'edit' };
-    parms.bookid = bookid;
-    editurl = jQuery('#referer').val() + '&' + jQuery.param(parms);
-    window.location = editurl;
-}
-
-jQuery('.bc_books_bookid').on('click', function (e) {
-    edit_book(e.target.id.substring(4));
-});
-
-jQuery('.bc_books_title').on('click', function (e) {
-    edit_book(e.target.id.substring(6));
-});
-
-jQuery('.bc_books_author').on('click', function (e) {
-    edit_book(e.target.id.substring(7));
-});
-
 function highlight_line(bookid) {
     add_highlight('bid_' + bookid, 'bc_results_highlight');
     add_highlight('title_' + bookid, 'bc_results_highlight');

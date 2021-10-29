@@ -100,26 +100,6 @@ jQuery('#button_search').on('click', function (e) {
     });
 });
 
-function edit_email(line) {
-    let parms = { action: 'edit' };
-    let created = jQuery('#ts_' + line).text();
-    parms.created = created;
-    editurl = jQuery('#referer').val() + '&' + jQuery.param(parms);
-    window.location = editurl;
-}
-
-jQuery('.bc_emails_timestamp').on('click', function (e) {
-    edit_email(e.target.id.substring(3));
-});
-
-jQuery('.bc_emails_author').on('click', function (e) {
-    edit_email(e.target.id.substring(7));
-});
-
-jQuery('.bc_emails_subject').on('click', function (e) {
-    edit_email(e.target.id.substring(8));
-});
-
 jQuery('#button_add').on('click', function (e) {
     e.preventDefault();
     ajax_call('bc_emails_add', {

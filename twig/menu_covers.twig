@@ -122,10 +122,11 @@
    {% else %}
     <section class='bc_covers_results'>
      {% for find in found %}
-      <div class='bc_covers_item' id='cid_{{ find.id }}'>
+      {% set href = referer ~ '&action=edit&cover=' ~ find.cover %}
+      <a class='bc_covers_item' id='cid_{{ find.id }}' href='{{ href }}'>
        <img src='{{ baseurl }}{{ find.cover }}'/>
        <p>{{ find.cover }}</p>
-      </div>
+      </a>
      {% endfor %}
     </section>
    {% endif %}

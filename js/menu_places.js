@@ -154,25 +154,6 @@ jQuery('#button_add').on('click', function (e) {
     });
 });
 
-function edit_place(placeid) {
-    let parms = { action: 'edit' };
-    parms.placeid = placeid;
-    editurl = jQuery('#referer').val() + '&' + jQuery.param(parms);
-    window.location = editurl;
-}
-
-jQuery('.bc_places_id').on('click', function (e) {
-    edit_place(e.target.id.substring(3));
-});
-
-jQuery('.bc_places_place').on('click', function (e) {
-    edit_place(e.target.id.substring(6));
-});
-
-jQuery('.bc_places_address').on('click', function (e) {
-    edit_place(e.target.id.substring(4));
-});
-
 function highlight_line(placeid) {
     add_highlight('id_' + placeid, 'bc_results_highlight');
     add_highlight('place_' + placeid, 'bc_results_highlight');

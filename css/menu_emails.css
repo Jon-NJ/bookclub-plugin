@@ -226,6 +226,10 @@
     color: var(--line-blue);
 }
 
+.bc_emails_results a {
+    text-decoration: none !important;
+}
+
 .bc_emails_results {
     display: grid;
     grid-template-columns: [timestamp] auto [author] auto [subject] 1fr;

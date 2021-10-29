@@ -96,9 +96,16 @@
      <div class='bc_head bc_places_place'>Place</div>
      <div class='bc_head bc_places_address'>Address</div>
      {% for find in found %}
-      <div class='bc_line bc_places_id' id='id_{{ find.place_id }}'>{{ find.place_id }}</div>
-      <div class='bc_line bc_places_place' id='place_{{ find.place_id }}'>{{ find.place }}</div>
-      <div class='bc_line bc_places_address' id='adr_{{ find.place_id }}'>{{ find.address }}</div>
+      {% set href = referer ~ '&action=edit&placeid=' ~ find.place_id %}
+      <a class='bc_line bc_places_id' id='id_{{ find.place_id }}' href='{{ href }}'>
+       {{ find.place_id }}
+      </a>
+      <a class='bc_line bc_places_place' id='place_{{ find.place_id }}' href='{{ href }}'>
+       {{ find.place }}
+      </a>
+      <a class='bc_line bc_places_address' id='adr_{{ find.place_id }}' href='{{ href }}'>
+       {{ find.address }}
+      </a>
      {% endfor %}
     </section>
    {% endif %}

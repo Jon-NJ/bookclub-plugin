@@ -184,17 +184,6 @@ jQuery('#button_delete').on('click', function (e) {
     }
 });
 
-jQuery('.bc_covers_item').on('click', function (e) {
-    let div = e.target;
-    if ('DIV' !== div.nodeName) {
-        div = div.parentElement;
-    }
-    let parms = { action: 'edit' };
-    parms.cover = div.lastElementChild.innerHTML;
-    editurl = jQuery('#referer').val() + '&' + jQuery.param(parms);
-    window.location = editurl;
-});
-
 function highlight_line(coverid) {
     add_highlight('cid_' + coverid, 'bc_results_highlight');
     stuck = coverid;
@@ -210,7 +199,7 @@ jQuery('.bc_covers_item').hover(function (e) {
         stuck = '';
     }
     let div = e.target;
-    if ('DIV' !== div.nodeName) {
+    if ('A' !== div.nodeName) {
         div = div.parentElement;
     }
     let cid = div.id.substring(4);
@@ -218,7 +207,7 @@ jQuery('.bc_covers_item').hover(function (e) {
 },
     function (e) {
         let div = e.target;
-        if ('DIV' !== div.nodeName) {
+        if ('A' !== div.nodeName) {
             div = div.parentElement;
         }
         let cid = div.id.substring(4);

@@ -246,6 +246,10 @@ button:disabled {
     color: var(--line-blue);
 }
 
+.bc_members_results a {
+    text-decoration: none !important;
+}
+
 .bc_members_id {
     padding: 0 0.3em 0 0;
     text-align: center;

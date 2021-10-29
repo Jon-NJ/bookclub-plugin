@@ -211,15 +211,22 @@
      <div class='bc_head bc_events_subject'>Subject</div>
      {% for find in found %}
       {% set older = find.past ? ' bc_events_older' : '' %}
-      <div class='bc_line bc_events_id{{ older }}' id='id_{{ find.id }}'>{{ find.id }}</div>
-      <div class='bc_line bc_events_private{{ older }}' id='private_{{ find.id }}'>
+      {% set href = referer ~ '&action=edit&eventid=' ~ find.id %}
+      <a class='bc_line bc_events_id{{ older }}' id='id_{{ find.id }}' href='{{ href }}'>
+       {{ find.id }}
+      </a>
+      <a class='bc_line bc_events_private{{ older }}' id='private_{{ find.id }}' href='{{ href }}'>
        {% if find.private and not find.priority %}&#10004;{% endif %}
-      </div>
-      <div class='bc_line bc_events_priority{{ older }}' id='priority_{{ find.id }}'>
+      </a>
+      <a class='bc_line bc_events_priority{{ older }}' id='priority_{{ find.id }}' href='{{ href }}'>
        {{ find.priority ? find.priority : '' }}
-      </div>
-      <div class='bc_line bc_events_start{{ older }}' id='start_{{ find.id }}'>{{ find.start|date('Y-m-d H:i') }}</div>
-      <div class='bc_line bc_events_subject{{ older }}' id='subject_{{ find.id }}'>{{ find.subject }}</div>
+      </a>
+      <a class='bc_line bc_events_start{{ older }}' id='start_{{ find.id }}' href='{{ href }}'>
+       {{ find.start|date('Y-m-d H:i') }}
+      </a>
+      <a class='bc_line bc_events_subject{{ older }}' id='subject_{{ find.id }}' href='{{ href }}'>
+       {{ find.subject }}
+      </a>
      {% endfor %}
     </section>
    {% endif %}

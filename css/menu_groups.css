@@ -173,6 +173,10 @@
     color: var(--line-blue);
 }
 
+.bc_groups_results a {
+    text-decoration: none !important;
+}
+
 .bc_groups_results {
     display: grid;
     grid-template-columns: [id] auto [type] auto [tag] auto [desc] 1fr;
