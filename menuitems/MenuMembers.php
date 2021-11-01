@@ -189,6 +189,30 @@ class MenuMembers extends MenuItem
     }
 
     /**
+     * Fetch page title - possible override static information
+     * @return string title for the page
+     */
+    public function getPageTitle(): string
+    {
+        $page = input_get('page');
+        $action = input_get('action');
+        if ($page === $this->data['slug'] && 'edit' === $action) {
+            $id     = input_request('id');
+            $member = TableMembers::findByID($id);
+            $name   = $member->name;
+            if ($member->wordpress_id) {
+                $user  = \get_userdata($member->wordpress_id);
+                $first = $user->first_name ?: '(First name missing)';
+                $last  = $user->last_name ?: '(Last name missing)';
+                $name  = "$first $last";
+            }
+            return "Edit: {$name}";
+        }
+        return parent::getPageTitle();
+        
+    }
+
+    /**
      * Fetch JSON used for the edit state.
      * @global string $_GET['id'] unique member identifier
      * @return array JSON for TWIG rendering

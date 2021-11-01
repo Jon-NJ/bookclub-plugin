@@ -89,6 +89,22 @@ class MenuAuthors extends MenuItem
     }
 
     /**
+     * Fetch page title - possible override static information
+     * @return string title for the page
+     */
+    public function getPageTitle(): string
+    {
+        $page = input_get('page');
+        $action = input_get('action');
+        if ($page === $this->data['slug'] && 'edit' === $action) {
+            $authorid = input_get('authorid');
+            $author = TableAuthors::findByID($authorid);
+            return "Edit: {$author->name}";
+        }
+        return parent::getPageTitle();
+    }
+
+    /**
      * Fetch JSON used for the edit state.
      * @global string $_GET['authorid'] author identifier
      * @return array JSON for TWIG rendering

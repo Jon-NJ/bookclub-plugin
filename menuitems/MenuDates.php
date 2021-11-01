@@ -154,7 +154,23 @@ class MenuDates extends MenuItem
         }
         return $result;
     }
-    
+
+    /**
+     * Fetch page title - possible override static information
+     * @return string title for the page
+     */
+    public function getPageTitle(): string
+    {
+        $page = input_get('page');
+        $action = input_get('action');
+        if ($page === $this->data['slug'] && 'edit' === $action) {
+            $groupid  = input_request('group');
+            $date     = input_request('date');
+            $group    = TableGroups::findByID($groupid);
+            return "Edit: {$group->tag} - {$date}";
+        }
+        return parent::getPageTitle();
+    }
 
     /**
      * Fetch JSON used for the edit state.

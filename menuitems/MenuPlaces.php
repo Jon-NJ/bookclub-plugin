@@ -87,6 +87,22 @@ class MenuPlaces extends MenuItem
     }
 
     /**
+     * Fetch page title - possible override static information
+     * @return string title for the page
+     */
+    public function getPageTitle(): string
+    {
+        $page = input_get('page');
+        $action = input_get('action');
+        if ($page === $this->data['slug'] && 'edit' === $action) {
+            $placeid = input_get('placeid');
+            $place = TablePlaces::findByID($placeid);
+            return "Edit: {$place->place}";
+        }
+        return parent::getPageTitle();
+    }
+
+    /**
      * Fetch JSON used for the edit state.
      * @global string $_GET['placeid'] place identifier
      * @return array JSON for TWIG rendering

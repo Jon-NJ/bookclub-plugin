@@ -150,6 +150,21 @@ class MenuNews extends MenuItem
     }
 
     /**
+     * Fetch page title - possible override static information
+     * @return string title for the page
+     */
+    public function getPageTitle(): string
+    {
+        $page = input_get('page');
+        $action = input_get('action');
+        if ($page === $this->data['slug'] && 'edit' === $action) {
+            $datetime = input_get('datetime');
+            return "Edit News with timestamp {$datetime}";
+        }
+        return parent::getPageTitle();
+    }
+
+    /**
      * Fetch JSON used for the edit state.
      * @global string $_GET['datetime'] news timestamp
      * @return array JSON for TWIG rendering

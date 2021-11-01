@@ -92,6 +92,22 @@ class MenuBooks extends MenuItem
     }
 
     /**
+     * Fetch page title - possible override static information
+     * @return string title for the page
+     */
+    public function getPageTitle(): string
+    {
+        $page = input_get('page');
+        $action = input_get('action');
+        if ($page === $this->data['slug'] && 'edit' === $action) {
+            $bookid = input_get('bookid');
+            $book = JoinBooksAuthors::findBookByID($bookid);
+            return "Edit: {$book->title}";
+        }
+        return parent::getPageTitle();
+    }
+
+    /**
      * Fetch JSON used for the edit state.
      * @global string $_GET['bookid'] book identifier
      * @return array JSON for TWIG rendering

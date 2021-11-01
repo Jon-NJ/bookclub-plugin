@@ -89,6 +89,22 @@ class MenuGroups extends MenuItem
     }
 
     /**
+     * Fetch page title - possible override static information
+     * @return string title for the page
+     */
+    public function getPageTitle(): string
+    {
+        $page = input_get('page');
+        $action = input_get('action');
+        if ($page === $this->data['slug'] && 'edit' === $action) {
+            $groupid  = input_request('groupid');
+            $group    = TableGroups::findByID($groupid);
+            return "Edit: {$group->tag}";
+        }
+        return parent::getPageTitle();
+    }
+
+    /**
      * Fetch JSON used for the edit state.
      * @global string $_GET['groupid'] group identifier
      * @return array JSON for TWIG rendering
